@@ -1,0 +1,980 @@
+<!-- Enterprise SEO Toolkit Interactive Portal -->
+<div class="space-y-6 text-zinc-900 dark:text-white" id="seo-suite-root">
+  
+  <!-- Common Toolbar Header Controls -->
+  <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-zinc-150 dark:border-zinc-800">
+    <div>
+      <h3 class="text-base font-bold font-sans tracking-tight text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
+        <mat-icon class="text-emerald-500">trending_up</mat-icon>
+        <span>SEO MODULE: {{ pageToolName() }}</span>
+      </h3>
+      <p class="text-xs text-zinc-500 dark:text-zinc-400 font-sans mt-0.5">Advanced, 100% sandboxed browser processing parameters.</p>
+    </div>
+
+    <!-- Quick Tool Actions (Undo, Redo, Clear, Copy, Download) -->
+    <div class="flex items-center flex-wrap gap-2 font-mono text-[11px]">
+      <button (click)="undo()" [disabled]="!canUndo()" 
+              class="px-2.5 py-1.5 border border-zinc-150 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 disabled:opacity-40 text-zinc-600 dark:text-zinc-400 rounded-lg font-bold flex items-center gap-1 transition cursor-pointer">
+        <mat-icon class="text-xs leading-none">undo</mat-icon>
+        <span>UNDO</span>
+      </button>
+      <button (click)="redo()" [disabled]="!canRedo()" 
+              class="px-2.5 py-1.5 border border-zinc-150 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 disabled:opacity-40 text-zinc-600 dark:text-zinc-400 rounded-lg font-bold flex items-center gap-1 transition cursor-pointer">
+        <mat-icon class="text-xs leading-none">redo</mat-icon>
+        <span>REDO</span>
+      </button>
+      <button (click)="clearAll()" 
+              class="px-2.5 py-1.5 border border-rose-200/50 dark:border-rose-950/40 hover:border-rose-350 dark:hover:border-rose-700 bg-rose-50/40 dark:bg-rose-950/10 text-rose-600 dark:text-rose-400 rounded-lg font-bold flex items-center gap-1 transition cursor-pointer">
+        <mat-icon class="text-xs leading-none">delete_sweep</mat-icon>
+        <span>RESET</span>
+      </button>
+      <button (click)="copyToClipboard()"
+              class="px-3 py-1.5 border border-emerald-200/60 dark:border-emerald-800/45 hover:border-emerald-350 dark:hover:border-emerald-700 bg-emerald-500 dark:bg-emerald-600/20 text-white dark:text-emerald-300 rounded-lg font-bold flex items-center gap-1 transition shadow-sm cursor-pointer">
+        <mat-icon class="text-xs leading-none">content_copy</mat-icon>
+        <span>COPY CODE</span>
+      </button>
+      <button (click)="downloadOutputFile()"
+              class="px-3 py-1.5 border border-zinc-200 dark:border-zinc-850 bg-zinc-100 dark:bg-zinc-900/50 hover:bg-zinc-200 dark:hover:bg-zinc-850 hover:text-zinc-950 dark:hover:text-white rounded-lg font-bold flex items-center gap-1 transition cursor-pointer">
+        <mat-icon class="text-xs leading-none">file_download</mat-icon>
+        <span>EXPORT</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Notification Toast message on actions -->
+  @if (showCopiedMessage()) {
+    <div class="fixed top-4 right-4 z-50 p-4 border border-zinc-150 dark:border-zinc-800 bg-white dark:bg-zinc-950 rounded-xl shadow-lg flex items-center gap-2 text-zinc-800 dark:text-zinc-100 font-mono text-xs animate-slideUp">
+      <mat-icon class="text-emerald-500 text-sm">check_circle</mat-icon>
+      <span>Pristine code block copied to workspace registry!</span>
+    </div>
+  }
+
+  <!-- Dual Workspace split views grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-left select-all">
+    
+    <!-- LEFT PANEL: Dynamic Form-States configurations per toolId -->
+    <div class="space-y-6">
+      
+      <!-- MODULE 1: Meta Tag Generator -->
+      @if (activeToolId() === 'meta-tag-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">ESSENTIAL DOCUMENT PROPERTIES</span>
+            
+            <!-- Page Title Input -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs font-semibold">
+                <label class="text-zinc-700 dark:text-zinc-300 font-sans" for="meta-title-input">Meta Title Tag</label>
+                <span [class]="titleStatus() === 'optimal' ? 'text-emerald-500 font-bold font-mono' : 'text-amber-500 font-bold font-mono'">
+                  {{ titleChars() }} / 60 Chars
+                </span>
+              </div>
+              <input type="text" id="meta-title-input" [(ngModel)]="metaTitle" (ngModelChange)="saveStateToHistory()"
+                     placeholder="Page Document Title"
+                     class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+              @if (titleStatus() === 'too-long') {
+                <p class="text-[10px] text-amber-500 font-mono">&bull; Title clip warning! Keep below 60 characters for optimal Google listings representation.</p>
+              }
+            </div>
+
+            <!-- Meta Description -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs font-semibold">
+                <label class="text-zinc-700 dark:text-zinc-300 font-sans" for="meta-desc-input">Meta Description</label>
+                <span [class]="descStatus() === 'optimal' ? 'text-emerald-500 font-bold font-mono' : 'text-amber-500 font-bold font-mono'">
+                  {{ descChars() }} / 160 Chars
+                </span>
+              </div>
+              <textarea id="meta-desc-input" [(ngModel)]="metaDescription" (ngModelChange)="saveStateToHistory()" rows="3"
+                        placeholder="Snippet description summarizing the core focus coordinates..."
+                        class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"></textarea>
+              @if (descStatus() === 'too-short') {
+                <p class="text-[10px] text-zinc-500 font-mono">&bull; Description length short. Add context to capture click interest triggers (110 - 160 range).</p>
+              } @else if (descStatus() === 'too-long') {
+                <p class="text-[10px] text-amber-500 font-mono">&bull; Description clip warning! Surpassed 160 characters. Text will truncate inside Google results.</p>
+              }
+            </div>
+
+            <!-- Keywords & Author -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="meta-kw-input">Keywords</label>
+                <input type="text" id="meta-kw-input" [(ngModel)]="metaKeywords" (ngModelChange)="saveStateToHistory()"
+                       placeholder="separated with commas"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="meta-author-input">Publisher / Author</label>
+                <input type="text" id="meta-author-input" [(ngModel)]="metaAuthor" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Robots and Tech details -->
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">INDEXING DIRECTIVES & TECH PARAMETERS</span>
+            
+            <div class="grid grid-cols-2 gap-4 font-sans text-xs">
+              <div class="space-y-1.5">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="robots-index-select">Robots Indexing</label>
+                <select id="robots-index-select" [(ngModel)]="metaRobotsIndex" (ngModelChange)="saveStateToHistory()"
+                        class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm">
+                  <option value="index">INDEX (Allowed to show in search)</option>
+                  <option value="noindex">NOINDEX (Block from listing)</option>
+                </select>
+              </div>
+              <div class="space-y-1.5">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="robots-follow-select">Follow Links Rules</label>
+                <select id="robots-follow-select" [(ngModel)]="metaRobotsFollow" (ngModelChange)="saveStateToHistory()"
+                        class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm">
+                  <option value="follow">FOLLOW (Instruct crawlers to parse links)</option>
+                  <option value="nofollow">NOFOLLOW (Do not follow nested links)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="meta-char-input">Charset</label>
+                <input type="text" id="meta-char-input" [(ngModel)]="metaCharset" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="meta-color-picker">Theme Accent Color</label>
+                <div class="flex gap-2">
+                  <input type="color" id="meta-color-picker" [(ngModel)]="metaThemeColor" (ngModelChange)="saveStateToHistory()"
+                         class="w-10 h-9 p-0.5 border rounded-lg bg-transparent cursor-pointer" />
+                  <input type="text" [(ngModel)]="metaThemeColor" (ngModelChange)="saveStateToHistory()"
+                         class="flex-1 px-3 py-1.5 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-xs focus:ring-1 focus:ring-emerald-500" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 2: Open Graph & Social Generator -->
+      @if (activeToolId() === 'open-graph-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">OPEN GRAPH METRICS</span>
+            
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="og-title-input">Social Title</label>
+              <input type="text" id="og-title-input" [(ngModel)]="ogTitle" (ngModelChange)="saveStateToHistory()"
+                     class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none" />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="og-desc-textarea">Social Description</label>
+              <textarea id="og-desc-textarea" [(ngModel)]="ogDescription" (ngModelChange)="saveStateToHistory()" rows="3"
+                        class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm"></textarea>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="og-image-input">og:image Image URL (Required for panels rendering!)</label>
+              <input type="text" id="og-image-input" [(ngModel)]="ogImage" (ngModelChange)="saveStateToHistory()"
+                     class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm focus:outline-none" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="og-url-input">og:url Target URL</label>
+                <input type="text" id="og-url-input" [(ngModel)]="ogUrl" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="og-sitename-input">og:site_name Header</label>
+                <input type="text" id="og-sitename-input" [(ngModel)]="ogSiteName" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 text-sm" />
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">TWITTER METADATA RULES</span>
+            <div class="grid grid-cols-2 gap-4 text-xs font-sans">
+              <div class="space-y-1.5">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="twitter-type-select">Twitter Card Type</label>
+                <select id="twitter-type-select" [(ngModel)]="twitterCardType" (ngModelChange)="saveStateToHistory()"
+                        class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200" id="twitter-card-style-config">
+                  <option value="summary_large_image">Summary Card with Large Image</option>
+                  <option value="summary">Summary standard small square banner</option>
+                </select>
+              </div>
+              <div class="space-y-1.5">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="twitter-handle-input">@Twitter Handle Channel</label>
+                <input type="text" id="twitter-handle-input" [(ngModel)]="twitterHandle" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200" />
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 3: SERP Preview Tool -->
+      @if (activeToolId() === 'serp-preview-tool') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">GOOGLE SERP LAYOUT ADJUSTER</span>
+            
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="serp-title-input">SERP Blue Page Title</label>
+              <input type="text" id="serp-title-input" [(ngModel)]="serpTitle"
+                     class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 text-sm focus:outline-none" />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="serp-desc-textarea">SERP Snippet Description</label>
+              <textarea id="serp-desc-textarea" [(ngModel)]="serpDescription" rows="3"
+                        class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 text-sm"></textarea>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="serp-url-input">Canonical Site URL Link</label>
+              <input type="text" id="serp-url-input" [(ngModel)]="serpUrl"
+                     class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 text-sm" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="serp-rating-input">Visual Rating Score (0 - 5)</label>
+                <input type="number" id="serp-rating-input" step="0.1" min="0" max="5" [(ngModel)]="serpRatingValue"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 text-sm" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="serp-rating-count-input">Rating Count Volume</label>
+                <input type="number" id="serp-rating-count-input" [(ngModel)]="serpRatingCount"
+                       class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 text-sm" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs">
+              <div class="space-y-1.5">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="serp-pubdate-input">Publication Snippet Date</label>
+                <input type="date" id="serp-pubdate-input" [(ngModel)]="serpPubDate"
+                       class="w-full px-3 py-1.5 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200" />
+              </div>
+              <div class="space-y-1.5">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="serp-device-select">Render Host Device View</label>
+                <div class="flex items-center gap-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 p-1">
+                  <button type="button" (click)="serpDeviceMode.set('desktop')"
+                          [class]="serpDeviceMode() === 'desktop' ? 'flex-1 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-center cursor-pointer' : 'flex-1 py-1 hover:bg-zinc-50 text-zinc-500 text-center cursor-pointer'">
+                    Desktop
+                  </button>
+                  <button type="button" (click)="serpDeviceMode.set('mobile')"
+                          [class]="serpDeviceMode() === 'mobile' ? 'flex-1 py-1 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg font-bold text-center cursor-pointer' : 'flex-1 py-1 hover:bg-zinc-50 text-zinc-500 text-center cursor-pointer'">
+                    Mobile
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 4: FAQ Schema Generator -->
+      @if (activeToolId() === 'faq-schema-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">REGISTERED FAQS SCHEMA BLOCK</span>
+              <button (click)="addFaqPair()"
+                      class="px-3 py-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg text-xs font-bold font-mono transition flex items-center gap-1">
+                <mat-icon class="text-xs">add</mat-icon>
+                <span>ADD QUESTION</span>
+              </button>
+            </div>
+
+            <!-- List of dynamic FAQS blocks to change values -->
+            <div class="space-y-4">
+              @for (faq of faqPairs(); track $index) {
+                <div class="p-4 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 rounded-xl space-y-3 relative shadow-xs">
+                  <button (click)="removeFaqPair($index)" 
+                          class="absolute top-3 right-3 text-rose-400 hover:text-rose-600 transition cursor-pointer" title="Delete Pair">
+                    <mat-icon class="text-xs select-none">cancel</mat-icon>
+                  </button>
+
+                  <div class="space-y-1.5 pr-6">
+                    <label class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 block font-mono" [attr.for]="'faq-q-' + $index">QUESTION #{{ $index + 1 }}</label>
+                    <input type="text" [id]="'faq-q-' + $index" [(ngModel)]="faq.question" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-zinc-50 dark:bg-zinc-950 border-zinc-150 text-xs focus:ring-1 focus:ring-emerald-500" />
+                  </div>
+
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 block" [attr.for]="'faq-a-' + $index">ACCEPTED ANSWER ANSWER</label>
+                    <textarea [id]="'faq-a-' + $index" [(ngModel)]="faq.answer" (ngModelChange)="saveStateToHistory()" rows="2"
+                              class="w-full px-3 py-1.5 border rounded-lg bg-zinc-50 dark:bg-zinc-950 border-zinc-150 text-xs"></textarea>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 5: Schema JSON-LD Composer -->
+      @if (activeToolId() === 'schema-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">CHOOSE SCHEMA.ORG INTENT TYPE</span>
+            
+            <div class="grid grid-cols-3 gap-2 font-mono text-[10px]">
+              @for (type of schemaTypesList; track type) {
+                <button type="button" (click)="activeSchemaType.set(type)"
+                        [class]="activeSchemaType() === type ? 'px-2 py-1.5 bg-emerald-600 text-white rounded-lg font-bold tracking-tight text-center shadow-xs cursor-pointer' : 'px-2 py-1.5 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 text-center rounded-lg cursor-pointer'">
+                  {{ type }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <!-- Fields depending on selected schema -->
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">SCHEMA PARAMETERS SPECIFICS</span>
+
+            @if (activeSchemaType() === 'Article') {
+              <div class="space-y-3">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="art-headline">Article Headline</label>
+                  <input type="text" id="art-headline" [(ngModel)]="articleHeadline" (ngModelChange)="saveStateToHistory()"
+                         class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="art-author">Author Name</label>
+                    <input type="text" id="art-author" [(ngModel)]="articleAuthorName" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="art-publisher">Publisher</label>
+                    <input type="text" id="art-publisher" [(ngModel)]="articlePublisherName" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="art-pubdate">Date Published</label>
+                  <input type="date" id="art-pubdate" [(ngModel)]="articleDatePublished" (ngModelChange)="saveStateToHistory()"
+                         class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                </div>
+              </div>
+            }
+
+            @if (activeSchemaType() === 'Product') {
+              <div class="space-y-3">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="prod-name">Product Name</label>
+                  <input type="text" id="prod-name" [(ngModel)]="productName" (ngModelChange)="saveStateToHistory()"
+                         class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="prod-brand">Brand</label>
+                    <input type="text" id="prod-brand" [(ngModel)]="productBrand" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="prod-price">Price ($)</label>
+                    <input type="number" id="prod-price" [(ngModel)]="productPrice" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                  <div class="space-y-1">
+                    <label class="font-semibold" for="prod-sku">SKU Identifer</label>
+                    <input type="text" id="prod-sku" [(ngModel)]="productSku" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="font-semibold" id="prod-avail-label" for="prod-avail-select">Availability</label>
+                    <select id="prod-avail-select" [(ngModel)]="productAvailability" (ngModelChange)="saveStateToHistory()"
+                            class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900">
+                      <option value="InStock">InStock (Ready for orders)</option>
+                      <option value="OutOfStock">OutOfStock (Sold out)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (activeSchemaType() === 'Recipe') {
+              <div class="space-y-3">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="rec-name">Recipe Title</label>
+                  <input type="text" id="rec-name" [(ngModel)]="recipeName" (ngModelChange)="saveStateToHistory()"
+                         class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="rec-prep">Prep Time ISO (e.g. PT15M)</label>
+                    <input type="text" id="rec-prep" [(ngModel)]="recipePrepTime" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="rec-cook">Cook Time ISO</label>
+                    <input type="text" id="rec-cook" [(ngModel)]="recipeCookTime" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="rec-ingred">Ingredients Lines</label>
+                  <textarea id="rec-ingred" [(ngModel)]="recipeIngredients" (ngModelChange)="saveStateToHistory()" rows="3"
+                            class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs"></textarea>
+                </div>
+              </div>
+            }
+
+            @if (activeSchemaType() === 'JobPosting') {
+              <div class="space-y-3">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="job-title-inp">Position Title</label>
+                  <input type="text" id="job-title-inp" [(ngModel)]="jobTitle" (ngModelChange)="saveStateToHistory()"
+                         class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="job-comp">Company</label>
+                    <input type="text" id="job-comp" [(ngModel)]="jobCompany" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-xs font-semibold" for="job-salary">Min Salary Valuation ($)</label>
+                    <input type="number" id="job-salary" [(ngModel)]="jobSalaryMin" (ngModelChange)="saveStateToHistory()"
+                           class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (activeSchemaType() === 'Website') {
+              <div class="space-y-3">
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="web-name-inp">Website Brand Name</label>
+                  <input type="text" id="web-name-inp" [(ngModel)]="websiteName" (ngModelChange)="saveStateToHistory()"
+                         class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                </div>
+                <div class="space-y-1">
+                  <label class="text-xs font-semibold" for="web-query-ptn">Sitelink Search Query Pattern</label>
+                  <input type="text" id="web-query-ptn" [(ngModel)]="websiteSearchPattern" (ngModelChange)="saveStateToHistory()"
+                         class="w-full px-3 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 6: robots.txt Generator & Rules Tester -->
+      @if (activeToolId() === 'robots-txt-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">DEFAULT STANDARD POLICY</span>
+            
+            <div class="grid grid-cols-2 gap-4 text-xs font-sans">
+              <div class="space-y-1.5">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="default-ua-input">Default User Agent</label>
+                <input type="text" id="default-ua-input" [(ngModel)]="robotsDefaultAgent" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-2.5 py-1.5 border rounded-lg bg-white dark:bg-zinc-900" />
+              </div>
+              <div class="space-y-1.5">
+                <span class="font-semibold text-zinc-700 dark:text-zinc-300 block">Standard Access Rule</span>
+                <div class="flex items-center gap-2 h-9">
+                  <input type="checkbox" id="allow-by-default-check" [(ngModel)]="robotsAllowByDefault" (ngModelChange)="saveStateToHistory()"
+                         class="rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500" />
+                  <label for="allow-by-default-check" class="font-medium text-zinc-700 dark:text-zinc-300">Allow scanning by default</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-1.5 text-xs font-sans">
+              <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="rb-sitemap-input">Primary xml Sitemap link reference</label>
+              <input type="text" id="rb-sitemap-input" [(ngModel)]="robotsSitemapUrl" (ngModelChange)="saveStateToHistory()"
+                     class="w-full px-2.5 py-1.5 border rounded-lg bg-white dark:bg-zinc-900" />
+            </div>
+          </div>
+
+          <!-- Add custom robot rule drawer -->
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">CUSTOM SPECIFIC DIRECTORY PATH FLAGS</span>
+            
+            <div class="grid grid-cols-3 gap-2">
+              <input type="text" [(ngModel)]="robotsNewAgent" placeholder="Agent (e.g. GPTBot)"
+                     class="px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs text-zinc-700 dark:text-zinc-200" id="bot-custom-name" />
+              <select [(ngModel)]="robotsNewDirective" class="px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs text-zinc-700" id="directive-state-config">
+                <option value="Disallow">Disallow</option>
+                <option value="Allow">Allow</option>
+              </select>
+              <input type="text" [(ngModel)]="robotsNewPath" placeholder="Path (e.g. /private/)"
+                     class="px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs text-zinc-750" id="disallow-custom-path" />
+            </div>
+            
+            <button (click)="addRobotsRule()"
+                    class="w-full py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg text-xs font-bold font-mono transition cursor-pointer">
+              + ADD EXCLUSION / CRAWL EXCEL RULE
+            </button>
+
+            <!-- Listed Custom rules -->
+            @if (robotsCustomRules().length > 0) {
+              <div class="space-y-1.5 pt-2">
+                @for (rule of robotsCustomRules(); track $index) {
+                  <div class="flex items-center justify-between p-2.5 border border-zinc-150 bg-white dark:bg-zinc-900 rounded-lg text-xs font-mono">
+                    <span class="text-zinc-640">Agent: <strong>{{ rule.userAgent }}</strong> &rarr; {{ rule.directive }}: <code>{{ rule.path }}</code></span>
+                    <button (click)="removeRobotsRule($index)" class="text-rose-400 hover:text-rose-600 font-sans font-bold cursor-pointer">Remove</button>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 7: sitemap.xml Generator -->
+      @if (activeToolId() === 'sitemap-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">SITEMAP FORMAT SPECIFICATIONS</span>
+            
+            <div class="grid grid-cols-3 gap-2 font-mono text-[10px]">
+              <button (click)="sitemapTypeMode.set('urlset')" [class]="sitemapTypeMode() === 'urlset' ? 'p-2 bg-emerald-600 text-white rounded-lg font-bold cursor-pointer' : 'p-2 border border-zinc-200 bg-white dark:bg-zinc-900 rounded-lg cursor-pointer'">Standard Urlset</button>
+              <button (click)="sitemapTypeMode.set('sitemapindex')" [class]="sitemapTypeMode() === 'sitemapindex' ? 'p-2 bg-emerald-600 text-white rounded-lg font-bold cursor-pointer' : 'p-2 border border-zinc-200 bg-white dark:bg-zinc-900 rounded-lg cursor-pointer'">Sitemap Index</button>
+              <button (click)="sitemapTypeMode.set('imageset')" [class]="sitemapTypeMode() === 'imageset' ? 'p-2 bg-emerald-600 text-white rounded-lg font-bold cursor-pointer' : 'p-2 border border-zinc-200 bg-white dark:bg-zinc-900 rounded-lg cursor-pointer'">Image Sitemap</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-xs font-sans">
+              <div class="space-y-1">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="sm-changefreq-select">Change Frequency</label>
+                <select id="sm-changefreq-select" [(ngModel)]="sitemapChangefreq" (ngModelChange)="saveStateToHistory()"
+                        class="w-full px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900">
+                  <option value="always">always</option>
+                  <option value="hourly">hourly</option>
+                  <option value="daily">daily</option>
+                  <option value="weekly">weekly</option>
+                  <option value="monthly">monthly</option>
+                  <option value="yearly">yearly</option>
+                  <option value="never">never</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="sm-prio-select">URL Priority</label>
+                <select id="sm-prio-select" [(ngModel)]="sitemapPriority" (ngModelChange)="saveStateToHistory()"
+                        class="w-full px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900">
+                  <option value="1.0">1.0 (Crucial/Home)</option>
+                  <option value="0.8">0.8 (High/Category)</option>
+                  <option value="0.5">0.5 (Average/General)</option>
+                  <option value="0.3">0.3 (Secondary/Static)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="sm-rawlinks-textarea">List of Target Urls (One URL link per line)</label>
+              <textarea id="sm-rawlinks-textarea" [(ngModel)]="sitemapUrlsRaw" (ngModelChange)="saveStateToHistory()" rows="6"
+                        placeholder="https://example.com/&#10;https://example.com/about"
+                        class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 font-mono text-xs"></textarea>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 8: Canonical URL Builder -->
+      @if (activeToolId() === 'canonical-url-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">CANONICAL ALIAS CONFIGURATION</span>
+            
+            <div class="space-y-1.5">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="can-base-input">Target Raw Input URL</label>
+              <input type="text" id="can-base-input" [(ngModel)]="canonicalBaseUrl" (ngModelChange)="saveStateToHistory()"
+                     class="w-full px-3 py-2 border rounded-xl bg-white dark:bg-zinc-900 border-zinc-200 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500" />
+            </div>
+
+            <div class="space-y-2 text-xs font-sans text-zinc-700 dark:text-zinc-350">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="can-trailing-check" [(ngModel)]="canonicalTrailingSlash" (ngModelChange)="saveStateToHistory()" />
+                <label for="can-trailing-check">Force Trailing Slash at parameters limits (e.g. /tools/)</label>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="can-forcedwww-check" [(ngModel)]="canonicalForcedWww" (ngModelChange)="saveStateToHistory()" />
+                <label for="can-forcedwww-check">Enforce www subdomain routing mapping</label>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="can-striputm-check" [(ngModel)]="canonicalStripUtm" (ngModelChange)="saveStateToHistory()" />
+                <label for="can-striputm-check">Strip analytics queries (utm_source, gclid, fbclid)</label>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="can-stripall-check" [(ngModel)]="canonicalStripQueryParams" (ngModelChange)="saveStateToHistory()" />
+                <label for="can-stripall-check">Strip absolutely all dynamic Query Parameters</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 9: hreflang Generator -->
+      @if (activeToolId() === 'hreflang-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-2">
+              <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">LOCALIZED PAGE BRANCHES</span>
+              <button (click)="addHreflang()"
+                      class="px-3 py-1 bg-zinc-800 hover:bg-zinc-900 text-white rounded-lg text-[11px] font-mono font-bold transition cursor-pointer">
+                + ADD LOCALE ALTERNATE
+              </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 font-mono text-[10.5px]">
+              <input type="text" [(ngModel)]="hreflangNewLang" placeholder="Lang code (e.g. es)" class="px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900" id="lang-code-rule" />
+              <input type="text" [(ngModel)]="hreflangNewCountry" placeholder="Country code (e.g. es)" class="px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900" id="country-code-rule" />
+              <input type="text" [(ngModel)]="hreflangNewUrl" placeholder="Target URL language page" class="px-2 py-1.5 border rounded-lg bg-white dark:bg-zinc-900" id="url-alternate-target" />
+            </div>
+
+            <div class="space-y-2">
+              @for (lang of hreflangAlternateList(); track $index) {
+                <div class="flex items-center justify-between p-2 border border-zinc-150 bg-white dark:bg-zinc-900 rounded-lg text-xs font-mono">
+                  <span>Language <strong>{{ lang.langCode }}-{{ lang.countryCode }}</strong> &rarr; <code class="text-[10px]">{{ lang.url }}</code></span>
+                  <button (click)="removeHreflang($index)" class="text-rose-400 hover:text-rose-600 font-sans font-bold cursor-pointer">Delete</button>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">GLOBAL FALLBACK DEFAULT</span>
+            
+            <div class="flex items-center gap-2 mb-2 font-sans text-xs">
+              <input type="checkbox" id="hreflang-default-check" [(ngModel)]="hreflangIncludeXDefault" (ngModelChange)="saveStateToHistory()" />
+              <label for="hreflang-default-check">Enable rel="alternate" hreflang="x-default" global fallback</label>
+            </div>
+
+            <div class="space-y-1 text-xs font-sans">
+              <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="href-fallback-input">x-default target landing URL</label>
+              <input type="text" id="href-fallback-input" [(ngModel)]="hreflangXDefaultUrl" (ngModelChange)="saveStateToHistory()"
+                     _disabled="!hreflangIncludeXDefault()"
+                     class="w-full px-2 px-1.5 border rounded-lg bg-white dark:bg-zinc-900 border-zinc-200" />
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 10: manifest.webmanifest Generator -->
+      @if (activeToolId() === 'manifest-generator') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">PWA APP MANIFEST STATE</span>
+            
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="pwa-name-input">Application Full Name</label>
+              <input type="text" id="pwa-name-input" [(ngModel)]="pwaName" (ngModelChange)="saveStateToHistory()"
+                     class="w-full px-3 py-1.5 border rounded-xl bg-white dark:bg-zinc-900 text-xs" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="pwa-short-input">Short Name (Icons title)</label>
+                <input type="text" id="pwa-short-input" [(ngModel)]="pwaShortName" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-3 py-1.5 border rounded-xl bg-white dark:bg-zinc-900 text-xs" />
+              </div>
+              <div class="space-y-1">
+                <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="pwa-start-input">Start URL path</label>
+                <input type="text" id="pwa-start-input" [(ngModel)]="pwaStartUrl" (ngModelChange)="saveStateToHistory()"
+                       class="w-full px-3 py-1.5 border rounded-xl bg-white dark:bg-zinc-900 text-xs" />
+              </div>
+            </div>
+
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 font-sans" for="pwa-desc">Description</label>
+              <textarea id="pwa-desc" [(ngModel)]="pwaDescription" (ngModelChange)="saveStateToHistory()" rows="2"
+                        class="w-full px-3 py-1.5 border rounded-xl bg-white dark:bg-zinc-900 text-xs"></textarea>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-[11px] font-sans">
+              <div class="space-y-1">
+                <label class="font-semibold" for="pwa-display-select">Display Variant</label>
+                <select id="pwa-display-select" [(ngModel)]="pwaDisplay" (ngModelChange)="saveStateToHistory()"
+                        class="w-full p-1.5 border rounded-lg bg-white dark:bg-zinc-900">
+                  <option value="standalone">standalone</option>
+                  <option value="fullscreen">fullscreen</option>
+                  <option value="minimal-ui">minimal-ui</option>
+                  <option value="browser">browser</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="font-semibold" for="pwa-bg-input">Background</label>
+                <input type="text" id="pwa-bg-input" [(ngModel)]="pwaBgColor" (ngModelChange)="saveStateToHistory()"
+                       class="w-full p-1.5 border rounded-lg bg-white dark:bg-zinc-900" />
+              </div>
+              <div class="space-y-1">
+                <label class="font-semibold" for="pwa-theme-input">Theme Color</label>
+                <input type="text" id="pwa-theme-input" [(ngModel)]="pwaThemeColor" (ngModelChange)="saveStateToHistory()"
+                       class="w-full p-1.5 border rounded-lg bg-white dark:bg-zinc-900" />
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- MODULE 11: Angular SEO Utilities -->
+      @if (activeToolId() === 'angular-seo-tools') {
+        <div class="space-y-4">
+          <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">ANGULAR BOILERPLATE OPTIONS</span>
+            
+            <div class="space-y-1.5 text-xs font-sans">
+              <label class="font-semibold text-zinc-700 dark:text-zinc-300" for="ang-pattern-input">Document Title formatting pattern</label>
+              <input type="text" id="ang-pattern-input" [(ngModel)]="angularTitlePattern" (ngModelChange)="saveStateToHistory()"
+                     class="w-full px-2.5 py-1.5 border rounded-lg bg-white dark:bg-zinc-900 text-xs" />
+              <p class="text-[10px] text-zinc-500 font-mono">Use <code>{{ '{{' }}pageTitle{{ '}}' }}</code> parsed parameter variables placeholder.</p>
+            </div>
+
+            <div class="space-y-2 text-xs font-sans text-zinc-700 dark:text-zinc-350">
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="ang-inject-canon" [(ngModel)]="angularInjectCanonical" (ngModelChange)="saveStateToHistory()" />
+                <label for="ang-inject-canon">Auto-inject link[rel="canonical"] element in header DOM</label>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <input type="checkbox" id="ang-inject-faq" [(ngModel)]="angularInjectFaqJsonld" (ngModelChange)="saveStateToHistory()" />
+                <label for="ang-inject-faq">Support FAQPage JSON-LD structural dynamic compilation</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- General Diagnostic Tool: Content SEO Keyword Statistics (Extremely rich utility!) -->
+      <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-white dark:bg-zinc-900/40 rounded-xl space-y-4 shadow-sm">
+        <div class="flex items-center justify-between border-b pb-2">
+          <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block flex items-center gap-1">
+            <mat-icon class="text-emerald-500 text-xs">spellcheck</mat-icon>
+            <span>CONTENT COPIES KEYWORDS DIAGNOSTIC</span>
+          </span>
+          <span class="text-[10px] font-mono bg-zinc-100 dark:bg-zinc-950 px-2 py-0.5 rounded text-zinc-500">Real-time local analyzer</span>
+        </div>
+
+        <div class="space-y-1.5">
+          <textarea [(ngModel)]="contentSeoInput" rows="2" 
+                    placeholder="Enter copy content blocks to analyze word frequencies density in real-time..."
+                    class="w-full px-3 py-1.5 border rounded-lg bg-zinc-50 dark:bg-zinc-950 border-zinc-200 text-xs font-sans focus:outline-none focus:ring-1 focus:ring-emerald-500"></textarea>
+        </div>
+
+        <!-- Density values layout table -->
+        @if (keywordDensityStats().length > 0) {
+          <div class="grid grid-cols-5 gap-2 font-mono text-[9px] text-zinc-500">
+            @for (word of keywordDensityStats(); track word.word) {
+              <div class="p-1 px-1.5 border border-zinc-150 bg-zinc-50/50 dark:bg-zinc-950/20 rounded flex flex-col justify-between items-center text-center">
+                <span class="font-bold text-zinc-700 dark:text-zinc-200 truncate max-w-full block">{{ word.word }}</span>
+                <span class="text-emerald-500 mt-0.5">{{ word.density }}%</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="text-[10px] text-zinc-400 font-mono">Statistical map will render here upon typing contents.</p>
+        }
+      </div>
+    </div>
+
+
+    <!-- RIGHT PANEL: HIGH-FIDELITY LIVE PREVIEWS & EXPORT CODES -->
+    <div class="space-y-6">
+
+      <!-- LIVE PREVIEW ACCORDION PORTAL -->
+      <div class="p-5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl space-y-4 shadow-sm">
+        <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block flex items-center gap-1">
+          <mat-icon class="text-indigo-500 text-sm">visibility</mat-icon>
+          <span>INTERACTIVE SEARCH ENGINE & SOCIAL LIVE PREVIEW</span>
+        </span>
+
+        <!-- Preview rendering frame depending on the selected activeToolId() -->
+        
+        <!-- Live Preview: Meta Tag Generator OR SERP Preview Tool -->
+        @if (activeToolId() === 'meta-tag-generator' || activeToolId() === 'serp-preview-tool') {
+          <div class="space-y-3 font-sans select-none">
+            <span class="text-[9px] uppercase font-mono font-semibold tracking-wider text-zinc-400 dark:text-zinc-500 block">GOOGLE ORGANIC SEARCH RENDER</span>
+            
+            <div [class]="(serpDeviceMode() === 'mobile' && activeToolId() === 'serp-preview-tool') ? 'p-4 border border-zinc-200 bg-white shadow-md rounded-2xl max-w-[340px] mx-auto text-left space-y-1 transition-all duration-300' : 'p-4 border border-zinc-200 bg-white shadow-md rounded-2xl text-left space-y-1 transition-all duration-300'">
+              <!-- Domain Header -->
+              <div class="flex items-center gap-1.5 text-xs text-zinc-650 font-sans truncate">
+                <div class="w-4 h-4 bg-zinc-100 rounded-full flex items-center justify-center text-[8px] font-bold text-zinc-500 border border-zinc-200">G</div>
+                <span class="text-zinc-800 text-[11px] font-mono leading-none truncate">
+                  {{ activeToolId() === 'meta-tag-generator' ? 'https://devsight.dev/' : serpUrl() }}
+                </span>
+                <span class="text-zinc-400 font-bold">&bull;</span>
+                <span class="text-[10px]">Snippet</span>
+              </div>
+
+              <!-- Blue clickable Title link -->
+              <h4 class="text-[15px] font-medium text-blue-800 dark:text-blue-800 hover:underline leading-tight truncate">
+                {{ activeToolId() === 'meta-tag-generator' ? metaTitle() : serpTitle() }}
+              </h4>
+
+              <!-- Rich results Stars rating indices -->
+              @if (activeToolId() === 'serp-preview-tool' && serpRatingValue() > 0) {
+                <div class="flex items-center gap-1 font-mono text-[10.5px] text-[#e28743] py-0.5">
+                  <div class="flex items-center gap-0.5">
+                    @for (s of [1,2,3,4,5]; track s) {
+                      <span class="text-[11px]">★</span>
+                    }
+                  </div>
+                  <span class="font-bold text-zinc-600">Rating: {{ serpRatingValue() }}</span>
+                  <span class="text-zinc-300">|</span>
+                  <span class="text-zinc-500">Votes: {{ serpRatingCount() }}</span>
+                </div>
+              }
+
+              <!-- Publication snippet dates -->
+              <p class="text-xs text-zinc-600 dark:text-zinc-600 leading-relaxed break-words font-sans">
+                @if (activeToolId() === 'serp-preview-tool' && serpPubDate()) {
+                  <span class="text-zinc-400 font-medium font-mono mr-1">{{ serpPubDate() }} &mdash;</span>
+                }
+                {{ activeToolId() === 'meta-tag-generator' ? metaDescription() : serpDescription() }}
+              </p>
+            </div>
+            <p class="text-[9.5px] text-zinc-400 font-mono leading-tight text-center">&bull; Previews provide mobile clipping alerts accurately mimicking real client layouts.</p>
+          </div>
+        }
+
+        <!-- Live Preview: Open Graph and Twitter Card Simulator -->
+        @if (activeToolId() === 'open-graph-generator') {
+          <div class="space-y-4 font-sans select-none">
+            
+            <!-- Facebook Card Mockup -->
+            <div class="space-y-1.5">
+              <span class="text-[9px] uppercase font-mono text-zinc-400 block">FACEBOOK SHARING CARD</span>
+              <div class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 rounded-xl overflow-hidden shadow-xs">
+                @if (ogImage()) {
+                  <img [src]="ogImage()" alt="OG capture image" class="w-full h-32 object-cover" />
+                }
+                <div class="p-3 text-left space-y-1 bg-zinc-50 dark:bg-zinc-900/50">
+                  <span class="text-[10px] text-zinc-400 uppercase font-mono tracking-wider block">{{ ogSiteName() || 'DOMAIN.COM' }}</span>
+                  <h4 class="text-xs font-bold text-zinc-800 dark:text-zinc-100 truncate leading-snug">{{ ogTitle() }}</h4>
+                  <p class="text-[11px] text-zinc-500 border-l border-zinc-200 pl-2 line-clamp-2 leading-relaxed">{{ ogDescription() }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Discord Embed Simulator (extremely charming for builders!) -->
+            <div class="p-3 border-l-4 border-emerald-500 bg-zinc-50 dark:bg-zinc-950 rounded-r-xl text-left space-y-1.5 shadow-sm">
+              <span class="text-[10px] font-mono tracking-widest text-zinc-400 font-bold block flex items-center gap-1">
+                <mat-icon class="text-xs">chat_bubble</mat-icon>
+                <span>DISCORD APP EMBED</span>
+              </span>
+              <span class="text-[11px] text-indigo-500 font-bold mt-1 block">{{ ogSiteName() }}</span>
+              <h4 class="text-xs font-semibold text-sky-400 hover:underline leading-snug">{{ ogTitle() }}</h4>
+              <p class="text-[11px] text-zinc-650 leading-relaxed text-zinc-500">{{ ogDescription() }}</p>
+              @if (ogImage()) {
+                <img [src]="ogImage()" alt="Discord attach visual" class="max-h-24 rounded-lg object-cover mt-1" />
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Live Preview: FAQ Accordion Simulator -->
+        @if (activeToolId() === 'faq-schema-generator') {
+          <div class="space-y-3 font-sans">
+            <span class="text-[9px] uppercase font-mono text-zinc-400 block">INTERACTIVE ACCORDION MANUAL TEST(Client execution block)</span>
+            
+            <div class="space-y-2">
+              @for (faq of faqPairs(); track $index) {
+                <details class="p-3 border border-zinc-200 dark:border-zinc-850 bg-white dark:bg-zinc-950/20 rounded-xl group transition">
+                  <summary class="text-xs font-bold font-sans text-zinc-800 dark:text-zinc-200 cursor-pointer flex justify-between items-center select-none">
+                    <span>Q: {{ faq.question }}</span>
+                    <span class="text-zinc-400 group-open:rotate-180 transition-transform duration-200">&darr;</span>
+                  </summary>
+                  <p class="text-[11.5px] text-zinc-500 leading-relaxed mt-2 pl-3 border-l-2 border-emerald-500/50">
+                    {{ faq.answer }}
+                  </p>
+                </details>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Live Preview: robots.txt rules Sandbox (extremely useful feature) -->
+        @if (activeToolId() === 'robots-txt-generator') {
+          <div class="space-y-4 font-mono text-xs">
+            <div class="p-4 border border-zinc-200 bg-white rounded-xl space-y-3 shadow-xs">
+              <span class="text-[9px] uppercase font-mono text-zinc-400 block font-bold">ROBOTS RULE CRAWL COMPLIANCE TESTER</span>
+              
+              <!-- Check input path -->
+              <div class="space-y-1">
+                <label class="text-[10px] text-zinc-400 font-sans" for="check-path-input">Test Path Directory Relative URL</label>
+                <input type="text" id="check-path-input" [(ngModel)]="robotsTestPath"
+                       class="w-full px-2.5 py-1 bg-zinc-50 border border-zinc-250 text-xs rounded-md text-zinc-800 focus:outline-none" />
+              </div>
+
+              <!-- Computed state verdict -->
+              <div class="p-3 rounded-lg flex items-center justify-between text-[11px]"
+                   [class]="robotsCrawlTestResult().allowed ? 'bg-emerald-50/50 border border-emerald-200 text-emerald-800' : 'bg-rose-50/50 border border-rose-200 text-rose-800'">
+                <div>
+                  <p class="font-bold">VERDICT: {{ robotsCrawlTestResult().allowed ? 'CRAWLING ALLOWED ✅' : 'CRAWLING BLOCKED ❌' }}</p>
+                  <p class="text-[9px] text-zinc-500 mt-0.5">Matching: {{ robotsCrawlTestResult().matchingRule }}</p>
+                </div>
+                <mat-icon [class]="robotsCrawlTestResult().allowed ? 'text-emerald-500' : 'text-rose-500'">
+                  {{ robotsCrawlTestResult().allowed ? 'verified_user' : 'gpp_maybe' }}
+                </mat-icon>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Live Preview: Sitemap XML Visualizer Map (fabulous feature) -->
+        @if (activeToolId() === 'sitemap-generator') {
+          <div class="space-y-3 font-sans">
+            <span class="text-[9px] uppercase font-mono text-zinc-400 block">SITEMAP STRUCTURE MAP</span>
+            
+            @if (parsedXmlSitemapUrls().length > 0) {
+              <div class="p-3 border border-zinc-250 bg-white rounded-xl space-y-2 max-h-[180px] overflow-y-auto shadow-xs">
+                @for (url of parsedXmlSitemapUrls(); track $index) {
+                  <div class="p-2 border border-zinc-150 rounded bg-zinc-50/50 flex justify-between items-center text-[10.5px] font-mono shadow-xxs">
+                    <span class="text-zinc-650 truncate max-w-[70%]" title="{{ url }}">{{ url }}</span>
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-1.5 bg-emerald-50 text-emerald-700 font-bold border rounded text-[9px]">{{ sitemapChangefreq() }}</span>
+                      <span class="px-1.5 bg-zinc-100 text-zinc-600 font-bold border rounded text-[9px]">Prio: {{ sitemapPriority() }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="text-xs text-zinc-400 font-mono text-center py-4">Structure graph is unpopulated. Add URL lines in parameters pane.</p>
+            }
+          </div>
+        }
+
+        <!-- Fallback message for tools with purely text-based structures -->
+        @if (['schema-generator', 'canonical-url-generator', 'hreflang-generator', 'manifest-generator', 'angular-seo-tools'].includes(activeToolId())) {
+          <div class="p-4 rounded-xl border border-dashed border-zinc-200/80 bg-white/50 text-center font-mono text-[10.5px] text-zinc-500">
+            <mat-icon class="text-zinc-350 text-xl leading-none">code_off</mat-icon>
+            <p class="mt-1 font-sans">This module relies purely on copy-ready JSON-LD/structured codes output.</p>
+            <p class="text-[9px] text-zinc-400 mt-0.5">Please review compiled outputs in the code drawer below.</p>
+          </div>
+        }
+      </div>
+
+      <!-- HIGH-FIDELITY DARK-THEME CODE RENDERER (Terminal style) -->
+      <div class="p-5 border border-zinc-850 bg-zinc-950 rounded-2xl space-y-3 relative shadow-md select-text">
+        <div class="flex items-center justify-between border-b border-zinc-850 pb-2">
+          <span class="text-[9.5px] uppercase font-mono font-bold tracking-widest text-zinc-400 block flex items-center gap-1.5">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>COMPILED EXPORT WORKSPACE</span>
+          </span>
+          <span class="text-[9px] font-mono text-zinc-500">100% Client-Side Compiler</span>
+        </div>
+
+        <!-- Scrollable code compiler layout -->
+        <pre class="w-full max-h-[300px] overflow-auto text-zinc-300 font-mono text-[11px] leading-relaxed text-left whitespace-pre select-all bg-zinc-950 p-2 rounded-xl border border-zinc-900 scrollbar-thin"><code class="language-html">{{ currentOutputCode() }}</code></pre>
+
+        <!-- Informative Tag Helper -->
+        <div class="pt-2 border-t border-zinc-900 flex items-center justify-between font-mono text-[9.5px] text-zinc-500">
+          <span>&bull; Validated W3C & Schema.org Compliant</span>
+          <span>Buffer limits: Safe</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

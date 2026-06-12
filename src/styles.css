@@ -1,0 +1,166 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import "tailwindcss";
+
+@variant dark (.dark &);
+
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark body {
+  background-color: #09090b; /* zinc-950 */
+  color: #f4f4f5; /* zinc-100 */
+}
+
+html.light body {
+  background-color: #fafafa; /* zinc-50 */
+  color: #18181b; /* zinc-900 */
+}
+
+/* Custom scrollbars for dark look */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.mono-all * {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==========================================
+   Dynamic Light Theme Native Override Injectors
+   ========================================== */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #fafafa !important;
+  color: #18181b !important;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+html.light .bg-zinc-900,
+html.light .bg-zinc-950,
+html.light .bg-zinc-900\/35,
+html.light .bg-zinc-900\/50,
+html.light .bg-zinc-900\/60,
+html.light .bg-zinc-900\/40,
+html.light .bg-zinc-950\/40,
+html.light .bg-zinc-950\/80,
+html.light .bg-zinc-950\/70,
+html.light .bg-zinc-950\/95,
+html.light .bg-zinc-900\/85 {
+  background-color: #ffffff !important;
+}
+
+html.light .bg-zinc-50,
+html.light .bg-zinc-100 {
+  background-color: #f4f4f5 !important;
+}
+
+html.light .border-zinc-800,
+html.light .border-zinc-850,
+html.light .border-zinc-850\/80,
+html.light .border-zinc-850\/85,
+html.light .border-zinc-750 {
+  border-color: #e4e4e7 !important;
+}
+
+html.light .text-white,
+html.light .text-zinc-100,
+html.light .text-zinc-200 {
+  color: #09090b !important;
+}
+
+html.light .text-zinc-300,
+html.light .text-zinc-400,
+html.light .text-zinc-350 {
+  color: #3f3f46 !important;
+}
+
+html.light .text-zinc-500,
+html.light .text-zinc-600 {
+  color: #71717a !important;
+}
+
+/* Legible theme accents */
+html.light .text-emerald-400 {
+  color: #059669 !important;
+}
+html.light .text-amber-400,
+html.light .text-amber-100 {
+  color: #d97706 !important;
+}
+html.light .text-blue-400,
+html.light .text-blue-100 {
+  color: #2563eb !important;
+}
+html.light .text-rose-400 {
+  color: #dc2626 !important;
+}
+html.light .text-indigo-300 {
+  color: #4f46e5 !important;
+}
+
+/* Hover interactive properties */
+html.light .hover\:bg-zinc-800:hover,
+html.light .hover\:bg-zinc-850:hover,
+html.light .hover\:bg-zinc-900:hover,
+html.light .hover\:bg-zinc-900\/85:hover {
+  background-color: #f4f4f5 !important;
+  color: #09090b !important;
+}
+
+html.light .hover\:text-white:hover {
+  color: #09090b !important;
+}
+
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #ffffff !important;
+  color: #09090b !important;
+  border-color: #e4e4e7 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #a1a1aa !important;
+}
+
+html.light code,
+html.light pre {
+  background-color: #f4f4f5 !important;
+  color: #09090b !important;
+  border-color: #e4e4e7 !important;
+}
+

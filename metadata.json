@@ -1,0 +1,6 @@
+{
+  "name": "DevSight - Developer Toolbox",
+  "description": "An offline-first, high-performance suite of developer utility tools including JSON Editor, Formatter, Regex Studio, JWT Decoder, RxJS Visualizer, and more.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
