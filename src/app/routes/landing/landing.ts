@@ -255,7 +255,7 @@ export class LandingPageComponent implements OnInit {
 
   // Slices specific high profile matching items
   public popularTools = TOOLS.filter(t => 
-    t.id === 'json-formatter' || t.id === 'jwt-decoder' || t.id === 'password-generator'
+    t.id === 'json-editor' || t.id === 'jwt-decoder' || t.id === 'password-generator'
   );
 
   ngOnInit(): void {

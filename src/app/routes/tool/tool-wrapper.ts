@@ -11,7 +11,6 @@ import { SeoService } from '../../core/services/seo';
 
 // Import Specific Tool Components
 import { JsonEditorComponent } from '../../tools/json-editor/json-editor';
-import { JsonFormatterComponent } from '../../tools/json-formatter/json-formatter';
 import { PasswordGeneratorComponent } from '../../tools/password-generator/password-generator';
 import { UuidGeneratorComponent } from '../../tools/uuid-generator/uuid-generator';
 import { JwtDecoderComponent } from '../../tools/jwt-decoder/jwt-decoder';
@@ -56,7 +55,6 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
     RouterModule,
     MatIconModule,
     JsonEditorComponent,
-    JsonFormatterComponent,
     PasswordGeneratorComponent,
     UuidGeneratorComponent,
     JwtDecoderComponent,
@@ -210,10 +208,8 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
             <section class="min-h-[200px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/35 rounded-2xl p-4 relative shadow-sm">
               @if (currentTool()?.id === 'json-editor') {
                 <app-json-editor />
-              } @else if (currentTool()?.id === 'json-compare' || currentTool()?.id === 'json-diff') {
+              } @else if (currentTool()?.id === 'json-compare') {
                 <app-json-compare />
-              } @else if (currentTool()?.id === 'json-formatter') {
-                <app-json-formatter />
               } @else if (currentTool()?.id === 'password-generator' || currentTool()?.id === 'passphrase-generator' || currentTool()?.id === 'password-strength-checker') {
                 <app-password-generator [mode]="currentTool()?.id || 'password-generator'" />
               } @else if (currentTool()?.id === 'uuid-generator') {

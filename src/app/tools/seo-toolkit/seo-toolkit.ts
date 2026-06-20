@@ -88,7 +88,7 @@ export class SeoToolkitComponent {
   // ----------------------------------------------------
   public ogTitle = signal<string>('devsight - Premium Offline Developer Sandbox');
   public ogDescription = signal<string>('Tired of leaking sensitive data? Run calculations, format JSON and convert timestamps 100% locally in your browser.');
-  public ogUrl = signal<string>('https://devsight.dev/tools/json-formatter');
+  public ogUrl = signal<string>('https://devsight.dev/tools/json-editor');
   public ogImage = signal<string>('https://images.unsplash.com/photo-1618401471353-b98aedd07871?auto=format&fit=crop&w=1200&h=630&q=80');
   public ogSiteName = signal<string>('devsight');
   public ogType = signal<string>('website');
@@ -166,7 +166,7 @@ export class SeoToolkitComponent {
   // ----------------------------------------------------
   // Form State Signals : SITEMAP GENERATOR & VALIDATOR
   // ----------------------------------------------------
-  public sitemapUrlsRaw = signal<string>('https://devsight.dev/\nhttps://devsight.dev/about\nhttps://devsight.dev/contact\nhttps://devsight.dev/tools/json-formatter');
+  public sitemapUrlsRaw = signal<string>('https://devsight.dev/\nhttps://devsight.dev/about\nhttps://devsight.dev/contact\nhttps://devsight.dev/tools/json-editor');
   public sitemapChangefreq = signal<string>('weekly');
   public sitemapPriority = signal<string>('0.8');
   public sitemapTypeMode = signal<'urlset' | 'sitemapindex' | 'imageset'>('urlset');
@@ -174,7 +174,7 @@ export class SeoToolkitComponent {
   // ----------------------------------------------------
   // Form State Signals : CANONICAL BUILDER & SERVERS
   // ----------------------------------------------------
-  public canonicalBaseUrl = signal<string>('https://devsight.dev/tools/json-formatter');
+  public canonicalBaseUrl = signal<string>('https://devsight.dev/tools/json-editor');
   public canonicalTrailingSlash = signal<boolean>(true);
   public canonicalForcedWww = signal<boolean>(false);
   public canonicalStripUtm = signal<boolean>(true);
@@ -184,15 +184,15 @@ export class SeoToolkitComponent {
   // Form State Signals : HREFLANG ALTERNATES
   // ----------------------------------------------------
   public hreflangAlternateList = signal<HreflangInput[]>([
-    { langCode: 'en', countryCode: 'us', url: 'https://devsight.dev/tools/json-formatter' },
-    { langCode: 'es', countryCode: 'es', url: 'https://devsight.dev/es/tools/json-formatter' },
-    { langCode: 'fr', countryCode: 'fr', url: 'https://devsight.dev/fr/tools/json-formatter' }
+    { langCode: 'en', countryCode: 'us', url: 'https://devsight.dev/tools/json-editor' },
+    { langCode: 'es', countryCode: 'es', url: 'https://devsight.dev/es/tools/json-editor' },
+    { langCode: 'fr', countryCode: 'fr', url: 'https://devsight.dev/fr/tools/json-editor' }
   ]);
   public hreflangNewLang = signal<string>('de');
   public hreflangNewCountry = signal<string>('de');
-  public hreflangNewUrl = signal<string>('https://devsight.dev/de/tools/json-formatter');
+  public hreflangNewUrl = signal<string>('https://devsight.dev/de/tools/json-editor');
   public hreflangIncludeXDefault = signal<boolean>(true);
-  public hreflangXDefaultUrl = signal<string>('https://devsight.dev/tools/json-formatter');
+  public hreflangXDefaultUrl = signal<string>('https://devsight.dev/tools/json-editor');
 
   // ----------------------------------------------------
   // Form State Signals : PWA MANIFEST BUILDER

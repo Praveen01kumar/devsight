@@ -161,7 +161,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'json-tools',
     icon: 'edit_note',
     tags: ['json', 'editor', 'tree-view', 'validator', 'schema', 'diff-viewer', 'table-view'],
-    relatedTools: ['json-formatter', 'jwt-decoder', 'typescript-workspace'],
+    relatedTools: ['jwt-decoder', 'typescript-workspace'],
     faqs: [
       {
         question: 'How do I edit my JSON structure using the Tree View?',
@@ -190,44 +190,6 @@ export const TOOLS: ToolMetadata[] = [
     `
   },
   {
-    id: 'json-formatter',
-    slug: 'json-formatter',
-    name: 'JSON Formatter, Validator & Minifier',
-    shortDescription: 'Validate JSON syntax, format with custom indentation, minify file sizes, explore tree views, and convert to YAML/CSV.',
-    metaTitle: 'JSON Formatter and Validator - Free Online XML, CSV, & YAML Tools - devsight',
-    metaDescription: 'An offline-first JSON Formatter, Minifier, and Validator. Check syntax errors in real-time, view collapsible tree structures, copy cleaned outputs.',
-    categoryId: 'json-tools',
-    icon: 'settings_ethernet',
-    tags: ['json', 'formatter', 'beautifier', 'validator', 'minify', 'parser'],
-    relatedTools: ['jwt-decoder', 'base64-encoder', 'angular-component-generator'],
-    faqs: [
-      {
-        question: 'Is my JSON data secure on devsight?',
-        answer: 'Absolutely. All processing is executed 100% locally in your web browser. No data is ever transmitted to external servers, making it 100% secure for sensitive development variables and config files.'
-      },
-      {
-        question: 'How does the tree view explorer work?',
-        answer: 'Our parser transforms valid JSON strings into a dynamic, collapsible hierarchical object model. Click node toggles to inspect keys, data types, and values clearly.'
-      },
-      {
-        question: 'Does this utility validate JSON errors?',
-        answer: 'Yes, it parses standard RFC 8259 compliance in real-time. If incorrect characters, missing trailing commas, or unquoted keys block parsing, our system flags the exact line and position of the error.'
-      }
-    ],
-    detailedGuide: `
-      <h2>How to Format, Beautify, and Validate JSON Data</h2>
-      <p>Developers frequently deal with minified JSON payloads returned from backend APIs or logs. devsight provides an all-in-one dynamic workbench to restore nested structures and check compliance.</p>
-      <h3>Step-by-Step Instructions</h3>
-      <ol>
-        <li>Paste your JSON raw content into the primary code panel.</li>
-        <li>Review syntax checks: devsight detects syntax irregularities instantly and guides you to the exact row.</li>
-        <li>Choose your formatting style (2 spaces, 4 spaces, or tab indentation).</li>
-        <li>Click <strong>Format</strong> to beautify, <strong>Minify</strong> to collapse into a single line, or <strong>TreeView</strong> to examine nested attributes visually.</li>
-        <li>Use one-tap shortcuts to copy or download.</li>
-      </ol>
-    `
-  },
-  {
     id: 'json-compare',
     slug: 'json-compare',
     name: 'JSON Compare & Semantic Merge System',
@@ -237,7 +199,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'json-tools',
     icon: 'compare',
     tags: ['json', 'compare', 'diff', 'validator', 'schema', 'patch', 'merging'],
-    relatedTools: ['json-editor', 'json-formatter', 'typescript-workspace'],
+    relatedTools: ['json-editor', 'typescript-workspace'],
     faqs: [
       {
         question: 'How does Semantic JSON Compare differ from standard text diff engines?',
@@ -263,38 +225,6 @@ export const TOOLS: ToolMetadata[] = [
         <li><strong>Choose Compare Layouts:</strong> Toggle between Split Column View, Unified diff lines, Interactive Tree Graph containing conflict switches, or text code highlighting blocks.</li>
         <li><strong>Build Merged Files:</strong> Navigate differences with previous/next change markers, toggle USE A/B switches on modified tree branches, and use the merge console to compile and export the final merged file.</li>
       </ol>
-    `
-  },
-  {
-    id: 'json-diff',
-    slug: 'json-diff',
-    name: 'Interactive JSON Diff & Schema Alignment',
-    shortDescription: 'Align nested JSON schemas and track changes line-by-line. Supports side-by-side split view, synchronized chronological lists, unified Git-like diff reports, and file imports.',
-    metaTitle: 'Interactive JSON Diff - Real-time Side-by-side Comparison - devsight',
-    metaDescription: 'Free side-by-side structural JSON difference analyzer. Inspect added, updated, and deleted nodes in color-coded lists with unified line-by-line Git formats.',
-    categoryId: 'json-tools',
-    icon: 'difference',
-    tags: ['json', 'diff', 'schema', 'compare', 'patch'],
-    relatedTools: ['json-editor', 'json-formatter', 'jwt-decoder'],
-    faqs: [
-      {
-        question: 'What is the difference between JSON Compare and JSON Diff?',
-        answer: 'JSON Compare focuses on semantic tree-matching, patch building, and cell merges. JSON Diff is highly tailored for visual string differences, Git-style line alignments, and reviewing colorized text revisions side-by-side.'
-      },
-      {
-        question: 'Does this utility work offline?',
-        answer: 'Yes, like all devsight tools, the entire comparison, diff engine, and alignment process run entirely offline inside your browser sandbox. Your payload data never leaves your computer.'
-      }
-    ],
-    detailedGuide: `
-      <h2>How to run Side-by-Side JSON Diff and Schema Alignments</h2>
-      <p>Aligning structural schemas (such as package.json or Kubernetes configs) requires color-coded line matching. This utility aligns lines side-by-side with automatic spacer padding.</p>
-      <h3>Interactive Viewports</h3>
-      <ul>
-        <li><strong>Split View:</strong> Standard column-stacked code editor showing Left lines compared to Right lines side-by-side with red/green highlights.</li>
-        <li><strong>Unified View:</strong> Sequences modifications chronologically in a single unified box.</li>
-        <li><strong>Raw Text:</strong> Highly legible Git format layout optimized for copy-pasting.</li>
-      </ul>
     `
   },
   {
@@ -431,7 +361,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'security-tools',
     icon: 'gavel',
     tags: ['jwt', 'jsonwebtoken', 'oauth', 'decode', 'payload', 'claims'],
-    relatedTools: ['password-generator', 'base64-encoder', 'json-formatter'],
+    relatedTools: ['password-generator', 'base64-encoder'],
     faqs: [
       {
         question: 'Does devsight store token keys?',
@@ -641,7 +571,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'angular-tools',
     icon: 'layers',
     tags: ['angular', 'component', 'service', 'directive', 'boilerplate', 'standalone'],
-    relatedTools: ['json-formatter', 'jwt-decoder'],
+    relatedTools: ['jwt-decoder'],
     faqs: [
       {
         question: 'Does this template render the newer Angular styles?',
@@ -891,7 +821,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'css-ui-tools',
     icon: 'crop_free',
     tags: ['flexbox', 'css-layout', 'tailwind', 'flex-item', 'visualizer', 'design-tool'],
-    relatedTools: ['angular-component-generator', 'json-formatter'],
+    relatedTools: ['angular-component-generator'],
     faqs: [
       {
         question: 'Can I copy both Tailwind classes and standard CSS?',
@@ -913,7 +843,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'typescript-tools',
     icon: 'psychology',
     tags: ['typescript', 'interface', 'zod', 'generator', 'converter', 'type-safety', 'utilities'],
-    relatedTools: ['json-formatter', 'angular-component-generator'],
+    relatedTools: ['angular-component-generator'],
     faqs: [
       {
         question: 'Does the JSON to TypeScript Interface converter support nested parameters?',
@@ -965,7 +895,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'regex-tools',
     icon: 'history_edu',
     tags: ['regex', 'regexp', 'multiline', 'composer', 'pattern-library', 'token-analyzer', 'safety-checker'],
-    relatedTools: ['json-formatter', 'jwt-decoder'],
+    relatedTools: ['jwt-decoder'],
     faqs: [
       {
         question: 'What language systems are supported by the code exporter?',
@@ -1761,7 +1691,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'css-ui-tools',
     icon: 'extension',
     tags: ['dev-utilities', 'css-formatter', 'svg-optimizer', 'svg-to-jsx', 'base64', 'converters'],
-    relatedTools: ['json-formatter', 'jwt-decoder', 'uuid-generator'],
+    relatedTools: ['jwt-decoder', 'uuid-generator'],
     faqs: [
       {
         question: 'How is my SVG code optimized?',
