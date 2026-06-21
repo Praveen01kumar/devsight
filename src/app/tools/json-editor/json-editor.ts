@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, signal, computed, Input, Output, EventEmitter, forwardRef, OnChanges, input, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import loader from '@monaco-editor/loader';
+import * as monaco from 'monaco-editor';
+import { AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 
 // Interface definitions
 export interface DiffLine {
@@ -73,53 +76,6 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
   template: `
     <div class="space-y-4 select-text text-left">
       <!-- File Operations & Utility Toolbar -->
-      <div class="flex flex-wrap items-center justify-between gap-4 p-4 bg-zinc-950 border border-zinc-900 rounded-2xl">
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- File Import -->
-          <button (click)="fileInput.click()" class="relative px-3.5 py-1.5 border border-zinc-800 hover:border-zinc-705 bg-zinc-900 text-xs font-mono font-bold rounded-xl text-zinc-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
-            <mat-icon class="text-xs scale-75">upload_file</mat-icon> OPEN FILE
-            <input #fileInput type="file" (change)="onFileSelected($event)" accept=".json" class="hidden" />
-          </button>
-
-          <!-- File Save -->
-          <button (click)="saveToFile()" class="px-3.5 py-1.5 border border-zinc-800 hover:border-zinc-705 bg-zinc-900 text-xs font-mono font-bold rounded-xl text-zinc-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer">
-            <mat-icon class="text-xs scale-75">download</mat-icon> SAVE FILE
-          </button>
-
-          <div class="h-4 w-px bg-zinc-800 mx-1"></div>
-
-          <!-- Undo / Redo Actions -->
-          <button (click)="undo()" [disabled]="!canUndo()" class="px-3 py-1.5 border border-zinc-800 hover:border-zinc-705 disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-900 text-xs font-mono font-bold rounded-xl text-zinc-300 hover:text-white transition cursor-pointer" title="Undo">
-            <mat-icon class="text-xs scale-75">undo</mat-icon>
-          </button>
-          <button (click)="redo()" [disabled]="!canRedo()" class="px-3 py-1.5 border border-zinc-800 hover:border-zinc-705 disabled:opacity-30 disabled:cursor-not-allowed bg-zinc-900 text-xs font-mono font-bold rounded-xl text-zinc-300 hover:text-white transition cursor-pointer" title="Redo">
-            <mat-icon class="text-xs scale-75">redo</mat-icon>
-          </button>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-2">
-          <!-- Quick Format Utilities -->
-          <button (click)="beautify()" class="px-3 py-1.5 border border-zinc-800 hover:border-zinc-705 bg-zinc-900 text-xs font-mono font-bold rounded-xl text-emerald-400 hover:text-emerald-350 transition flex items-center gap-1 cursor-pointer">
-            <mat-icon class="text-xs scale-75">format_align_left</mat-icon> BEAUTIFY
-          </button>
-          <button (click)="minify()" class="px-3 py-1.5 border border-zinc-800 hover:border-zinc-705 bg-zinc-900 text-xs font-mono font-bold rounded-xl text-amber-400 hover:text-amber-350 transition flex items-center gap-1 cursor-pointer">
-            <mat-icon class="text-xs scale-75">compress</mat-icon> MINIFY
-          </button>
-          <div class="flex bg-zinc-900 p-0.5 rounded-xl border border-zinc-800">
-            <button (click)="sortTreeKeys(true)" title="Sort Keys Ascending" style="line-height: 20px;" class="px-1 py-0.5 text-zinc-400 hover:text-white rounded-lg transition cursor-pointer">
-              <mat-icon class="text-xs scale-75">sort_by_alpha</mat-icon>
-            </button>
-            <button (click)="sortTreeKeys(false)" title="Sort Keys Descending" style="line-height: 20px;" class="px-1 py-0.5 text-zinc-400 hover:text-white rounded-lg transition cursor-pointer">
-              <mat-icon class="text-xs scale-75" style="transform: scaleY(-1)">sort_by_alpha</mat-icon>
-            </button>
-          </div>
-
-          <button (click)="copyToClipboard()" class="px-3 py-1.5 border border-emerald-950 hover:bg-emerald-950/20 bg-zinc-900 text-xs font-mono font-bold rounded-xl text-emerald-400 transition flex items-center gap-1.5 cursor-pointer">
-            <mat-icon class="text-xs scale-75">{{ justCopied() ? 'check' : 'content_copy' }}</mat-icon>
-            {{ justCopied() ? 'COPIED!' : 'COPY' }}
-          </button>
-        </div>
-      </div>
 
       <!-- Segment Tabs (Editor vs Compare vs Projection vs Schema validation) -->
       <div class="border-b border-zinc-800 flex flex-wrap items-center justify-between gap-4">
@@ -130,83 +86,116 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
               [class.text-emerald-400]="activeTab() === tab"
               [class.border-transparent]="activeTab() !== tab"
               [class.text-zinc-450]="activeTab() !== tab"
-              class="px-4 py-2 border-b-2 font-mono text-xs font-bold uppercase transition hover:text-white cursor-pointer"
-            >
+              class="px-4 py-2 border-b-2 font-mono text-xs font-bold uppercase transition hover:text-white cursor-pointer">
               {{ tab === 'diff' ? 'Diff Comparison' : tab }}
             </button>
           }
         </div>
 
         <div class="flex items-center gap-2 text-[10px] font-mono text-zinc-500 leading-none mr-2">
+          <span class="text-[10px] text-zinc-500 font-mono italic hidden sm:inline">Drag & drop files to open</span> | 
           <span>SIZE: {{ jsonSize() }} bytes</span>
           <span>&bull;</span>
           <span>KEYS: {{ jsonKeyCount() }}</span>
         </div>
       </div>
+      <ng-template #formatToolbar>
+        <div class="flex flex-wrap items-center bg-zinc-950 px-1.5 py-1 rounded-lg border border-zinc-800 gap-1 select-none">
+          <button (click)="unfoldAll()"
+            class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none text-zinc-400 font-mono font-bold cursor-pointer"
+            title="Expand All Nodes"
+          >
+            <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">unfold_more</mat-icon> EXPAND
+          </button>
+          <button (click)="foldAll()"
+            class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none text-zinc-400 font-mono font-bold cursor-pointer"
+            title="Collapse All Nodes"
+          >
+            <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">unfold_less</mat-icon> COLLAPSE
+          </button>
+          <div class="w-px h-3 bg-zinc-805 mx-0.5"></div>
+          <button (click)="beautify()" [disabled]="!parsedData()"
+            class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-emerald-400 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none font-mono font-bold cursor-pointer"
+            title="Format JSON with indent and new lines"
+          >
+            <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">format_align_left</mat-icon> FORMAT
+          </button>
+          <button (click)="beautifySmart()"
+            [disabled]="!parsedData()" class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-blue-400 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none font-mono font-bold cursor-pointer"
+            title="Smart Format (compact, inline simple arrays/items)"
+          >
+            <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">auto_awesome</mat-icon> SMART
+          </button>
+          <button (click)="minify()" [disabled]="!parsedData()"
+            class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-amber-450 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none font-mono font-bold cursor-pointer"
+            title="Compact JSON (minify, remove whitespaces)"
+          >
+            <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">compress</mat-icon> COMPACT
+          </button>
+        </div>
+      </ng-template>
+      <ng-template #fileToolbar>
+        <div class="flex flex-wrap gap-2">
+          <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+            <!-- File Import -->
+            <button (click)="fileInput.click()" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="Import Json File">
+                <mat-icon class="text-xs scale-75">upload_file</mat-icon>
+                <input #fileInput type="file" (change)="onFileSelected($event)" accept=".json" class="hidden" />
+            </button>
+            <!-- File Save -->
+            <button (click)="saveToFile()" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="File Save">
+                <mat-icon class="text-xs scale-75">download</mat-icon>
+            </button>
 
+            <!-- Undo / Redo Actions -->
+            <button (click)="undo()" [disabled]="!canUndo()" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="Undo">
+              <mat-icon class="text-xs scale-75">undo</mat-icon>
+            </button>
+            <button (click)="redo()" [disabled]="!canRedo()" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="Redo">
+              <mat-icon class="text-xs scale-75">redo</mat-icon>
+            </button>
+
+            <!-- Quick Format Utilities -->
+            <button (click)="sortTreeKeys(true)" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="Sort Keys Ascending">
+              <mat-icon class="text-xs scale-75">sort_by_alpha</mat-icon>
+            </button>
+            <button (click)="sortTreeKeys(false)" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="Sort Keys Descending">
+              <mat-icon class="text-xs scale-75">sort_by_alpha</mat-icon>
+            </button>
+
+            <!-- Copy -->
+            <button (click)="copyToClipboard()" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="Copy">
+              <mat-icon class="text-xs scale-75">{{ justCopied() ? 'check' : 'content_copy' }}</mat-icon>
+            </button>
+          </div>
+          <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+            @for (vMode of ['text', 'tree', 'table', 'split']; track vMode) {
+              <button (click)="editorSubView.set(vMode)"
+                [class.bg-zinc-800]="editorSubView() === vMode"
+                [class.text-white]="editorSubView() === vMode"
+                [class.text-zinc-500]="editorSubView() !== vMode"
+                class="px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer">
+                {{ vMode }}
+              </button>
+            }
+          </div>
+          <button (click)="isEditorFullScreen.set(!isEditorFullScreen())"
+              class="px-2 py-0.5 bg-red-950 hover:bg-red-900 border border-red-900/40 text-red-300 text-[10px] font-mono font-bold uppercase rounded-lg transition flex items-center gap-1 cursor-pointer bg-transparent cursor-pointer"
+              [title]="isEditorFullScreen() ? 'Exit Full Screen' : 'Full Screen View'">
+              <mat-icon class="scale-75">{{ isEditorFullScreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
+              {{ isEditorFullScreen() ? 'EXIT' : 'FULL' }}
+          </button>
+        </div>
+      </ng-template>
       <!-- TAB 1: INTERACTIVE EDITOR -->
-      @if (activeTab() === 'editor') {
-        <div class="space-y-4">
+        <div class="space-y-4" [hidden]="activeTab() !== 'editor'">
           <!-- Sub-view choices layout selector -->
           <div class="flex items-center justify-between flex-wrap gap-2">
-            <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
-              @for (vMode of ['text', 'tree', 'table', 'split']; track vMode) {
-                <button (click)="editorSubView.set(vMode)"
-                  [class.bg-zinc-800]="editorSubView() === vMode"
-                  [class.text-white]="editorSubView() === vMode"
-                  [class.text-zinc-500]="editorSubView() !== vMode"
-                  class="px-3 py-1.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer"
-                >
-                  {{ vMode }} View
-                </button>
-              }
-            </div>
-
             <div class="flex items-center gap-2 flex-wrap">
               <!-- Formatting & Expansion Controls -->
-              <div class="flex flex-wrap items-center bg-zinc-950 px-1.5 py-1 rounded-lg border border-zinc-800 gap-1 select-none">
-                <button (click)="expandAll()"
-                  class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none text-zinc-400 font-mono font-bold cursor-pointer"
-                  title="Expand All Nodes"
-                >
-                  <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">unfold_more</mat-icon> EXPAND
-                </button>
-                <button (click)="collapseAll()"
-                  class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none text-zinc-400 font-mono font-bold cursor-pointer"
-                  title="Collapse All Nodes"
-                >
-                  <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">unfold_less</mat-icon> COLLAPSE
-                </button>
-                <div class="w-px h-3 bg-zinc-805 mx-0.5"></div>
-                <button (click)="beautify()" [disabled]="!parsedData()"
-                  class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-emerald-400 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none font-mono font-bold cursor-pointer"
-                  title="Format JSON with indent and new lines"
-                >
-                  <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">format_align_left</mat-icon> FORMAT
-                </button>
-                <button (click)="beautifySmart()"
-                  [disabled]="!parsedData()" class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-blue-400 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none font-mono font-bold cursor-pointer"
-                  title="Smart Format (compact, inline simple arrays/items)"
-                >
-                  <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">auto_awesome</mat-icon> SMART
-                </button>
-                <button (click)="minify()" [disabled]="!parsedData()"
-                  class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-amber-450 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none font-mono font-bold cursor-pointer"
-                  title="Compact JSON (minify, remove whitespaces)"
-                >
-                  <mat-icon class="text-[14px] w-3.5 h-3.5 flex items-center justify-center">compress</mat-icon> COMPACT
-                </button>
-              </div>
-
-              <button (click)="isEditorFullScreen.set(!isEditorFullScreen())"
-                class="px-2.5 py-1 border border-zinc-800 bg-zinc-950 text-[10px] font-mono font-bold rounded-lg text-zinc-400 hover:text-white hover:border-zinc-70 transition flex items-center gap-1 cursor-pointer bg-transparent cursor-pointer"
-                [title]="isEditorFullScreen() ? 'Exit Full Screen' : 'Full Screen View'"
-              >
-                <mat-icon class="scale-75">{{ isEditorFullScreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
-                {{ isEditorFullScreen() ? 'EXIT' : 'FULL' }}
-              </button>
-              <span class="text-[10px] text-zinc-500 font-mono italic hidden sm:inline">Drag & drop files to open</span>
+              <ng-container *ngTemplateOutlet="formatToolbar"></ng-container>
             </div>
+           <ng-container *ngTemplateOutlet="fileToolbar"></ng-container>
           </div>
 
           <!-- Drag drop area container -->
@@ -234,61 +223,10 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
                 </div>
                 <div class="flex items-center gap-2 flex-wrap text-zinc-400 font-mono font-bold">
                   <!-- Formatting & Expansion Controls (Full Screen) -->
-                  <div class="flex items-center bg-zinc-950 px-1.5 py-0.5 rounded-lg border border-zinc-805 gap-1 select-none scale-90 origin-right">
-                    <button (click)="expandAll()"
-                      class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none cursor-pointer"
-                      title="Expand All Nodes"
-                    >
-                      <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">unfold_more</mat-icon> EXPAND
-                    </button>
-                    <button (click)="collapseAll()"
-                      class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none cursor-pointer"
-                      title="Collapse All Nodes"
-                    >
-                      <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">unfold_less</mat-icon> COLLAPSE
-                    </button>
-                    <div class="w-px h-3 bg-zinc-805 mx-0.5"></div>
-                    <button (click)="beautify()" [disabled]="!parsedData()"
-                      class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-404 hover:text-emerald-400 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none outline-none cursor-pointer"
-                      title="Format JSON with indent and new lines"
-                    >
-                      <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">format_align_left</mat-icon> FORMAT
-                    </button>
-                    <button (click)="beautifySmart()" [disabled]="!parsedData()"
-                      class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-404 hover:text-blue-400 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none outline-none cursor-pointer"
-                      title="Smart Format (compact, inline simple arrays/items)"
-                    >
-                      <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">auto_awesome</mat-icon> SMART
-                    </button>
-                    <button (click)="minify()" [disabled]="!parsedData()"
-                      class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-404 hover:text-amber-450 hover:disabled:text-zinc-450 transition flex items-center gap-0.5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed bg-transparent border-none outline-none cursor-pointer"
-                      title="Compact JSON (minify)"
-                    >
-                      <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">compress</mat-icon> COMPACT
-                    </button>
-                  </div>
+                  <ng-container *ngTemplateOutlet="formatToolbar"></ng-container>
 
                   <!-- View switcher inside full screen -->
-                  <div class="flex bg-zinc-900 p-0.5 rounded-lg border border-zinc-800 mr-2">
-                    @for (vMode of ['text', 'tree', 'table', 'split']; track vMode) {
-                      <button (click)="editorSubView.set(vMode)"
-                        [class.bg-zinc-800]="editorSubView() === vMode"
-                        [class.text-white]="editorSubView() === vMode"
-                        [class.text-zinc-550]="editorSubView() !== vMode"
-                        class="px-2.5 py-1 text-[10px] font-mono font-bold uppercase rounded-md transition cursor-pointer bg-transparent border-none cursor-pointer"
-                      >
-                        {{ vMode }}
-                      </button>
-                    }
-                  </div>
-
-                  <button (click)="isEditorFullScreen.set(false)"
-                    class="px-3 py-1 bg-red-950 hover:bg-red-900 border border-red-900/40 text-red-300 text-[10px] font-mono font-bold uppercase rounded-lg transition flex items-center gap-1 cursor-pointer bg-transparent cursor-pointer"
-                    title="Exit Full Screen"
-                  >
-                    <mat-icon class="text-xs scale-75">fullscreen_exit</mat-icon>
-                    EXIT
-                  </button>
+                  <ng-container *ngTemplateOutlet="fileToolbar"></ng-container>
                 </div>
               </div>
             }
@@ -312,34 +250,9 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
             }
 
             <!-- Sub-view: Text View -->
-            @if (editorSubView() === 'text') {
-              <div class="flex-1 flex min-h-[400px]">
-                <!-- Gutter line numbers -->
-                <div id="textGutterEl" class="w-12 bg-zinc-950 text-right pr-3 pl-1 py-4 text-[11px] font-mono select-none text-zinc-655 flex flex-col border-r border-zinc-850/80 leading-relaxed font-semibold overflow-hidden">
-                  @for (num of getLineNumbers(); track num) {
-                    <div>{{ num }}</div>
-                  }
-                </div>
-                <div class="flex-grow h-full relative overflow-hidden bg-zinc-900 flex-1 min-h-[400px]">
-                  @if (rawText()) {
-                    <pre 
-                      id="textHighlightEl"
-                      class="absolute inset-0 p-4 text-xs font-mono text-zinc-100 whitespace-pre overflow-hidden leading-relaxed select-none pointer-events-none text-left" 
-                      [innerHTML]="highlightedInputText()"
-                    ></pre>
-                  }
-                  <textarea
-                    #textEditorEl
-                    [value]="rawText()"
-                    (input)="onRawTextChange(textEditorEl.value)"
-                    (scroll)="syncScroll(textEditorEl, 'textHighlightEl', 'textGutterEl')"
-                    placeholder="Paste raw JSON here..."
-                    class="absolute inset-0 w-full h-full p-4 text-xs font-mono text-transparent bg-transparent caret-zinc-100 selection:bg-zinc-700/50 selection:text-zinc-100 border-none outline-none resize-none focus:ring-0 overflow-auto leading-relaxed whitespace-pre text-left"
-                  ></textarea>
-                </div>
-              </div>
-            }
-
+            <div [hidden]="editorSubView() !== 'text'" class="flex-1 min-h-[400px]">
+              <div #monacoEditor class="w-full h-full min-h-[400px]"></div>
+            </div>
             <!-- Sub-view: Tree View -->
             @if (editorSubView() === 'tree') {
               <div [class]="isEditorFullScreen() ? 'p-6 overflow-auto flex-1' : 'p-6 overflow-auto max-h-[500px]'">
@@ -392,9 +305,7 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
                             <td class="p-3 text-center border-r border-zinc-855 text-zinc-655 bg-zinc-950/10 font-bold select-none">{{ $index }}</td>
                             @for (col of tableColumns(); track col) {
                               <td class="p-2 border-r border-zinc-855">
-                                <input 
-                                  type="text"
-                                  [value]="stringifyTableCell(row[col])"
+                                <input type="text" [value]="stringifyTableCell(row[col])"
                                   (change)="onTableCellChanged($index, col, $any($event.target).value)"
                                   class="w-full bg-transparent p-1 border-none focus:ring-1 focus:ring-emerald-500 rounded outline-none text-zinc-100" 
                                 />
@@ -423,30 +334,15 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
             }
 
             <!-- Sub-view: Split View (Side-by-side syncing) -->
-            @if (editorSubView() === 'split') {
-              <div class="flex-grow flex flex-col md:flex-row min-h-[400px]">
+              <div class="flex-grow flex flex-col md:flex-row min-h-[400px]" [hidden]="editorSubView() !== 'split'">
                 <!-- Left Source text element -->
                 <div class="flex-1 border-r border-zinc-800 flex flex-col">
                   <div class="px-3.5 py-1.5 bg-zinc-950 border-b border-zinc-800 font-mono text-[10px] font-bold text-zinc-550 select-none flex items-center justify-between">
                     <span>SOURCE TEXT PANELS</span>
                     <span class="text-[9px] text-emerald-400 font-bold uppercase">LIVE SYNTAX ACTIVE</span>
                   </div>
-                  <div class="flex-grow relative overflow-hidden bg-zinc-900 flex-1 min-h-[350px]">
-                    @if (rawText()) {
-                      <pre 
-                        id="splitHighlightTextEl"
-                        class="absolute inset-0 p-4 text-xs font-mono text-zinc-105 whitespace-pre overflow-hidden leading-relaxed select-none pointer-events-none text-left" 
-                        [innerHTML]="highlightedInputText()"
-                      ></pre>
-                    }
-                    <textarea
-                      #splitTextareaEl
-                      [value]="rawText()"
-                      (input)="onRawTextChange(splitTextareaEl.value)"
-                      (scroll)="syncScroll(splitTextareaEl, 'splitHighlightTextEl')"
-                      placeholder="Raw JSON source..."
-                      class="absolute inset-0 w-full h-full p-4 text-xs font-mono text-transparent bg-transparent caret-zinc-100 selection:bg-zinc-700/50 selection:text-zinc-100 border-none outline-none resize-none focus:ring-0 overflow-auto leading-relaxed whitespace-pre text-left"
-                    ></textarea>
+                  <div class="flex-grow bg-zinc-900 flex-1 min-h-[350px]" [hidden]="!rawText()">
+                    <div #splitMonacoEditor class="w-full h-full"></div>
                   </div>
                 </div>
 
@@ -466,26 +362,17 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
                   </div>
                 </div>
               </div>
-            }
           </div>
         </div>
-      }
 
       <!-- TAB 2: SIDE BY SIDE DIFF COMPONENT -->
-      @if (activeTab() === 'diff') {
-        <div class="space-y-4">
+        <div class="space-y-4"  [hidden]="activeTab() !== 'diff'">
           <div class="p-4 bg-zinc-900 border border-zinc-800 rounded-2xl block space-y-3">
             <h3 class="text-sm font-bold text-white font-sans">Compare Active with Secondary JSON</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-1">
                 <span class="text-[10px] text-zinc-400 font-bold font-mono block">SECONDARY COMPARISON RAW INPUT</span>
-                <textarea
-                  #secondaryInputEl
-                  [value]="compareText()"
-                  (input)="compareText.set(secondaryInputEl.value)"
-                  placeholder="Paste target JSON structure to compare..."
-                  class="w-full h-32 p-3 bg-zinc-950 rounded-xl text-xs font-mono text-zinc-105 border border-zinc-850 outline-none resize-none focus:border-zinc-700"
-                ></textarea>
+                <div #compareEditor class="w-full h-32 border border-zinc-850 rounded-xl overflow-hidden"></div>
               </div>
 
               <!-- Stats panel and helpers -->
@@ -568,11 +455,9 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
             </div>
           </div>
         </div>
-      }
 
       <!-- TAB 3: KEY TRANSFORMATIONS -->
-      @if (activeTab() === 'transformations') {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" [hidden]="activeTab() !== 'transformations'">
           <div class="p-5 border border-zinc-800 bg-zinc-900 rounded-2xl block space-y-4">
             <div>
               <h3 class="text-sm font-semibold text-white">Filtering & Path Projections</h3>
@@ -637,11 +522,9 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
             }
           </div>
         </div>
-      }
 
       <!-- TAB 4: SCHEMA COMPLIANCE CHECKS -->
-      @if (activeTab() === 'schema') {
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" [hidden]="activeTab() !== 'schema'">
           <div class="p-5 border border-zinc-800 bg-zinc-900 rounded-2xl block space-y-4">
             <div class="flex items-center justify-between flex-wrap gap-2">
               <div>
@@ -660,16 +543,11 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
                 <option value="config-options">App Configurations Preset</option>
               </select>
             </div>
-
-            <textarea
-              #schemaInputEl
-              [value]="schemaRulesText()"
-              (input)="schemaRulesText.set(schemaInputEl.value)"
-              placeholder="Input custom Schema rules..."
-              [class.h-56]="!isEditorFullScreen()"
-              [class.h-80]="isEditorFullScreen()"
-              class="w-full p-3 bg-zinc-950 rounded-xl text-xs font-mono text-zinc-250 border border-zinc-850 outline-none resize-none focus:border-zinc-700 font-medium"
-            ></textarea>
+              <div #schemaEditor 
+                class="w-full border border-zinc-850 rounded-xl overflow-hidden"
+                [class.h-56]="!isEditorFullScreen()"
+                [class.h-80]="isEditorFullScreen()">
+              </div>
           </div>
 
           <!-- Feedbacks of Validation -->
@@ -713,7 +591,6 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
             </div>
           </div>
         </div>
-      }
     </div>
   `,
   styles: `
@@ -722,7 +599,16 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
     }
   `
 })
-export class JsonEditorComponent {
+export class JsonEditorComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('compareEditor') private compareEditorRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('schemaEditor') private schemaEditorRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('monacoEditor') private monacoEditorRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('splitMonacoEditor') private splitMonacoEditorRef!: ElementRef<HTMLDivElement>;
+
+  private splitEditor!: monaco.editor.IStandaloneCodeEditor;
+  private compareEditor!: monaco.editor.IStandaloneCodeEditor;
+  private schemaEditor!: monaco.editor.IStandaloneCodeEditor;
+  private editor!: monaco.editor.IStandaloneCodeEditor;
   public rawText = signal<string>('{\n  "id": 1,\n  "name": "devsight - JSON Editor Test",\n  "version": "1.0.0",\n  "active": true,\n  "tags": ["formatting", "validation", "comparison"],\n  "metadata": {\n    "author": "Google DeepMind",\n    "port": 3000\n  }\n}');
   public compareText = signal<string>('{\n  "id": 1,\n  "name": "devsight - JSON Editor Compare",\n  "version": "1.0.1",\n  "active": false,\n  "tags": ["formatting", "validation", "diff"],\n  "metadata": {\n    "author": "DeepMind",\n    "port": 3000\n  }\n}');
   public activeTab = signal<string>('editor');
@@ -731,11 +617,169 @@ export class JsonEditorComponent {
 
   // FullScreen and Input Preview support signals
   public isEditorFullScreen = signal<boolean>(false);
-  public isInputPreview = signal<boolean>(false);
 
-  public highlightedInputText = computed(() => {
-    return this.highlightJson(this.rawText());
-  });
+  // Custom Signals for History Storage Undo / Redo
+  private changeHistory: string[] = [];
+  private historyPointer = -1;
+  public justCopied = signal<boolean>(false);
+  public isDraggingOver = signal<boolean>(false);
+
+  // Schema state declarations
+  public schemaRulesText = signal<string>('{\n  "type": "object",\n  "required": ["id", "name", "version"],\n  "properties": {\n    "id": { "type": "number", "minimum": 1 },\n    "name": { "type": "string", "minLength": 3 },\n    "version": { "type": "string" },\n    "active": { "type": "boolean" },\n    "tags": {\n      "type": "array",\n      "items": { "type": "string" }\n    }\n  }\n}');
+
+  // Custom Transformations projection results preview
+  public transformationPreview = signal<string>('');
+
+  constructor() {
+    effect(() => {
+      this.editorSubView();
+      this.activeTab();
+      this.isEditorFullScreen();
+      this.layoutEditors();
+    });
+    this.syncMonacoSignal(() => this.rawText(), () => this.editor);
+    this.syncMonacoSignal(() => this.compareText(), () => this.compareEditor);
+    this.syncMonacoSignal(() => this.schemaRulesText(), () => this.schemaEditor);
+    this.syncMonacoSignal(() => this.rawText(), () => this.splitEditor);
+  }
+
+  async ngAfterViewInit(): Promise<void> {
+    const monacoInstance = await loader.init();
+    this.editor = monacoInstance.editor.create(
+      this.monacoEditorRef.nativeElement,
+      {
+        value: this.rawText(),
+        language: 'json',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        folding: true,
+        showFoldingControls: 'always',
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false
+      }
+    );
+
+    this.compareEditor = monacoInstance.editor.create(
+      this.compareEditorRef?.nativeElement,
+      {
+        value: this.compareText(),
+        language: 'json',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false
+      }
+    );
+
+    this.schemaEditor = monacoInstance.editor.create(
+      this.schemaEditorRef.nativeElement,
+      {
+        value: this.schemaRulesText(),
+        language: 'json',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false
+      }
+    );
+
+    this.splitEditor = monacoInstance.editor.create(
+      this.splitMonacoEditorRef.nativeElement,
+      {
+        value: this.rawText(),
+        language: 'json',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        folding: true,
+        showFoldingControls: 'always',
+        minimap: {
+          enabled: false
+        },
+        scrollBeyondLastLine: false
+      }
+    );
+
+    this.splitEditor.onDidChangeModelContent(() => {
+      const value = this.splitEditor.getValue();
+      if (value !== this.rawText()) {
+        this.onRawTextChange(value);
+      }
+    });
+
+    this.editor.onDidChangeModelContent(() => {
+      const value = this.editor.getValue();
+      if (value !== this.rawText()) {
+        this.onRawTextChange(value);
+      }
+    });
+
+    this.compareEditor.onDidChangeModelContent(() => {
+      const value = this.compareEditor.getValue();
+      if (value !== this.compareText()) {
+        this.compareText.set(value);
+      }
+    });
+
+    this.schemaEditor.onDidChangeModelContent(() => {
+      const value = this.schemaEditor.getValue();
+      if (value !== this.schemaRulesText()) {
+        this.schemaRulesText.set(value);
+      }
+    });
+
+    setTimeout(() => {
+      this.editor.layout();
+      this.compareEditor.layout();
+      this.schemaEditor.layout();
+    });
+  }
+
+  private updateRawText(value: string, syncEditor = true): void {
+    this.rawText.set(value);
+    if (syncEditor && this.editor && this.editor.getValue() !== value) {
+      this.editor.setValue(value);
+    }
+    this.recordStateInHistory(value);
+  }
+
+  private updateTransformationPreview(value: unknown): void {
+    this.transformationPreview.set(typeof value === 'string' ? value : JSON.stringify(value, null, 2));
+  }
+
+  private withParsedData(callback: (data: unknown) => string): void {
+    const data = this.parsedData();
+    if (!data) {
+      return;
+    }
+    this.updateRawText(callback(data));
+  }
+
+  private layoutEditors(): void {
+    queueMicrotask(() => {
+      this.editor?.layout();
+      this.splitEditor?.layout();
+      this.compareEditor?.layout();
+      this.schemaEditor?.layout();
+    });
+  }
+
+  private syncMonacoSignal(source: () => string, editor: () => monaco.editor.IStandaloneCodeEditor | undefined): void {
+    effect(() => {
+      const value = source();
+      const instance = editor();
+      if (instance && instance.getValue() !== value) {
+        instance.setValue(value);
+      }
+    });
+  }
+
+  private updateParsedOutput(value: unknown): void {
+    this.updateRawText(JSON.stringify(value, null, 2));
+  }
+
+  private buildJsonOutput(data: unknown): string {
+    return JSON.stringify(data, null, 2);
+  }
 
   public highlightedTransformationPreview = computed(() => {
     return this.highlightJson(this.transformationPreview());
@@ -768,44 +812,6 @@ export class JsonEditorComponent {
     );
   }
 
-  public syncScroll(textarea: HTMLTextAreaElement, highlightId: string, gutterId?: string): void {
-    const parent = textarea.parentElement;
-    if (!parent) return;
-    const highlightEl = parent.querySelector(`#${highlightId}`) as HTMLElement;
-    if (highlightEl) {
-      highlightEl.scrollTop = textarea.scrollTop;
-      highlightEl.scrollLeft = textarea.scrollLeft;
-    }
-    if (gutterId) {
-      let container: HTMLElement | null = parent;
-      while (container && !container.querySelector(`#${gutterId}`)) {
-        container = container.parentElement;
-      }
-      if (container) {
-        const gutterEl = container.querySelector(`#${gutterId}`) as HTMLElement;
-        if (gutterEl) {
-          gutterEl.scrollTop = textarea.scrollTop;
-        }
-      }
-    }
-  }
-
-  // Custom Signals for History Storage Undo / Redo
-  private changeHistory: string[] = [];
-  private historyPointer = -1;
-  public justCopied = signal<boolean>(false);
-  public isDraggingOver = signal<boolean>(false);
-
-  // Schema state declarations
-  public schemaRulesText = signal<string>('{\n  "type": "object",\n  "required": ["id", "name", "version"],\n  "properties": {\n    "id": { "type": "number", "minimum": 1 },\n    "name": { "type": "string", "minLength": 3 },\n    "version": { "type": "string" },\n    "active": { "type": "boolean" },\n    "tags": {\n      "type": "array",\n      "items": { "type": "string" }\n    }\n  }\n}');
-
-  // Custom Transformations projection results preview
-  public transformationPreview = signal<string>('');
-
-  constructor() {
-    this.recordStateInHistory(this.rawText());
-  }
-
   // Reactive state conversions
   public parsedData = computed<unknown>(() => {
     const txt = this.rawText().trim();
@@ -816,6 +822,13 @@ export class JsonEditorComponent {
       return null;
     }
   });
+
+  ngOnDestroy(): void {
+    this.editor?.dispose();
+    this.compareEditor?.dispose();
+    this.schemaEditor?.dispose();
+    this.splitEditor?.dispose();
+  }
 
   public parsingError = computed<string | null>(() => {
     const txt = this.rawText().trim();
@@ -912,12 +925,6 @@ export class JsonEditorComponent {
     return { added, removed, modified };
   });
 
-  // Gutter array helper
-  public getLineNumbers(): number[] {
-    const count = this.rawText().split('\n').length;
-    return Array.from({ length: Math.max(1, count) }, (_, i) => i + 1);
-  }
-
   // Raw text handler with Undo storage
   public onRawTextChange(val: string): void {
     this.rawText.set(val);
@@ -959,6 +966,7 @@ export class JsonEditorComponent {
     if (this.canUndo()) {
       this.historyPointer--;
       this.rawText.set(this.changeHistory[this.historyPointer]);
+      this.editor?.setValue(this.rawText());
     }
   }
 
@@ -966,36 +974,23 @@ export class JsonEditorComponent {
     if (this.canRedo()) {
       this.historyPointer++;
       this.rawText.set(this.changeHistory[this.historyPointer]);
+      this.editor?.setValue(this.rawText());
     }
   }
 
   // Format operations
   public beautify(): void {
-    const data = this.parsedData();
-    if (data) {
-      const formatted = JSON.stringify(data, null, 2);
-      this.rawText.set(formatted);
-      this.recordStateInHistory(formatted);
-    }
+    this.withParsedData(data => this.buildJsonOutput(data));
   }
 
   public minify(): void {
-    const data = this.parsedData();
-    if (data) {
-      const minified = JSON.stringify(data);
-      this.rawText.set(minified);
-      this.recordStateInHistory(minified);
-    }
+    this.withParsedData(data => JSON.stringify(data));
   }
 
   public sortTreeKeys(asc = true): void {
-    const data = this.parsedData();
-    if (data) {
-      const sorted = this.deepSortObject(data, asc);
-      const output = JSON.stringify(sorted, null, 2);
-      this.rawText.set(output);
-      this.recordStateInHistory(output);
-    }
+    this.withParsedData(data =>
+      this.buildJsonOutput(this.deepSortObject(data, asc))
+    );
   }
 
   private deepSortObject(obj: unknown, asc: boolean): unknown {
@@ -1018,19 +1013,7 @@ export class JsonEditorComponent {
 
   // Mutable tree nodes receiver updates
   public updateTreeValue(payload: TreeChangePayload): void {
-    const val = payload.value;
-    const txt = JSON.stringify(val, null, 2);
-    this.rawText.set(txt);
-    this.recordStateInHistory(txt);
-  }
-
-  // Tree expansion triggers
-  public expandAll(): void {
-    this.defaultExpandState.update(v => ({ state: true, version: v.version + 1 }));
-  }
-
-  public collapseAll(): void {
-    this.defaultExpandState.update(v => ({ state: false, version: v.version + 1 }));
+    this.updateParsedOutput(payload.value);
   }
 
   public beautifySmart(): void {
@@ -1058,7 +1041,7 @@ export class JsonEditorComponent {
       const entries = obj.map(x => nextIndent + this.smartStringify(x, indent, nextIndent));
       return '[\n' + entries.join(',\n') + '\n' + currentIndent + ']';
     }
-    
+
     if (typeof obj === 'object') {
       const casted = obj as Record<string, unknown>;
       const keys = Object.keys(casted);
@@ -1167,11 +1150,26 @@ export class JsonEditorComponent {
       const obj = JSON.parse(text) as unknown;
       const clean = JSON.stringify(obj, null, 2);
       this.rawText.set(clean);
+      this.editor?.setValue(this.rawText());
       this.recordStateInHistory(clean);
     } catch {
       // Best effort recovery failed, update with semi-checked raw text
       this.rawText.set(text);
     }
+  }
+
+  public foldAll(): void {
+    this.editor.getAction('editor.foldAll')?.run();
+    this.splitEditor.getAction('editor.foldAll')?.run();
+    this.compareEditor.getAction('editor.foldAll')?.run();
+    this.schemaEditor.getAction('editor.foldAll')?.run();
+  }
+
+  public unfoldAll(): void {
+    this.editor.getAction('editor.unfoldAll')?.run();
+    this.splitEditor.getAction('editor.unfoldAll')?.run();
+    this.compareEditor.getAction('editor.unfoldAll')?.run();
+    this.schemaEditor.getAction('editor.unfoldAll')?.run();
   }
 
   // Table cell handlers
@@ -1284,15 +1282,21 @@ export class JsonEditorComponent {
       this.rawText.set(preview);
       this.recordStateInHistory(preview);
       this.activeTab.set('editor');
+      queueMicrotask(() => {
+        this.editor?.layout();
+        this.compareEditor?.layout();
+        this.schemaEditor?.layout();
+      });
     }
   }
 
   public flattenPayload(): void {
     const data = this.parsedData();
+
     if (data) {
-      const flat = this.flattenObjectRecursive(data);
-      const text = JSON.stringify(flat, null, 2);
-      this.transformationPreview.set(text);
+      this.updateTransformationPreview(
+        this.flattenObjectRecursive(data)
+      );
     }
   }
 

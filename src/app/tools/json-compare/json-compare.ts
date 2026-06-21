@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import loader from '@monaco-editor/loader';
+import * as monaco from 'monaco-editor';
+import { AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 
 // Interfaces for Diff Structures
 export interface DiffTreeNode {
@@ -102,12 +105,12 @@ export interface JsonPatchOp {
               <!-- Formatting & Expansion Controls -->
             <div class="flex flex-wrap justify-between items-center bg-zinc-950 px-1.5 py-0.5 my-2 rounded-lg border border-zinc-800 select-none">
               <div class="flex flex-wrap">
-                <button (click)="setAllExpandedState(true)"
+                <button (click)="foldUnfoldAllLeft(true, 'unfold')"
                   class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none cursor-pointer"
                   title="Expand All Differences Nodes">
                   <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">unfold_more</mat-icon> EXPAND
                 </button>
-                <button (click)="setAllExpandedState(false)"
+                <button (click)="foldUnfoldAllLeft(true, 'fold')"
                   class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none cursor-pointer"
                   title="Collapse All Differences Nodes">
                   <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">unfold_less</mat-icon> COLLAPSE
@@ -142,16 +145,7 @@ export interface JsonPatchOp {
           <div (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onFileDropped($event, 'left')"
             class="relative border border-zinc-850 bg-zinc-950/30 rounded-xl overflow-hidden flex">
             <!-- Left gutter indexing -->
-            <div class="w-10 bg-zinc-950 text-right pr-2 pl-1 py-3 text-[10px] font-mono select-none text-zinc-650 flex flex-col border-r border-zinc-850/80 leading-relaxed font-semibold overflow-y-hidden" #leftGutter>
-              @for (num of getLeftLineNumbers(); track num) {
-                <div>{{ num }}</div>
-              }
-            </div>
-            <textarea #leftEl [value]="leftText()" (input)="onLeftTextChange(leftEl.value)" (scroll)="leftGutter.scrollTop = leftEl.scrollTop"
-              placeholder="Paste or drop baseline JSON here..."
-              class="flex-grow p-3 bg-transparent text-xs font-mono text-zinc-200 outline-none border-none resize-none overflow-y-auto leading-relaxed select-text focus:ring-0 font-medium"
-            ></textarea>
-
+            <div #monacoEditorLeft class="w-full h-full min-h-[400px]"></div>
             @if (leftError()) {
               <div class="absolute bottom-1 right-1 px-2.5 py-1 bg-rose-955/80 text-rose-300 font-mono text-[9px] font-semibold border border-rose-900/50 rounded-lg select-none">
                 Syntax Error!
@@ -166,12 +160,12 @@ export interface JsonPatchOp {
             <!-- Formatting & Expansion Controls -->
             <div class="flex flex-wrap justify-between items-center bg-zinc-950 px-1.5 py-0.5 my-2 rounded-lg border border-zinc-800 select-none">
               <div class="flex flex-wrap">
-                <button (click)="setAllExpandedState(true)"
+                <button (click)="foldUnfoldAllLeft(false, 'unfold')"
                   class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none cursor-pointer"
                   title="Expand All Differences Nodes">
                   <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">unfold_more</mat-icon> EXPAND
                 </button>
-                <button (click)="setAllExpandedState(false)"
+                <button (click)="foldUnfoldAllLeft(false, 'fold')"
                   class="px-1.5 py-0.5 text-[9px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none outline-none cursor-pointer"
                   title="Collapse All Differences Nodes">
                   <mat-icon class="text-[13px] w-3 h-3 flex items-center justify-center">unfold_less</mat-icon> COLLAPSE
@@ -209,17 +203,7 @@ export interface JsonPatchOp {
             (drop)="onFileDropped($event, 'right')"
             class="relative border border-zinc-850 bg-zinc-950/30 rounded-xl overflow-hidden flex">
             <!-- Right gutter indexing -->
-            <div class="w-10 bg-zinc-950 text-right pr-2 pl-1 py-3 text-[10px] font-mono select-none text-zinc-650 flex flex-col border-r border-zinc-850/80 leading-relaxed font-semibold overflow-y-hidden" #rightGutter>
-              @for (num of getRightLineNumbers(); track num) {
-                <div>{{ num }}</div>
-              }
-            </div>
-            <textarea #rightEl [value]="rightText()" (input)="onRightTextChange(rightEl.value)"
-              (scroll)="rightGutter.scrollTop = rightEl.scrollTop"
-              placeholder="Paste or drop modified JSON here..."
-              class="flex-grow p-3 bg-transparent text-xs font-mono text-zinc-200 outline-none border-none resize-none overflow-y-auto leading-relaxed select-text focus:ring-0 font-medium"
-            ></textarea>
-
+            <div #monacoEditorRight class="w-full h-full min-h-[400px]"></div>
             @if (rightError()) {
               <div class="absolute bottom-1 right-1 px-2.5 py-1 bg-rose-955/80 text-rose-300 font-mono text-[9px] font-semibold border border-rose-900/50 rounded-lg select-none">
                 Syntax Error!
@@ -726,26 +710,20 @@ export interface JsonPatchOp {
     }
   `
 })
-export class JsonCompareComponent {
+export class JsonCompareComponent implements AfterViewInit, OnDestroy {
+  @ViewChild('monacoEditorLeft') private monacoEditorLeftRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('monacoEditorRight') private monacoEditorRightRef!: ElementRef<HTMLDivElement>;
+  private monacoEditorLeft!: monaco.editor.IStandaloneCodeEditor;
+  private monacoEditorRight!: monaco.editor.IStandaloneCodeEditor;
   // Input states
   public leftRawText = signal<string>('{\n  "name": "devsight API Payload",\n  "version": "1.0.0",\n status": "production",\n  "active": true,\n  "supportedPorts": [80, 443],\n  "endpoints": {\n    "login": "/api/v1/auth/login",\n    "users": "/api/v1/users",\n    "logs": "/api/v1/system/logs"\n  },\n  "featuresFlag": {\n    "enableCache": true,\n    "betaTesterOnly": false\n  }\n}');
   public rightRawText = signal<string>('{\n  "name": "devsight API Payload v2",\n  "version": "1.1.0",\n  "status": "testing",\n  "active": true,\n  "supportedPorts": [80, 443, 3000],\n  "endpoints": {\n    "login": "/api/v2/auth/login",\n    "users": "/api/v2/users",\n    "metrics": "/api/v2/metrics"\n  },\n  "featuresFlag": {\n    "enableCache": true,\n    "betaTesterOnly": true\n  }\n}');
-
-  public getLeftLineNumbers = computed(() => {
-    const lines = this.leftRawText().split('\n').length;
-    return Array.from({ length: Math.max(1, lines) }, (_, i) => i + 1);
-  });
-
-  public getRightLineNumbers = computed(() => {
-    const lines = this.rightRawText().split('\n').length;
-    return Array.from({ length: Math.max(1, lines) }, (_, i) => i + 1);
-  });
 
   // GUI view selections
   public activeView = signal<string>('split');
 
   public isCompareFullScreen = signal<boolean>(false);
-  
+
   // Custom comparison configurations
   public ignoreWhitespace = signal<boolean>(false);
   public ignoreKeyOrder = signal<boolean>(true);
@@ -770,8 +748,69 @@ export class JsonCompareComponent {
         this.fillMergeDefaultChoices(data);
       }
     });
+
+    effect(() => {
+      queueMicrotask(() => {
+        this.monacoEditorLeft?.layout();
+        this.monacoEditorRight?.layout();
+      });
+    });
+
+    effect(() => {
+      const text = this.rightText();
+      if (this.monacoEditorRight && text !== this.monacoEditorRight.getValue()) {
+        this.monacoEditorRight.setValue(text);
+      }
+    });
+
+    effect(() => {
+      const text = this.leftText();
+      if (this.monacoEditorLeft && text !== this.monacoEditorLeft.getValue()) {
+        this.monacoEditorLeft.setValue(text);
+      }
+    });
+
   }
 
+  async ngAfterViewInit(): Promise<void> {
+    const monacoInstance = await loader.init();
+    this.monacoEditorLeft = monacoInstance.editor.create(
+      this.monacoEditorLeftRef.nativeElement,
+      {
+        value: this.leftText(),
+        language: 'json',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false
+      }
+    );
+
+    this.monacoEditorRight = monacoInstance.editor.create(
+      this.monacoEditorRightRef.nativeElement,
+      {
+        value: this.rightText(),
+        language: 'json',
+        theme: 'vs-dark',
+        automaticLayout: true,
+        folding: true,
+        showFoldingControls: 'always',
+        minimap: {
+          enabled: false
+        },
+        scrollBeyondLastLine: false
+      }
+    );
+
+    setTimeout(() => {
+      this.monacoEditorLeft.layout();
+      this.monacoEditorRight.layout();
+    });
+  }
+  ngOnDestroy(): void {
+    this.monacoEditorLeft?.dispose();
+    this.monacoEditorRight?.dispose();
+  }
   // Raw value getters
   public leftText(): string {
     return this.leftRawText();
@@ -927,10 +966,10 @@ export class JsonCompareComponent {
   public changedPaths = computed<string[]>(() => {
     const root = this.diffTreeRoot();
     if (!root) return [];
-    
+
     const pathsList: string[] = [];
     this.collectChangedPaths(root, pathsList);
-    
+
     // Filter matching search query criteria
     const q = this.searchQuery().trim().toLowerCase();
     if (q) {
@@ -950,7 +989,7 @@ export class JsonCompareComponent {
     this.accumulateReportDetails(root, report);
 
     const totalDiffs = report.addedCount + report.removedCount + report.modifiedCount + report.typeMismatchCount;
-    
+
     // Count total structural keys in both systems
     const totalKeys = this.countKeys(this.leftParsed()) + this.countKeys(this.rightParsed());
     const matched = Math.max(0, totalKeys - totalDiffs);
@@ -1023,7 +1062,7 @@ export class JsonCompareComponent {
         } else if (/null/.test(match)) {
           cls = 'text-rose-450 font-bold';
         }
-        
+
         if (/:$/.test(match)) {
           const key = match.substring(0, match.length - 1);
           return `<span class="${cls}">${key}</span>:`;
@@ -1044,7 +1083,7 @@ export class JsonCompareComponent {
     const currentPaths = this.changedPaths();
     const activeIdx = this.activeDiffIndex();
     if (activeIdx < 0 || activeIdx >= currentPaths.length) return false;
-    
+
     const activePath = currentPaths[activeIdx];
     const leftLine = this.computedDiffLines().left[idx];
     const rightLine = this.computedDiffLines().right[idx];
@@ -1258,11 +1297,20 @@ export class JsonCompareComponent {
     navigator.clipboard.writeText(text);
   }
 
-  public setAllExpandedState(state: boolean): void {
-    const root = this.diffTreeRoot();
-    if (root) {
-      this.recursiveSetExpansion(root, state);
-      this.refreshTreeTrigger.update(v => v + 1);
+  public foldUnfoldAllLeft(isleft: boolean, state: 'fold' | 'unfold'): void {
+    if (isleft) {
+      if (state === 'fold') {
+        this.monacoEditorLeft?.getAction('editor.foldAll')?.run();
+      } else if (state === 'unfold') {
+        this.monacoEditorLeft?.getAction('editor.unfoldAll')?.run();
+      }
+    }
+    if (!isleft) {
+      if (state === 'fold') {
+        this.monacoEditorRight?.getAction('editor.foldAll')?.run();
+      } else if (state === 'unfold') {
+        this.monacoEditorRight?.getAction('editor.unfoldAll')?.run();
+      }
     }
   }
 
@@ -1322,9 +1370,9 @@ export class JsonCompareComponent {
     if (obj === undefined) return 'null';
     if (typeof obj === 'string') return JSON.stringify(obj);
     if (typeof obj === 'number' || typeof obj === 'boolean') return String(obj);
-    
+
     const nextIndent = currentIndent + ' '.repeat(indent);
-    
+
     if (Array.isArray(obj)) {
       if (obj.length === 0) return '[]';
       const isSimple = obj.every(x => typeof x !== 'object' || x === null);
@@ -1335,26 +1383,26 @@ export class JsonCompareComponent {
       const entries = obj.map(x => nextIndent + this.smartStringify(x, indent, nextIndent));
       return '[\n' + entries.join(',\n') + '\n' + currentIndent + ']';
     }
-    
+
     if (typeof obj === 'object') {
       const casted = obj as Record<string, unknown>;
       const keys = Object.keys(casted);
       if (keys.length === 0) return '{}';
-      
+
       const isSimple = keys.every(k => typeof casted[k] !== 'object' || casted[k] === null);
       const inlineParts = keys.map(k => `"${k}": ${this.smartStringify(casted[k], indent, '')}`);
       const inline = '{ ' + inlineParts.join(', ') + ' }';
       if (isSimple && inline.length < 80) {
         return inline;
       }
-      
+
       const entries = keys.map(k => {
         const formattedVal = this.smartStringify(casted[k], indent, nextIndent);
         return `${nextIndent}"${k}": ${formattedVal}`;
       });
       return '{\n' + entries.join(',\n') + '\n' + currentIndent + '}';
     }
-    
+
     return JSON.stringify(obj);
   }
 
@@ -1390,7 +1438,7 @@ export class JsonCompareComponent {
     if (leftType === 'object') {
       const lObj = left as Record<string, unknown>;
       const rObj = right as Record<string, unknown>;
-      
+
       const keysA = Object.keys(lObj);
       const keysB = Object.keys(rObj);
 
@@ -1577,7 +1625,7 @@ export class JsonCompareComponent {
   private generateJSONPatchOps(node: DiffTreeNode, ops: JsonPatchOp[]): void {
     // RFC 6902 expects slash sequences
     const rfcPath = '/' + node.path.replace(/\./g, '/').replace(/\[(\d+)\]/g, '/$1');
-    
+
     if (node.status === 'added') {
       ops.push({ op: 'add', path: rfcPath, value: node.rightValue });
     } else if (node.status === 'removed') {
