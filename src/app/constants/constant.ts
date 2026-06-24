@@ -147,6 +147,24 @@ export const CATEGORIES: CategoryMetadata[] = [
     icon: 'trending_up',
     metaTitle: 'Enterprise SEO Toolkit - Free Meta, OG, Schema, Sitemaps & robots.txt Tools',
     metaDescription: 'All-in-one suite of professional SEO developer and content tools: Meta Tag Generator, Open Graph previews, Schema JSON-LD generators, sitemap index builders & robots.txt validators. Fully offline-first and client-side.'
+  },
+  {
+    id: 'measurement-tools',
+    slug: 'measurement-tools',
+    name: 'Measurement & Engineering',
+    description: 'Convert units across engineering, scientific, technical, electrical, data, fuel economy, and everyday measurement systems with precision.',
+    icon: 'swap_horiz',
+    metaTitle: 'Measurement & Unit Conversion Tools - Length, Weight, Temperature & More - devsight',
+    metaDescription: 'Comprehensive unit conversion tools covering length, area, volume, mass, temperature, pressure, energy, power, electrical units, data storage, fuel economy, engineering measurements, and more.'
+  },
+  {
+    id: 'design-tools',
+    slug: 'design-tools',
+    name: 'Design & SVG Tools',
+    description: 'Inspect, edit, analyze, optimize, and convert vector graphics, SVG assets, icons, color palettes, and design resources.',
+    icon: 'palette',
+    metaTitle: 'Design & SVG Tools - SVG Editors, Inspectors & Graphics Utilities - devsight',
+    metaDescription: 'Professional browser-based SVG viewers, editors, analyzers, color palette extractors, icon utilities, and vector graphic tools.'
   }
 ];
 
@@ -604,6 +622,334 @@ export const TOOLS: ToolMetadata[] = [
       <h2>Managing Datetime Transformations Offline</h2>
       <p>API exchanges convey time metrics in milliseconds. Convert inputs dynamically to troubleshoot server timestamps and verify localization.</p>
     `
+  },
+  {
+    id: 'image-type-converter',
+    slug: 'image-type-converter',
+    name: 'image-type-converter',
+    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
+    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
+    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
+    categoryId: 'design-tools',
+    icon: 'image_search',
+    tags: ['svg', 'svg-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
+    relatedTools: ['json-formatter', 'base64-encoder'],
+    faqs: [
+      {
+        question: 'Can I edit SVG files?',
+        answer: 'Yes. Edit SVG attributes and source code with live updates.'
+      },
+      {
+        question: 'Can I inspect SVG structure?',
+        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
+      },
+      {
+        question: 'What information can I view?',
+        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
+      }
+    ],
+    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
+                <p>
+                  Open, inspect, edit, and analyze SVG files directly in your browser.
+                  Explore SVG layers, modify element attributes, edit XML source, and view
+                  useful SVG statistics and color information in real time.
+                </p>
+
+                <h3>Features</h3>
+
+                <ul>
+                  <li>Live SVG rendering.</li>
+                  <li>SVG element tree navigation.</li>
+                  <li>Attribute and property inspection.</li>
+                  <li>Raw SVG source editor.</li>
+                  <li>Color palette extraction.</li>
+                  <li>SVG statistics and analysis.</li>
+                  <li>Multi-file SVG workspace.</li>
+                  <li>Zoom and viewport controls.</li>
+                </ul>`
+  },
+  {
+    id: 'svg-viewer',
+    slug: 'svg-viewer',
+    name: 'SVG Viewer & Editor',
+    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
+    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
+    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
+    categoryId: 'design-tools',
+    icon: 'image_search',
+    tags: ['svg', 'svg-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
+    relatedTools: ['json-formatter', 'base64-encoder'],
+    faqs: [
+      {
+        question: 'Can I edit SVG files?',
+        answer: 'Yes. Edit SVG attributes and source code with live updates.'
+      },
+      {
+        question: 'Can I inspect SVG structure?',
+        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
+      },
+      {
+        question: 'What information can I view?',
+        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
+      }
+    ],
+    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
+                <p>
+                  Open, inspect, edit, and analyze SVG files directly in your browser.
+                  Explore SVG layers, modify element attributes, edit XML source, and view
+                  useful SVG statistics and color information in real time.
+                </p>
+
+                <h3>Features</h3>
+
+                <ul>
+                  <li>Live SVG rendering.</li>
+                  <li>SVG element tree navigation.</li>
+                  <li>Attribute and property inspection.</li>
+                  <li>Raw SVG source editor.</li>
+                  <li>Color palette extraction.</li>
+                  <li>SVG statistics and analysis.</li>
+                  <li>Multi-file SVG workspace.</li>
+                  <li>Zoom and viewport controls.</li>
+                </ul>`
+  },
+  {
+    id: 'unit-converter',
+    slug: 'unit-converter',
+    name: 'Universal Unit Converter & Measurement Calculator',
+    shortDescription: 'Convert length, weight, temperature, speed, pressure, energy, data storage, electrical units, fuel economy, and dozens of other measurement categories instantly.',
+    metaTitle: 'Unit Converter - Convert Length, Weight, Temperature & More - devsight',
+    metaDescription: 'Advanced offline unit converter supporting 30+ categories including length, mass, temperature, pressure, energy, data storage, electrical units, cooking measurements, fuel economy, and more.',
+    categoryId: 'measurement-tools',
+    icon: 'swap_horiz',
+    tags: ['unit-converter', 'measurement', 'length', 'temperature', 'weight', 'speed', 'pressure', 'energy', 'data-storage', 'engineering'],
+    relatedTools: ['unix-timestamp', 'date-difference', 'age-calculator'],
+    faqs: [
+      {
+        question: 'How many measurement categories are supported?',
+        answer: 'The converter supports more than 30 categories including length, area, volume, mass, temperature, time, speed, pressure, energy, power, electrical measurements, data storage, fuel economy, cooking measurements, typography units, and more.'
+      },
+      {
+        question: 'Are temperature conversions handled correctly?',
+        answer: 'Yes. Temperature conversions use dedicated formulas for Celsius, Fahrenheit, and Kelvin, ensuring accurate offset-based calculations instead of simple multiplication factors.'
+      },
+      {
+        question: 'How is fuel economy converted?',
+        answer: 'Fuel economy supports reciprocal calculations between km/L, MPG (US), MPG (Imperial), and L/100km, using specialized conversion logic for accurate results.'
+      },
+      {
+        question: 'Can I see the conversion formula?',
+        answer: 'Yes. The tool provides detailed formulas, conversion factors, and step-by-step explanations showing exactly how each result is calculated.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Universal Measurement Conversion Tool</h2>
+
+      <p>
+        Convert values across more than 30 engineering, scientific, technical,
+        and everyday measurement categories. All calculations are performed
+        instantly in your browser with no server processing required.
+      </p>
+
+      <h3>Supported Categories</h3>
+
+      <div>
+        <span>Length</span>
+        <span>Area</span>
+        <span>Volume</span>
+        <span>Mass & Weight</span>
+        <span>Temperature</span>
+        <span>Time</span>
+        <span>Speed</span>
+        <span>Pressure</span>
+        <span>Energy</span>
+        <span>Power</span>
+        <span>Force</span>
+        <span>Frequency</span>
+        <span>Data Storage</span>
+        <span>Data Transfer Rate</span>
+        <span>Fuel Economy</span>
+        <span>Angle</span>
+        <span>Density</span>
+        <span>Electric Current</span>
+        <span>Voltage</span>
+        <span>Resistance</span>
+        <span>Capacitance</span>
+        <span>Inductance</span>
+        <span>Charge</span>
+        <span>Illuminance</span>
+        <span>Luminous Flux</span>
+        <span>Magnetic Field</span>
+        <span>Torque</span>
+        <span>Flow Rate</span>
+        <span>Typography</span>
+        <span>Cooking Measurements</span>
+        <span>Percentages & Ratios</span>
+      </div>
+
+      <h3>Key Features</h3>
+
+      <ul>
+        <li>Instant bidirectional conversions.</li>
+        <li>Custom decimal precision controls.</li>
+        <li>Temperature-specific conversion formulas.</li>
+        <li>Advanced fuel economy calculations.</li>
+        <li>Step-by-step conversion explanations.</li>
+        <li>Engineering and scientific unit support.</li>
+        <li>Offline browser-based calculations.</li>
+        <li>Conversion history tracking.</li>
+      </ul>
+
+      <h3>How It Works</h3>
+
+      <ol>
+        <li>Select a measurement category.</li>
+        <li>Choose the source unit.</li>
+        <li>Choose the destination unit.</li>
+        <li>Enter a value to convert.</li>
+        <li>View the converted result instantly.</li>
+        <li>Review the formula and calculation steps.</li>
+      </ol>
+  `},
+  {
+    id: 'image-filter',
+    slug: 'image-filter',
+    name: 'CSS Image & SVG Color Filter Generator',
+    shortDescription: 'Generate CSS filters that transform black icons and SVGs into any target color, with live preview, fine-tuning controls, and batch processing.',
+    metaTitle: 'CSS Image & SVG Filter Generator - Convert Icons to Any Color - devsight',
+    metaDescription: 'Generate accurate CSS filter values for PNG, SVG, and icon assets. Preview color matching, adjust filters manually, compare results, and export production-ready CSS instantly.',
+    categoryId: 'design-tools',
+    icon: 'palette',
+    tags: ['css-filter', 'svg', 'icons', 'color-generator', 'image-tools', 'css', 'frontend', 'design', 'color-matching', 'svg-color'],
+    relatedTools: ['svg-viewer', 'color-picker', 'base64-encoder'],
+    faqs: [
+      {
+        question: 'What does this tool do?',
+        answer: 'It generates CSS filter values that recolor black icons, SVGs, and images to closely match a target color.'
+      },
+      {
+        question: 'Can I upload my own SVG files?',
+        answer: 'Yes. You can upload SVG, PNG, and other image formats for live preview and filter testing.'
+      },
+      {
+        question: 'Can I manually adjust the generated filter?',
+        answer: 'Yes. Fine-tune invert, sepia, saturation, hue rotation, brightness, and contrast values to achieve the desired result.'
+      },
+      {
+        question: 'Does it support batch processing?',
+        answer: 'Yes. Multiple images can be loaded and previewed using the same generated filter settings.'
+      },
+      {
+        question: 'Does it provide SVG color recommendations?',
+        answer: 'Yes. For SVG files, the tool suggests direct fill and stroke color replacements as an alternative to CSS filters.'
+      }
+    ],
+    detailedGuide: `
+    <h2>CSS Filter Color Generator</h2>
+
+    <p>
+      Convert black SVGs, icons, and images into any target color using
+      automatically generated CSS filter values.
+    </p>
+
+    <h3>Features</h3>
+
+    <ul>
+      <li>Generate CSS filters from any HEX or RGB color.</li>
+      <li>Live icon and image preview.</li>
+      <li>Upload SVG, PNG, and other image formats.</li>
+      <li>Manual filter adjustment controls.</li>
+      <li>Color accuracy scoring and comparison.</li>
+      <li>SVG fill and stroke color recommendations.</li>
+      <li>Batch image preview mode.</li>
+      <li>Copy-ready CSS output.</li>
+    </ul>
+
+    <h3>Use Cases</h3>
+
+    <ul>
+      <li>Recolor monochrome SVG icons.</li>
+      <li>Generate CSS filters for design systems.</li>
+      <li>Match brand colors without editing assets.</li>
+      <li>Preview color transformations before deployment.</li>
+      <li>Optimize icon theming for web applications.</li>
+    </ul>
+
+    <p>
+      All calculations and previews run entirely in the browser without
+      uploading files to external servers.
+    </p>
+  `
+  },
+  {
+    id: 'image-compressor',
+    slug: 'image-compressor',
+    name: 'image-compressor',
+    shortDescription: 'Generate CSS filters that transform black icons and SVGs into any target color, with live preview, fine-tuning controls, and batch processing.',
+    metaTitle: 'CSS Image & SVG Filter Generator - Convert Icons to Any Color - devsight',
+    metaDescription: 'Generate accurate CSS filter values for PNG, SVG, and icon assets. Preview color matching, adjust filters manually, compare results, and export production-ready CSS instantly.',
+    categoryId: 'design-tools',
+    icon: 'palette',
+    tags: ['css-filter', 'svg', 'icons', 'color-generator', 'image-tools', 'css', 'frontend', 'design', 'color-matching', 'svg-color'],
+    relatedTools: ['svg-viewer', 'color-picker', 'base64-encoder'],
+    faqs: [
+      {
+        question: 'What does this tool do?',
+        answer: 'It generates CSS filter values that recolor black icons, SVGs, and images to closely match a target color.'
+      },
+      {
+        question: 'Can I upload my own SVG files?',
+        answer: 'Yes. You can upload SVG, PNG, and other image formats for live preview and filter testing.'
+      },
+      {
+        question: 'Can I manually adjust the generated filter?',
+        answer: 'Yes. Fine-tune invert, sepia, saturation, hue rotation, brightness, and contrast values to achieve the desired result.'
+      },
+      {
+        question: 'Does it support batch processing?',
+        answer: 'Yes. Multiple images can be loaded and previewed using the same generated filter settings.'
+      },
+      {
+        question: 'Does it provide SVG color recommendations?',
+        answer: 'Yes. For SVG files, the tool suggests direct fill and stroke color replacements as an alternative to CSS filters.'
+      }
+    ],
+    detailedGuide: `
+    <h2>CSS Filter Color Generator</h2>
+
+    <p>
+      Convert black SVGs, icons, and images into any target color using
+      automatically generated CSS filter values.
+    </p>
+
+    <h3>Features</h3>
+
+    <ul>
+      <li>Generate CSS filters from any HEX or RGB color.</li>
+      <li>Live icon and image preview.</li>
+      <li>Upload SVG, PNG, and other image formats.</li>
+      <li>Manual filter adjustment controls.</li>
+      <li>Color accuracy scoring and comparison.</li>
+      <li>SVG fill and stroke color recommendations.</li>
+      <li>Batch image preview mode.</li>
+      <li>Copy-ready CSS output.</li>
+    </ul>
+
+    <h3>Use Cases</h3>
+
+    <ul>
+      <li>Recolor monochrome SVG icons.</li>
+      <li>Generate CSS filters for design systems.</li>
+      <li>Match brand colors without editing assets.</li>
+      <li>Preview color transformations before deployment.</li>
+      <li>Optimize icon theming for web applications.</li>
+    </ul>
+
+    <p>
+      All calculations and previews run entirely in the browser without
+      uploading files to external servers.
+    </p>
+  `
   },
   {
     id: 'date-difference',

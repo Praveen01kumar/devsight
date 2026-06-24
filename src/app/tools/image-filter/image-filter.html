@@ -1,0 +1,1132 @@
+<div class="min-h-screen bg-white dark:bg-zinc-950 text-slate-800 dark:text-slate-300 transition-colors duration-200">
+  <!-- Main Content Body -->
+  <div class="max-w-7xl mx-auto">
+    <div class="flex items-center gap-3 justify-end mb-2">
+      <!-- Segmented Workspace Tab Selector -->
+      <div
+        class="bg-slate-100 dark:bg-slate-900 p-1.5 rounded-xl flex items-center border border-slate-200/50 dark:border-slate-700/50">
+        <button (click)="activeTab.set('single')" id="tab-single"
+          [class]="activeTab() === 'single'
+              ? 'px-4 py-1.5 rounded-lg text-sm font-medium bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all'
+              : 'px-4 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer'">
+          Single Workspace
+        </button>
+        <button (click)="activeTab.set('batch')" id="tab-batch"
+          [class]="activeTab() === 'batch'
+              ? 'px-4 py-1.5 rounded-lg text-sm font-medium bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-sm transition-all'
+              : 'px-4 py-1.5 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer'">
+          Batch Mode
+        </button>
+      </div>
+    </div>
+
+    @if (activeTab() === 'single') {
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- ================= LEFT COLUMN: CONTROLS & CALIBRATIONS ================= -->
+      <section class="lg:col-span-5 space-y-6">
+        <!-- Card 3: File Selection or Custom Vector Swapping (Only relevant in Single Workspace) -->
+        @if (activeTab() === 'single') {
+        <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm">
+          <h2
+            class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 mb-3 flex items-center gap-2">
+            <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">attachment</mat-icon>
+            Choose Preview Icon
+          </h2>
+          @if (!singleUploadedFile(); as file) {
+          <!-- Upload Custom Box with Drag and Drop -->
+          <div (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+            [class]="isDragging()
+                ? 'border-2 border-dashed border-emerald-500 dark:border-emerald-400 bg-emerald-500/5 p-6 rounded-xl text-center transition-all'
+                : 'border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 p-6 rounded-xl text-center bg-slate-50/50 dark:bg-slate-900/40 transition-all cursor-pointer'">
+            <input type="file" id="file-single-upload" accept="image/*" (change)="onFileChange($event)"
+              class="hidden" />
+            <label for="file-single-upload" class="cursor-pointer block">
+              <mat-icon class="text-3xl text-emerald-500/60 dark:text-emerald-400/60">cloud_upload</mat-icon>
+              <p class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-2">
+                Drag & drop here, or <span class="text-emerald-500 dark:text-emerald-400 underline">browse</span>
+              </p>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                Supports SVG, PNG, JPG, WEBP (Max 5MB)
+              </p>
+            </label>
+          </div>
+        }
+
+          <!-- Active Custom Upload Tag -->
+          @if (singleUploadedFile(); as file) {
+          <div
+            class="mt-4 flex items-center justify-between p-2.5 rounded-xl border border-dashed border-emerald-500/30 bg-emerald-500/5 text-xs">
+            <div class="flex items-center gap-2 truncate">
+              <mat-icon class="text-emerald-500">check_circle</mat-icon>
+              <div class="truncate text-left">
+                <p class="font-semibold text-slate-700 dark:text-slate-200 truncate">{{ file.name }}</p>
+                <p class="text-[10px] text-slate-400 dark:text-slate-500 uppercase">{{ file.isSvg ? 'Vector SVG' :
+                  'Raster Image' }}</p>
+              </div>
+            </div>
+            <button (click)="clearSingleUploaded()"
+              class="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg text-slate-500 hover:text-rose-500 transition-colors cursor-pointer"
+              title="Remove uploaded image">
+              <mat-icon class="text-sm block">delete</mat-icon>
+            </button>
+          </div>
+          }
+        </div>
+        }
+        <!-- Card 1: Target Color Picker & Inputs -->
+        <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm">
+          <h2
+            class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 mb-4 flex items-center gap-2">
+            <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">palette</mat-icon>
+            Target Color Input
+          </h2>
+
+          <!-- Grid: Color Picker Box & Live HEX Input -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+            <!-- Interactive Visual Swatch Picker -->
+            <div class="sm:col-span-4 flex flex-col items-center">
+              <div
+                class="relative w-20 h-20 rounded-2xl overflow-hidden shadow-inner ring-4 ring-slate-100 dark:ring-slate-800/60 transition-all duration-300">
+                <input type="color" [value]="targetColorHex()" (input)="onPickerInput($any($event.target).value)"
+                  id="picker-target-color"
+                  class="absolute inset-0 w-[140%] h-[140%] -translate-x-[15%] -translate-y-[15%] border-0 cursor-pointer object-cover" />
+              </div>
+              <span class="text-[10px] text-slate-400 dark:text-slate-400 mt-1.5 font-mono">Click Swatch</span>
+            </div>
+
+            <!-- Numerical & Hex Text Inputs -->
+            <div class="sm:col-span-8 space-y-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1" for="input-hex">
+                  HEX Value
+                </label>
+                <div class="relative rounded-xl shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span class="text-slate-400 dark:text-slate-500 font-mono">#</span>
+                  </div>
+                  <input type="text" id="input-hex" [value]="hexNoHash()"
+                    (input)="onHexInput($any($event.target).value)" maxlength="7"
+                    class="block w-full pl-8 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl font-mono text-sm uppercase bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 focus:border-emerald-500"
+                    placeholder="3B82F6" />
+                </div>
+              </div>
+
+              <!-- Live Channel Previews -->
+              <div class="grid grid-cols-3 gap-2">
+                <div>
+                  <span class="block text-[10px] font-bold uppercase text-red-500 tracking-wider mb-0.5">Red</span>
+                  <input type="number" min="0" max="255" [value]="targetR()"
+                    (input)="onRgbInput('r', $any($event.target).value)"
+                    class="block w-full text-center py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                </div>
+                <div>
+                  <span
+                    class="block text-[10px] font-bold uppercase text-emerald-500 tracking-wider mb-0.5">Green</span>
+                  <input type="number" min="0" max="255" [value]="targetG()"
+                    (input)="onRgbInput('g', $any($event.target).value)"
+                    class="block w-full text-center py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                </div>
+                <div>
+                  <span class="block text-[10px] font-bold uppercase text-emerald-500 tracking-wider mb-0.5">emerald</span>
+                  <input type="number" min="0" max="255" [value]="targetB()"
+                    (input)="onRgbInput('b', $any($event.target).value)"
+                    class="block w-full text-center py-1 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Card 4: Fine-Tuning Sliders manual calibration -->
+        <div
+          class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm relative overflow-hidden">
+
+          <div class="flex items-center justify-between mb-4">
+            <h2
+              class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 flex items-center gap-2">
+              <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">tune</mat-icon>
+              Fine-Tune Filter
+            </h2>
+
+            <!-- Status Indicator Badge -->
+            @if (isManualMode()) {
+            <span
+              class="text-[10px] px-2 py-0.5 font-semibold rounded-full border border-amber-500/20 bg-amber-500/10 text-amber-500 flex items-center gap-1 animate-pulse">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Custom Sliders
+            </span>
+            } @else {
+            <span
+              class="text-[10px] px-2 py-0.5 font-semibold rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-500 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-505"></span> Math Match
+            </span>
+            }
+          </div>
+
+          <p class="text-xs text-slate-400 dark:text-slate-500 mb-6">
+            Adjust sliders below to fine-tune. Any manual change overrides the auto-computed match.
+          </p>
+
+          <!-- Sliders List -->
+          <div class="space-y-4">
+            <!-- Invert Slider -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1">
+                <span class="text-slate-600 dark:text-slate-400 font-semibold">Invert</span>
+                <span
+                  class="text-emerald-605 dark:text-emerald-400 font-bold border border-slate-100 dark:border-slate-800 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-900/60">{{
+                  sliderInvert() | number:'1.0-0' }}%</span>
+              </div>
+              <input type="range" min="0" max="100" step="1" [value]="sliderInvert()"
+                (input)="onSliderChange('invert', $any($event.target).value)"
+                class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00d492]" />
+            </div>
+
+            <!-- Sepia Slider -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1">
+                <span class="text-slate-600 dark:text-slate-400 font-semibold">Sepia</span>
+                <span
+                  class="text-emerald-605 dark:text-emerald-400 font-bold border border-slate-100 dark:border-slate-800 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-900/60">{{
+                  sliderSepia() | number:'1.0-0' }}%</span>
+              </div>
+              <input type="range" min="0" max="100" step="1" [value]="sliderSepia()"
+                (input)="onSliderChange('sepia', $any($event.target).value)"
+                class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00d492]" />
+            </div>
+
+            <!-- Saturate Slider -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1">
+                <span class="text-slate-600 dark:text-slate-400 font-semibold">Saturate</span>
+                <span
+                  class="text-emerald-605 dark:text-emerald-400 font-bold border border-slate-100 dark:border-slate-800 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-900/60">{{
+                  sliderSaturate() | number:'1.0-0' }}%</span>
+              </div>
+              <input type="range" min="0" max="3000" step="10" [value]="sliderSaturate()"
+                (input)="onSliderChange('saturate', $any($event.target).value)"
+                class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00d492]" />
+            </div>
+
+            <!-- Hue Rotate Slider -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1">
+                <span class="text-slate-600 dark:text-slate-400 font-semibold">Hue Rotate</span>
+                <span
+                  class="text-emerald-605 dark:text-emerald-400 font-bold border border-slate-100 dark:border-slate-800 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-900/60">{{
+                  sliderHueRotate() | number:'1.0-0' }}deg</span>
+              </div>
+              <input type="range" min="0" max="360" step="1" [value]="sliderHueRotate()"
+                (input)="onSliderChange('hueRotate', $any($event.target).value)"
+                class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00d492]" />
+            </div>
+
+            <!-- Brightness Slider -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1">
+                <span class="text-slate-600 dark:text-slate-400 font-semibold">Brightness</span>
+                <span
+                  class="text-emerald-605 dark:text-emerald-400 font-bold border border-slate-100 dark:border-slate-800 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-900/60">{{
+                  sliderBrightness() | number:'1.0-0' }}%</span>
+              </div>
+              <input type="range" min="0" max="300" step="5" [value]="sliderBrightness()"
+                (input)="onSliderChange('brightness', $any($event.target).value)"
+                class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00d492]" />
+            </div>
+
+            <!-- Contrast Slider -->
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono mb-1">
+                <span class="text-slate-600 dark:text-slate-400 font-semibold">Contrast</span>
+                <span
+                  class="text-emerald-605 dark:text-emerald-400 font-bold border border-slate-100 dark:border-slate-800 px-1.5 py-0.5 rounded bg-slate-50 dark:bg-slate-900/60">{{
+                  sliderContrast() | number:'1.0-0' }}%</span>
+              </div>
+              <input type="range" min="0" max="300" step="5" [value]="sliderContrast()"
+                (input)="onSliderChange('contrast', $any($event.target).value)"
+                class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#00d492]" />
+            </div>
+          </div>
+
+          <!-- Snap back button (only visible if modified manually) -->
+          @if (isManualMode()) {
+          <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/80">
+            <button (click)="resetToBestMatch()"
+              class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-medium rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md shadow-emerald-500/10 cursor-pointer">
+              <mat-icon class="text-sm">auto_patterns</mat-icon>
+              Reset To Matched Target
+            </button>
+          </div>
+          }
+        </div>
+        <!-- Card 2: Preset Developer & Icon Brand Colors -->
+        <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm">
+          <h2
+            class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 mb-4 flex items-center gap-2">
+            <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">bookmark</mat-icon>
+            Brand Colors (Preset)
+          </h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+            <button (click)="selectPreset('#24292e')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #24292e"></span>
+              <span class="text-xs font-medium truncate">GitHub</span>
+            </button>
+            <button (click)="selectPreset('#0a66c2')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #0a66c2"></span>
+              <span class="text-xs font-medium truncate">LinkedIn</span>
+            </button>
+            <button (click)="selectPreset('#1877f2')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #1877f2"></span>
+              <span class="text-xs font-medium truncate">Facebook</span>
+            </button>
+            <button (click)="selectPreset('#ea4335')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #ea4335"></span>
+              <span class="text-xs font-medium truncate">Google Red</span>
+            </button>
+            <button (click)="selectPreset('#4285f4')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #4285f4"></span>
+              <span class="text-xs font-medium truncate">Google emerald</span>
+            </button>
+            <button (click)="selectPreset('#0f1419')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #0f1419"></span>
+              <span class="text-xs font-medium truncate">X (Twitter)</span>
+            </button>
+            <button (click)="selectPreset('#5865f2')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #5865f2"></span>
+              <span class="text-xs font-medium truncate">Discord</span>
+            </button>
+            <button (click)="selectPreset('#4a154b')"
+              class="flex items-center gap-2 px-3 py-2 border border-slate-100 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+              <span class="w-3.5 h-3.5 rounded-full block border border-black/10 shadow-sm"
+                style="background-color: #4a154b"></span>
+              <span class="text-xs font-medium truncate">Slack</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= RIGHT COLUMN: INTERACTIVE PREVIEWS & WORKSPACE ================= -->
+      <section class="lg:col-span-7 space-y-6">
+
+        <!-- Card 1: Interactive Preview Canvas & testing backdrops -->
+        <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm">
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+            <div>
+              <h2
+                class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 flex items-center gap-2">
+                <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">visibility</mat-icon>
+                Live Preview Area
+              </h2>
+              <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                Adjust backdrops below to verify contrast against lighter or darker designs.
+              </p>
+            </div>
+
+            <!-- BG Selector and Comparison Radio Buttons -->
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- Comparison type toggles -->
+              <div class="flex items-center gap-0.5 bg-slate-100 dark:bg-slate-900 p-1 rounded-lg text-xs">
+                <button (click)="comparisonType.set('side-by-side')" [class]="comparisonType() === 'side-by-side'
+                      ? 'px-2 py-1 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-medium'
+                      : 'px-2 py-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer'">
+                  Side-by-Side
+                </button>
+                <button (click)="comparisonType.set('overlay')" [class]="comparisonType() === 'overlay'
+                      ? 'px-2 py-1 rounded bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-medium'
+                      : 'px-2 py-1 text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer'">
+                  Split Slider
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backdrop selection strip -->
+          <div
+            class="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 mb-5 border border-slate-200/40 dark:border-slate-700/40">
+            <span class="text-xs font-semibold text-slate-600 dark:text-slate-400">Background Design:</span>
+            <div class="flex items-center gap-2.5">
+              <!-- Preset White -->
+              <button (click)="setBgType('white')"
+                [class]="bgType() === 'white'
+                    ? 'w-6 h-6 rounded-lg bg-white border-2 border-emerald-500 shadow-sm cursor-pointer'
+                    : 'w-6 h-6 rounded-lg bg-white border border-slate-300 dark:border-slate-700 shadow-sm hover:scale-105 transition-all cursor-pointer'"
+                title="White background"></button>
+
+              <!-- Preset Black -->
+              <button (click)="setBgType('black')"
+                [class]="bgType() === 'black'
+                    ? 'w-6 h-6 rounded-lg bg-black border-2 border-emerald-500 shadow-sm cursor-pointer'
+                    : 'w-6 h-6 rounded-lg bg-black border border-slate-300 dark:border-slate-700 shadow-sm hover:scale-105 transition-all cursor-pointer'"
+                title="Black background"></button>
+
+              <!-- Custom Picker -->
+              <div class="relative flex items-center gap-1.5">
+                <div
+                  class="w-6 h-6 rounded-lg overflow-hidden border border-slate-300 dark:border-slate-700 shadow-sm relative group">
+                  <input type="color" [value]="customBgColor()" (input)="setCustomBgColor($any($event.target).value)"
+                    class="absolute inset-0 w-[140%] h-[140%] -translate-x-[15%] -translate-y-[15%] cursor-pointer object-cover"
+                    title="Custom color fill" />
+                </div>
+                <input type="text" [value]="customBgColor()" (input)="setCustomBgColor($any($event.target).value)"
+                  class="w-16 border-0 p-0 text-[10px] font-mono uppercase bg-transparent text-slate-700 dark:text-slate-300 focus:outline-none"
+                  placeholder="#121212" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Actual Visual Canvas -->
+          <div
+            class="relative rounded-2xl overflow-hidden min-h-[260px] flex items-center justify-center p-8 border border-slate-200/50 dark:border-slate-700 transition-all duration-200"
+            [style.background-color]="getBgStyle()">
+            <!-- Transparency Grid overlay (especially helpful for lighter backgrounds) -->
+            <div class="absolute inset-0 opacity-[0.03] dark:opacity-[0.015] pointer-events-none"
+              style="background-image: radial-gradient(#888 25%, transparent 25%), radial-gradient(#888 25%, #e5e5f7 25%); background-size: 20px 20px; background-position: 0 0, 10px 10px;">
+            </div>
+
+            <!-- Option A: Side by Side comparative preview mode -->
+            @if (comparisonType() === 'side-by-side') {
+            <div class="grid grid-cols-2 gap-8 sm:gap-16 w-full max-w-xl text-center z-10">
+              <!-- Left side: Original raw starting black icon -->
+              <div class="space-y-3 flex flex-col items-center">
+                <span
+                  class="text-[10px] uppercase tracking-wider font-bold text-slate-400 bg-slate-500/10 px-2 py-0.5 rounded">Original
+                  Black</span>
+                <div
+                  class="p-6 rounded-xl border border-slate-400/10 bg-slate-500/5 aspect-square flex items-center justify-center w-32 h-32 relative">
+                  <img [src]="activeSingleImageUrl()"
+                    class="max-w-full max-h-full object-contain saturate(100%)"
+                    alt="Original Black Icon" referrerpolicy="no-referrer" />
+                </div>
+                <span class="text-xs font-mono text-slate-400">filter: none;</span>
+              </div>
+
+              <!-- Right side: Generative filtered icon -->
+              <div class="space-y-3 flex flex-col items-center">
+                <span
+                  class="text-[10px] uppercase tracking-wider font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">Filtered
+                  Output</span>
+                <div
+                  class="p-6 rounded-xl border border-emerald-400/20 bg-emerald-500/5 aspect-square flex items-center justify-center w-32 h-32 relative">
+                  <img [src]="activeSingleImageUrl()" [style.filter]="activeFilterString()"
+                    class="max-w-full max-h-full object-contain" alt="Filtered Target Design"
+                    referrerpolicy="no-referrer" />
+                </div>
+                <span class="text-xs font-mono text-emerald-400 dark:text-emerald-400 truncate max-w-[128px]"
+                  [title]="activeFilterString()">Active Filters</span>
+              </div>
+            </div>
+            }
+
+            <!-- Option B: Slider Swipe comparative split overlay mode -->
+            @if (comparisonType() === 'overlay') {
+            <div class="relative w-48 h-48 sm:w-64 sm:h-64 select-none z-10 flex items-center justify-center">
+              <!-- Container background -->
+              <div
+                class="absolute inset-0 border border-slate-500/15 rounded-2xl bg-white/5 backdrop-blur-[1px] overflow-hidden">
+
+                <!-- Original Image (Always underneath, taking upfull card size, rendered black) -->
+                <div class="absolute inset-x-0 inset-y-0 flex items-center justify-center p-8 select-none">
+                  <img [src]="activeSingleImageUrl()"
+                    class="w-full h-full object-contain filter brightness-[0] saturate(100%)" alt="Background Original"
+                    referrerpolicy="no-referrer" />
+                </div>
+
+                <!-- Filtered Image (In a width-clipped overlay layer container matching sliderPosition) -->
+                <div
+                  class="absolute top-0 bottom-0 left-0 right-0 overflow-hidden select-none transition-all duration-75"
+                  [style.clip-path]="'polygon(0 0, ' + sliderPosition() + '% 0, ' + sliderPosition() + '% 100%, 0 100%)'">
+                  <div class="w-full h-full flex items-center justify-center p-8 bg-black/10 dark:bg-white/5">
+                    <img [src]="activeSingleImageUrl()" [style.filter]="activeFilterString()"
+                      class="w-[84%] h-[84%] object-contain" alt="Foreground Filtered" referrerpolicy="no-referrer" />
+                  </div>
+                </div>
+
+                <!-- Slide splitter element line -->
+                <div class="absolute top-0 bottom-0 w-0.5 bg-emerald-500 dark:bg-emerald-400 z-20 pointer-events-none"
+                  [style.left]="sliderPosition() + '%'">
+                  <div
+                    class="absolute top-1/2 -translate-y-1/2 -translate-x-[40%] bg-emerald-500 dark:bg-emerald-400 text-white p-1 rounded-full shadow-lg flex items-center justify-center border border-white">
+                    <mat-icon class="text-xs block scale-75">unfold_more</mat-icon>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Position input overlay controller underneath -->
+              <input type="range" min="0" max="100" [value]="sliderPosition()"
+                (input)="sliderPosition.set($any($event.target).value)"
+                class="absolute inset-0 w-full h-full opacity-50 cursor-ew-resize z-30 accent-emerald-500 rounded-lg appearance-none bg-transparent" />
+            </div>
+            }
+          </div>
+
+          <!-- Info warning about solid black starting requirements -->
+          <div
+            class="mt-4 p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 flex items-start gap-2 text-[10px] text-slate-500 dark:text-slate-400">
+            <mat-icon class="text-emerald-500 dark:text-emerald-400 text-sm leading-none shrink-0 mt-0.5">info</mat-icon>
+            <p>
+              <strong>Developer Guide:</strong> CSS filters on this worksheet transform a <strong>solid black icon
+                (#000000)</strong> into your selected target color. If starting with a pre-colored logo, append <code
+                class="font-mono bg-slate-100/80 dark:bg-slate-800 px-1 py-0.5 rounded text-emerald-600 dark:text-emerald-400">brightness(0%) saturate(100%)</code>
+              to your CSS prior to these parameters.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2: Match Accuracy Dashboard metrics -->
+        <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm">
+          <h2
+            class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 mb-4 flex items-center gap-2">
+            <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">assessment</mat-icon>
+            Accuracy Evaluation
+          </h2>
+
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+
+            <!-- Left metrics circle block -->
+            <div
+              class="sm:col-span-5 flex flex-col items-center justify-center text-center p-4 border border-slate-200 dark:border-slate-750 bg-slate-50 dark:bg-slate-900 rounded-2xl">
+              <span class="text-xs text-slate-400 dark:text-slate-500 font-semibold mb-1">Match Accuracy Rating</span>
+              <div class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white font-mono">
+                {{ matchAccuracy().percentage }}%
+              </div>
+
+              <!-- Matching health badge -->
+              <div
+                [class]="'mt-3 px-3 py-1 rounded-full text-xs font-semibold border flex items-center gap-1 ' + matchAccuracy().ratingColor">
+                {{ matchAccuracy().rating }}
+              </div>
+            </div>
+
+            <!-- Right Swatch comparison blocks -->
+            <div class="sm:col-span-7 space-y-4">
+              <div class="grid grid-cols-2 gap-3 text-center">
+                <!-- Target Color Check -->
+                <div class="p-2 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2">
+                  <span class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase">Target
+                    Goal</span>
+                  <div class="w-full h-10 rounded-lg shadow-sm border border-black/5"
+                    [style.background-color]="targetColorHex()"></div>
+                  <p class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200">{{ targetColorHex() }}</p>
+                </div>
+
+                <!-- Generated Match Check -->
+                <div class="p-2 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2">
+                  <span class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase">Filter
+                    Result</span>
+                  <div class="w-full h-10 rounded-lg shadow-sm border border-black/5"
+                    [style.background-color]="matchedRgbColor().toHex()"></div>
+                  <p class="text-xs font-mono font-bold text-slate-800 dark:text-slate-200 uppercase">{{
+                    matchedRgbColor().toHex() }}</p>
+                </div>
+              </div>
+
+              <!-- Loss metrics details -->
+              <div
+                class="p-3 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-slate-700 rounded-xl flex items-center justify-between text-xs font-mono">
+                <span class="text-slate-500 dark:text-slate-400">Color Distance (CIE Delta E):</span>
+                <span class="font-bold text-emerald-500 dark:text-emerald-400">{{ matchAccuracy().deltaE }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Code Export Console with tabs -->
+        <div
+          class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm relative">
+          <h2
+            class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 mb-4 flex items-center gap-2">
+            <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">code_off</mat-icon>
+            Export Generated CSS
+          </h2>
+
+          <!-- Grid of multi-copy options stacked side-by-side to minimize friction -->
+          <div class="space-y-4">
+            <!-- Item A: Raw filter value -->
+            <div class="space-y-1.5 text-left">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-400">Standard Filter Value</span>
+                <button (click)="copyToClipboard('filter: ' + activeFilterString() + ';', 'raw-css')" id="copy-raw-css"
+                  class="text-xs text-emerald-500 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer font-medium">
+                  @if (copiedState()['raw-css']) {
+                  <mat-icon class="text-xs leading-none scale-75 block text-emerald-500">done</mat-icon>
+                  <span class="text-emerald-500">Copied!</span>
+                  } @else {
+                  <mat-icon class="text-xs leading-none scale-75 block">content_copy</mat-icon>
+                  <span>Copy Parameter</span>
+                  }
+                </button>
+              </div>
+              <div
+                class="p-3 rounded-xl font-mono text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-slate-700 select-all overflow-x-auto whitespace-nowrap">
+                <span class="text-emerald-600 dark:text-emerald-400">filter:</span> {{ activeFilterString() }};
+              </div>
+            </div>
+
+            <!-- Item B: Full CSS Class -->
+            <div class="space-y-1.5 text-left">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-400">CSS Class Declaration</span>
+                <button
+                  (click)="copyToClipboard('.colorize-icon {\n  filter: ' + activeFilterString() + ';\n}', 'class-css')"
+                  id="copy-class-css"
+                  class="text-xs text-emerald-500 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer font-medium">
+                  @if (copiedState()['class-css']) {
+                  <mat-icon class="text-xs leading-none scale-75 block text-emerald-500">done</mat-icon>
+                  <span class="text-emerald-500">Copied!</span>
+                  } @else {
+                  <mat-icon class="text-xs leading-none scale-75 block">content_copy</mat-icon>
+                  <span>Copy Class Block</span>
+                  }
+                </button>
+              </div>
+              <pre
+                class="p-3 rounded-xl font-mono text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-slate-700 select-all overflow-x-auto text-left"><span class="text-emerald-600 dark:text-emerald-400">.colorize-icon</span> &#123;
+  <span class="text-emerald-600 dark:text-emerald-400">filter:</span> {{ activeFilterString() }};
+&#125;</pre>
+            </div>
+
+            <!-- Item C: CSS Variable -->
+            <div class="space-y-1.5 text-left">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-600 dark:text-slate-400">CSS Variables Theme
+                  Parameter</span>
+                <button (click)="copyToClipboard('--icon-filter: ' + activeFilterString() + ';', 'variable-css')"
+                  id="copy-var-css"
+                  class="text-xs text-emerald-500 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer font-medium">
+                  @if (copiedState()['variable-css']) {
+                  <mat-icon class="text-xs leading-none scale-75 block text-emerald-500">done</mat-icon>
+                  <span class="text-emerald-500">Copied!</span>
+                  } @else {
+                  <mat-icon class="text-xs leading-none scale-75 block">content_copy</mat-icon>
+                  <span>Copy Variable</span>
+                  }
+                </button>
+              </div>
+              <div
+                class="p-3 rounded-xl font-mono text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-slate-700 select-all overflow-x-auto whitespace-nowrap">
+                <span class="text-orange-500">--icon-filter:</span> {{ activeFilterString() }};
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: SVG Optimization Mode Recommendations (Only active if vector SVG is shown) -->
+        @if (activeSvgDetails(); as svgInfo) {
+        <div
+          class="p-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/10 dark:bg-emerald-950/20 shadow-sm relative overflow-hidden">
+          <div class="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+
+          <div class="flex items-center gap-2 mb-3 text-emerald-600 dark:text-emerald-400">
+            <mat-icon>auto_awesome</mat-icon>
+            <h2 class="text-xs font-bold tracking-wider uppercase">SVG Vector Optimization Mode</h2>
+          </div>
+
+          <div class="text-xs text-slate-600 dark:text-slate-300 space-y-3">
+            <p>
+              <strong>Alternative Recommendation:</strong> We've detected an SVG vector icon! Generating CSS Filters is
+              excellent for compatibility with external asset hosts. However, if you are embedding SVG directly in your
+              codebase, modifying the <code
+                class="font-mono bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 px-1 py-0.5 rounded">fill</code>
+              attribute is cleaner, uses less CPU, and yields 100% exact math matches.
+            </p>
+
+            <!-- Comparative Playground in real time -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <!-- Left interactive attribute list -->
+              <div
+                class="p-3 bg-white dark:bg-slate-900 border border-emerald-100/25 dark:border-emerald-900/60 rounded-xl space-y-2">
+                <span class="text-[10px] text-emerald-550 font-bold uppercase tracking-wider block">Example SVG
+                  Nodes</span>
+                <div class="space-y-1 font-mono text-xs">
+                  <div class="flex items-center justify-between p-1 bg-slate-50 dark:bg-slate-950 rounded text-[11px]">
+                    <span class="truncate text-slate-500">&lt;path fill=...&gt;</span>
+                    <button (click)="copyToClipboard(svgInfo.fillExample, 'svg-fill')"
+                      class="text-emerald-550 dark:text-emerald-400 hover:underline shrink-0 text-[10px] ml-2 cursor-pointer font-medium">
+                      @if (copiedState()['svg-fill']) { Copied! } @else { Copy }
+                    </button>
+                  </div>
+                  <div
+                    class="p-2 bg-slate-50 dark:bg-slate-950 rounded text-slate-600 dark:text-slate-400 text-[11px] overflow-hidden truncate">
+                    {{ svgInfo.fillExample }}
+                  </div>
+                  <div
+                    class="p-2 bg-slate-50 dark:bg-slate-950 rounded text-slate-600 dark:text-slate-400 text-[11px] overflow-hidden truncate">
+                    {{ svgInfo.strokeExample }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right direct visual target -->
+              <div
+                class="p-3 bg-white dark:bg-slate-900 border border-emerald-100/25 dark:border-emerald-900/60 rounded-xl flex flex-col justify-between">
+                <div>
+                  <span class="text-[10px] text-emerald-550 font-bold uppercase tracking-wider block mb-1">Direct SVG Fill
+                    Playground</span>
+                  <p class="text-[10px] text-slate-400">Optimized directly via XML fill parameters (100.0% accurate):
+                  </p>
+                </div>
+                <div class="flex items-center gap-3.5 mt-2">
+                  <div class="w-12 h-12 flex items-center justify-center p-1 bg-slate-50 dark:bg-slate-950 rounded-lg">
+                    <img [src]="svgInfo.optimizedSvgDataUrl" class="w-full h-full object-contain"
+                      alt="Optimized SVG Direct Fill" referrerpolicy="no-referrer" />
+                  </div>
+                  <button (click)="copyToClipboard(svgInfo.optimizedSvgCode, 'svg-code')"
+                    class="px-3 py-1.5 bg-emerald-55 dark:bg-emerald-950 border border-emerald-200/50 hover:bg-emerald-100/50 text-emerald-600 dark:text-emerald-450 text-[11px] font-semibold rounded-lg flex items-center gap-1 cursor-pointer">
+                    @if (copiedState()['svg-code']) { Copied! } @else { Copy Complete SVG XML }
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Card 5: CSS Filter Browser Compatibility -->
+        <div class="p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm">
+          <h2
+            class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 mb-4 flex items-center gap-2">
+            <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">devices</mat-icon>
+            Browser Compatibility Matrix
+          </h2>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <!-- Chrome -->
+            <div class="p-3 text-center border border-slate-200 dark:border-slate-700 rounded-xl">
+              <div class="flex items-center justify-center gap-1.5 text-emerald-500 mb-1">
+                <mat-icon class="text-sm scale-90">check_circle</mat-icon>
+                <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">Chrome</span>
+              </div>
+              <p class="text-[10px] font-mono text-slate-400">Full Support (v18+)</p>
+            </div>
+
+            <!-- Firefox -->
+            <div class="p-3 text-center border border-slate-200 dark:border-slate-700 rounded-xl">
+              <div class="flex items-center justify-center gap-1.5 text-emerald-500 mb-1">
+                <mat-icon class="text-sm scale-90">check_circle</mat-icon>
+                <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">Firefox</span>
+              </div>
+              <p class="text-[10px] font-mono text-slate-400">Full Support (v35+)</p>
+            </div>
+
+            <!-- Safari -->
+            <div class="p-3 text-center border border-slate-200 dark:border-slate-700 rounded-xl">
+              <div class="flex items-center justify-center gap-1.5 text-emerald-500 mb-1">
+                <mat-icon class="text-sm scale-90">check_circle</mat-icon>
+                <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">Safari</span>
+              </div>
+              <p class="text-[10px] font-mono text-slate-400">Full Support (v6+)</p>
+            </div>
+
+            <!-- Edge -->
+            <div class="p-3 text-center border border-slate-200 dark:border-slate-700 rounded-xl">
+              <div class="flex items-center justify-center gap-1.5 text-emerald-500 mb-1">
+                <mat-icon class="text-sm scale-90">check_circle</mat-icon>
+                <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">Edge</span>
+              </div>
+              <p class="text-[10px] font-mono text-slate-400">Full Support (v12+)</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+    }
+
+    @if (activeTab() === 'batch') {
+    <div class="space-y-6">
+
+      
+      <!-- Section: Drop Zone or Demo triggers -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+        <!-- Box A: Upload Panel -->
+        <div
+          class="md:col-span-8 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm text-center">
+          <div (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+            [class]="isDragging()
+                ? 'border-2 border-dashed border-emerald-500 dark:border-emerald-400 bg-emerald-500/5 p-8 rounded-xl transition-all'
+                : 'border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 p-8 rounded-xl bg-slate-50/50 dark:bg-slate-950/20 transition-all cursor-pointer'">
+            <input type="file" id="file-batch-upload" accept="image/*" multiple (change)="onFileChange($event)"
+              class="hidden" />
+            <label for="file-batch-upload" class="cursor-pointer block">
+              <mat-icon class="text-4xl text-emerald-500/65 dark:text-emerald-400/65">collections</mat-icon>
+              <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-2">
+                Select Multiple Files or drag them here
+              </p>
+              <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                Supports SVGs, PNGs, JPGs, JPGs, WEBP (Combine up to 20 images)
+              </p>
+            </label>
+          </div>
+        </div>
+
+        <!-- Box B: Batch Workspace quick controls -->
+        <div
+          class="md:col-span-4 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm flex flex-col justify-between gap-4">
+          <div class="space-y-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Batch Workspace Controls</h3>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Don't have files? Try our pre-loaded vector pack to play with batch processing instantly:
+            </p>
+          </div>
+
+          <div class="space-y-2.5">
+            <button (click)="loadBatchDemo()"
+              class="w-full py-2.5 bg-slate-50 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+              <mat-icon>burst_mode</mat-icon>
+              Load Developer Vector Pack
+            </button>
+
+            @if (batchUploadedFiles().length > 0) {
+            <button (click)="clearBatchUploaded()"
+              class="w-full py-2 border border-rose-300/30 hover:bg-rose-500/10 hover:text-rose-600 text-slate-600 dark:text-slate-300 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+              <mat-icon class="text-base text-rose-500">delete_sweep</mat-icon>
+              Clear Batch Board
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Batch Control Deck -->
+      <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1E293B] shadow-sm">
+        <div class="flex items-center gap-2 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <mat-icon class="text-emerald-500">settings_input_component</mat-icon>
+          <h2 class="text-sm font-bold text-slate-800 dark:text-slate-200">Batch Control Deck</h2>
+          <span
+            class="text-[10px] px-2.5 py-1 font-semibold rounded-full border border-emerald-500/10 bg-emerald-500/5 text-emerald-500 ml-auto select-none">
+            Adjustments apply dynamically to all batch images
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 text-left">
+          <!-- Column 1: Target Color Picker & Inputs -->
+          <div class="space-y-4">
+            <h3
+              class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 flex items-center gap-2">
+              <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">palette</mat-icon>
+              Target Color Input
+            </h3>
+
+            <div class="flex items-center gap-4">
+              <div
+                class="relative w-16 h-16 rounded-xl overflow-hidden shadow-inner ring-4 ring-slate-100 dark:ring-slate-800/60 shrink-0 transition-all duration-300">
+                <input type="color" [value]="targetColorHex()" (input)="onPickerInput($any($event.target).value)"
+                  id="batch-picker-target-color"
+                  class="absolute inset-0 w-[140%] h-[140%] -translate-x-[15%] -translate-y-[15%] border-0 cursor-pointer object-cover" />
+              </div>
+
+              <div class="flex-1">
+                <label class="block text-[10px] font-semibold text-slate-500 dark:text-slate-400 uppercase mb-1"
+                  for="batch-input-hex">
+                  HEX Value
+                </label>
+                <div class="relative rounded-lg shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none">
+                    <span class="text-slate-450 dark:text-slate-500 font-mono text-xs">#</span>
+                  </div>
+                  <input type="text" id="batch-input-hex" [value]="hexNoHash()"
+                    (input)="onHexInput($any($event.target).value)" maxlength="7"
+                    class="block w-full pl-6 pr-2 py-1.5 border border-slate-200 dark:border-slate-750 rounded-lg font-mono text-xs uppercase bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 focus:border-emerald-500"
+                    placeholder="3B82F6" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Channel Previews -->
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <span class="block text-[9px] font-bold uppercase text-red-500 tracking-wider mb-0.5">Red</span>
+                <input type="number" min="0" max="255" [value]="targetR()"
+                  (input)="onRgbInput('r', $any($event.target).value)"
+                  class="block w-full text-center py-1 border border-slate-200 dark:border-slate-750 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-900 focus:outline-none" />
+              </div>
+              <div>
+                <span class="block text-[9px] font-bold uppercase text-emerald-500 tracking-wider mb-0.5">Green</span>
+                <input type="number" min="0" max="255" [value]="targetG()"
+                  (input)="onRgbInput('g', $any($event.target).value)"
+                  class="block w-full text-center py-1 border border-slate-200 dark:border-slate-750 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-900 focus:outline-none" />
+              </div>
+              <div>
+                <span class="block text-[9px] font-bold uppercase text-emerald-500 tracking-wider mb-0.5">emerald</span>
+                <input type="number" min="0" max="255" [value]="targetB()"
+                  (input)="onRgbInput('b', $any($event.target).value)"
+                  class="block w-full text-center py-1 border border-slate-200 dark:border-slate-750 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-900 focus:outline-none" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Brand Colors Preset -->
+          <div class="space-y-3">
+            <h3
+              class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 flex items-center gap-2">
+              <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">bookmark</mat-icon>
+              Brand Colors (Preset)
+            </h3>
+
+            <div class="grid grid-cols-2 gap-1.5 max-h-[140px] overflow-y-auto pr-1">
+              <button (click)="selectPreset('#24292e')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #24292e"></span>
+                <span class="text-[10px] font-semibold truncate">GitHub</span>
+              </button>
+              <button (click)="selectPreset('#0a66c2')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #0a66c2"></span>
+                <span class="text-[10px] font-semibold truncate">LinkedIn</span>
+              </button>
+              <button (click)="selectPreset('#1877f2')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #1877f2"></span>
+                <span class="text-[10px] font-semibold truncate">Facebook</span>
+              </button>
+              <button (click)="selectPreset('#ea4335')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #ea4335"></span>
+                <span class="text-[10px] font-semibold truncate">Google Red</span>
+              </button>
+              <button (click)="selectPreset('#4285f4')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #4285f4"></span>
+                <span class="text-[10px] font-semibold truncate">Google emerald</span>
+              </button>
+              <button (click)="selectPreset('#0f1419')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #0f1419"></span>
+                <span class="text-[10px] font-semibold truncate">X</span>
+              </button>
+              <button (click)="selectPreset('#5865f2')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #5865f2"></span>
+                <span class="text-[10px] font-semibold truncate">Discord</span>
+              </button>
+              <button (click)="selectPreset('#4a154b')"
+                class="flex items-center gap-1.5 px-2 py-1.5 border border-slate-100 dark:border-slate-700/60 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition-all cursor-pointer">
+                <span class="w-2.5 h-2.5 rounded-full block border border-black/10 shrink-0"
+                  style="background-color: #4a154b"></span>
+                <span class="text-[10px] font-semibold truncate">Slack</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Column 3: Fine-Tune Filter -->
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <h3
+                class="text-xs font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400 flex items-center gap-2">
+                <mat-icon class="text-lg text-emerald-500 dark:text-emerald-400">tune</mat-icon>
+                Fine-Tune Filter
+              </h3>
+
+              @if (isManualMode()) {
+              <button (click)="resetToBestMatch()"
+                class="text-[10px] text-emerald-500 dark:text-emerald-400 font-bold hover:underline cursor-pointer flex items-center gap-0.5">
+                <mat-icon class="text-[11px] leading-none scale-75">auto_patterns</mat-icon> Reset
+              </button>
+              }
+            </div>
+
+            <!-- Compact scrollable Sliders list -->
+            <div class="grid grid-cols-2 gap-x-4 gap-y-2 max-h-[145px] overflow-y-auto pr-1">
+              <div>
+                <div class="flex items-center justify-between text-[10px] font-mono mb-0.5">
+                  <span class="text-slate-500 font-semibold">Invert</span>
+                  <span class="text-emerald-500 dark:text-emerald-400 font-bold">{{ sliderInvert() | number:'1.0-0' }}%</span>
+                </div>
+                <input type="range" min="0" max="100" step="1" [value]="sliderInvert()"
+                  (input)="onSliderChange('invert', $any($event.target).value)"
+                  class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-[10px] font-mono mb-0.5">
+                  <span class="text-slate-550 font-semibold">Sepia</span>
+                  <span class="text-emerald-500 dark:text-emerald-400 font-bold">{{ sliderSepia() | number:'1.0-0' }}%</span>
+                </div>
+                <input type="range" min="0" max="100" step="1" [value]="sliderSepia()"
+                  (input)="onSliderChange('sepia', $any($event.target).value)"
+                  class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-[10px] font-mono mb-0.5">
+                  <span class="text-slate-500 font-semibold">Saturate</span>
+                  <span class="text-emerald-500 dark:text-emerald-400 font-bold">{{ sliderSaturate() | number:'1.0-0'
+                    }}%</span>
+                </div>
+                <input type="range" min="0" max="3000" step="10" [value]="sliderSaturate()"
+                  (input)="onSliderChange('saturate', $any($event.target).value)"
+                  class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-[10px] font-mono mb-0.5">
+                  <span class="text-slate-500 font-semibold">Hue Rotate</span>
+                  <span class="text-emerald-500 dark:text-emerald-400 font-bold">{{ sliderHueRotate() | number:'1.0-0'
+                    }}&deg;</span>
+                </div>
+                <input type="range" min="0" max="360" step="1" [value]="sliderHueRotate()"
+                  (input)="onSliderChange('hueRotate', $any($event.target).value)"
+                  class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-[10px] font-mono mb-0.5">
+                  <span class="text-slate-500 font-semibold">Brightness</span>
+                  <span class="text-emerald-500 dark:text-emerald-400 font-bold">{{ sliderBrightness() | number:'1.0-0'
+                    }}%</span>
+                </div>
+                <input type="range" min="0" max="300" step="5" [value]="sliderBrightness()"
+                  (input)="onSliderChange('brightness', $any($event.target).value)"
+                  class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-[10px] font-mono mb-0.5">
+                  <span class="text-slate-500 font-semibold">Contrast</span>
+                  <span class="text-emerald-500 dark:text-emerald-400 font-bold">{{ sliderContrast() | number:'1.0-0'
+                    }}%</span>
+                </div>
+                <input type="range" min="0" max="300" step="5" [value]="sliderContrast()"
+                  (input)="onSliderChange('contrast', $any($event.target).value)"
+                  class="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Board Grid Area -->
+      @if (batchUploadedFiles().length > 0) {
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+            <mat-icon class="text-emerald-500">grid_on</mat-icon>
+            Batch Active Grid Preview ({{ batchUploadedFiles().length }} images loaded)
+          </h3>
+
+          <button (click)="copyToClipboard(activeFilterString(), 'batch-css')"
+            class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/10 cursor-pointer">
+            @if (copiedState()['batch-css']) {
+            <mat-icon class="text-xs">done</mat-icon>
+            <span>Active Filter Copied!</span>
+            } @else {
+            <mat-icon class="text-xs">content_copy</mat-icon>
+            <span>Copy Global CSS</span>
+            }
+          </button>
+        </div>
+
+        <!-- Previews Grid list -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          @for (file of batchUploadedFiles(); track file.id) {
+          <div
+            class="group border border-slate-200 dark:border-slate-700 rounded-2xl bg-white dark:bg-[#1E293B] overflow-hidden relative shadow-sm hover:shadow-md transition-all duration-200">
+
+            <!-- Top bar indicating filename and trash option -->
+            <div
+              class="px-3 py-2 border-b border-slate-150 dark:border-slate-700/60 bg-slate-50 dark:bg-slate-900 flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <span class="truncate pr-2 max-w-[120px]" [title]="file.name">{{ file.name }}</span>
+              <button (click)="removeBatchFile(file.id)"
+                class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded text-slate-400 hover:text-rose-500 transition-all cursor-pointer"
+                title="De-select file">
+                <mat-icon class="text-sm block">close</mat-icon>
+              </button>
+            </div>
+
+            <!-- Live Comparison Box with half splitter or hover -->
+            <div
+              class="relative bg-slate-950 dark:bg-slate-950 h-40 flex items-center justify-center p-6 text-center select-none">
+
+              <!-- Side-by-side inside the card grid -->
+              <div class="grid grid-cols-2 gap-4 w-full h-full relative items-center justify-items-center">
+                <!-- Before swatch (Black) -->
+                <div class="flex flex-col items-center gap-2">
+                  <span
+                    class="text-[7px] text-slate-400 font-bold uppercase tracking-wider bg-slate-800 px-1 py-0.5 rounded-sm">Original</span>
+                  <div class="w-16 h-16 flex items-center justify-center">
+                    <img [src]="file.dataUrl"
+                      class="max-w-full max-h-full object-contain saturate(100%)" alt="Before"
+                      referrerpolicy="no-referrer" />
+                  </div>
+                </div>
+
+                <!-- After swatch (Filtered) -->
+                <div class="flex flex-col items-center gap-2">
+                  <span
+                    class="text-[7px] text-emerald-400 font-bold uppercase tracking-wider bg-emerald-500/10 px-1 py-0.5 rounded-sm">Active
+                    Filter</span>
+                  <div class="w-16 h-16 flex items-center justify-center">
+                    <img [src]="file.dataUrl" [style.filter]="activeFilterString()"
+                      class="max-w-full max-h-full object-contain" alt="After" referrerpolicy="no-referrer" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer indicating direct status -->
+            <div class="p-3 bg-slate-50 dark:bg-slate-900 text-[10px] text-slate-400 flex justify-between items-center">
+              <span
+                class="uppercase font-semibold tracking-wider text-[8px] px-1.5 py-0.5 rounded border dark:border-slate-850">
+                {{ file.isSvg ? 'Vector SVG' : 'Raster image' }}
+              </span>
+              <span class="font-mono text-[9px] text-emerald-500 dark:text-emerald-400">Match active</span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Top informational panel for Batch conversion -->
+      <div
+        class="p-6 rounded-2xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/10 dark:bg-emerald-950/20 text-left">
+        <div class="flex items-center gap-3 mb-2 text-emerald-500 dark:text-emerald-400">
+          <mat-icon class="text-2xl">auto_awesome_motion</mat-icon>
+          <h2 class="text-base font-bold">Comprehensive Batch Filtering Mode</h2>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300">
+          Upload multiple image files at once to view the active filter applied across your entire icon/image set
+          concurrently in a grid layout. Ideal for verifying complete theme packs against your target color!
+        </p>
+
+        <!-- Active configuration quick lookup -->
+        <div class="flex flex-wrap items-center gap-3 mt-4">
+          <span class="text-xs font-semibold text-slate-500">Current Filter Applied:</span>
+          <span
+            class="px-2.5 py-1 text-[11px] font-semibold rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono select-all truncate max-w-sm"
+            [title]="activeFilterString()">
+            {{ activeFilterString() }}
+          </span>
+          <span class="text-xs font-semibold text-slate-500">Color Match:</span>
+          <span class="w-4 h-4 rounded border border-black/5 block shrink-0"
+            [style.background-color]="targetColorHex()"></span>
+          <span class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">{{ targetColorHex()
+            }}</span>
+        </div>
+      </div>
+    </div>
+    }
+
+  </div>
+</div>

@@ -17,6 +17,11 @@ import { JwtDecoderComponent } from '../../tools/jwt-decoder/jwt-decoder';
 import { Base64EncoderComponent } from '../../tools/base64-encoder/base64-encoder';
 import { AngularComponentGeneratorComponent } from '../../tools/angular-component-generator/angular-component-generator';
 import { UnixTimestampComponent } from '../../tools/unix-timestamp/unix-timestamp';
+import { UnitConverterComponent } from '../../tools/unit-converter/unit-converter';
+import { ImageFilterComponent } from '../../tools/image-filter/image-filter';
+import { SvgViewer } from '../../tools/svg-viewer/svg-viewer';
+import { ImageCompressoerComponent } from '../../tools/image-compressor/image-compressor';
+import { ImageTypeConverter } from '../../tools/image-type-converter/image-type-converter';
 import { FlexboxPlaygroundComponent } from '../../tools/flexbox-playground/flexbox-playground';
 import { TypescriptWorkspaceComponent } from '../../tools/typescript-workspace/typescript-workspace';
 import { RxjsVisualizerComponent } from '../../tools/rxjs-visualizer/rxjs-visualizer';
@@ -61,6 +66,11 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
     Base64EncoderComponent,
     AngularComponentGeneratorComponent,
     UnixTimestampComponent,
+    UnitConverterComponent,
+    SvgViewer,
+    ImageFilterComponent,
+    ImageCompressoerComponent,
+    ImageTypeConverter,
     FlexboxPlaygroundComponent,
     TypescriptWorkspaceComponent,
     RxjsVisualizerComponent,
@@ -229,7 +239,17 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
                 <app-angular-component-generator />
               } @else if (currentTool()?.id === 'unix-timestamp') {
                 <app-unix-timestamp />
-              } @else if (currentTool()?.id && [
+              } @else if (currentTool()?.id === 'unit-converter') {
+                <app-unit-converter />
+              }@else if (currentTool()?.id === 'image-filter') {
+                <app-image-filter />
+              } @else if (currentTool()?.id === 'image-compressor') {
+                <app-image-compressor />
+              }@else if (currentTool()?.id === 'svg-viewer') {
+                <app-svg-viewer-root />
+              }@else if (currentTool()?.id === 'image-type-converter') {
+                <app-image-type-converter />
+              }@else if (currentTool()?.id && [
                 'date-difference',
                 'age-calculator',
                 'date-add-subtract',
