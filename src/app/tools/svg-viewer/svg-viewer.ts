@@ -55,14 +55,16 @@ import { DEMO_SVGS } from '../../data/demo-templates';
         <!-- ================= LEFT SIDEBAR ================= -->
         <!-- Collapsible Tree navigation Panel / Multiple SVG Files Pane -->
         @if (isLeftSidebarOpen()) {
-          <div class="w-80 border-r border-zinc-800 flex flex-col bg-zinc-950 overflow-hidden shrink-0">
+          <div class="w-80 border-r border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 flex flex-col bg-white dark:bg-zinc-900 overflow-hidden shrink-0">
             <!-- Left Side Dual Tab Selector -->
-            <div class="flex border-b border-zinc-800 bg-slate-1000/40 p-1 shrink-0">
+            <div class="flex border-b border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-800/40 p-1 shrink-0">
               <button 
                 id="tab-layers-btn"
                 (click)="leftTab.set('layers')"
-                [class.bg-zinc-800]="leftTab() === 'layers'"
-                [class.text-white]="leftTab() === 'layers'"
+                [class.bg-emerald-100]="leftTab() === 'layers'"
+                [class.dark\:bg-emerald-900\/40]="leftTab() === 'layers'"
+                [class.text-emerald-700]="leftTab() === 'layers'"
+                [class.dark\:text-emerald-400]="leftTab() === 'layers'"
                 [class.text-slate-400]="leftTab() !== 'layers'"
                 class="cursor-pointer flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg transition-all flex items-center justify-center space-x-1.5 focus:outline-none select-none">
                 <mat-icon class="text-base w-4 h-4">auto_awesome_motion</mat-icon>
@@ -71,8 +73,10 @@ import { DEMO_SVGS } from '../../data/demo-templates';
               <button 
                 id="tab-files-btn"
                 (click)="leftTab.set('files')"
-                [class.bg-zinc-800]="leftTab() === 'files'"
-                [class.text-white]="leftTab() === 'files'"
+                [class.bg-emerald-100]="leftTab() === 'files'"
+                [class.dark\:bg-emerald-900\/40]="leftTab() === 'files'"
+                [class.text-emerald-700]="leftTab() === 'files'"
+                [class.dark\:text-emerald-400]="leftTab() === 'files'"
                 [class.text-slate-400]="leftTab() !== 'files'"
                 class="cursor-pointer flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg transition-all flex items-center justify-center space-x-1.5 focus:outline-none select-none">
                 <mat-icon class="text-base w-4 h-4">folder_open</mat-icon>
@@ -86,7 +90,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
 
               <!-- Tree Hierarchy container -->
               <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
-                <div class="flex items-center justify-between pb-2 border-b border-zinc-800 px-1 bg-slate-950/20">
+                <div class="flex items-center justify-between pb-2 border-b border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 px-1 bg-zinc-50 dark:bg-zinc-950/20">
                   <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">SVG Element Nodes</span>
                   <button 
                     id="tree-collapse-all-btn"
@@ -117,8 +121,8 @@ import { DEMO_SVGS } from '../../data/demo-templates';
               </div>
             } @else {
               <!-- Files Listing Manager View -->
-              <div class="flex-1 flex flex-col min-h-0 bg-zinc-950 overflow-hidden">
-                <div class="p-3 border-b border-zinc-800 flex items-center justify-between shrink-0">
+              <div class="flex-1 flex flex-col min-h-0 bg-white dark:bg-zinc-900 overflow-hidden">
+                <div class="p-3 border-b border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
                   <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">My SVG Workspace</span>
                   <button 
                     id="add-sidebar-svg-btn"
@@ -139,11 +143,12 @@ import { DEMO_SVGS } from '../../data/demo-templates';
                     </div>
                   } @else {
                     @for (svg of loadedSvgs(); track svg.id) {
-                      <div [class.bg-zinc-800]="svg.id === activeSvgId()"
+                      <div [class.bg-emerald-100]="svg.id === activeSvgId()"
+                        [class.dark\:bg-emerald-900\/40]="svg.id === activeSvgId()"
                         [class.border-l-2]="svg.id === activeSvgId()"
                         [class.border-sky-500]="svg.id === activeSvgId()"
-                        [class.bg-slate-950/20]="svg.id !== activeSvgId()"
-                        class="p-2 border border-zinc-800 hover:bg-zinc-800/40 cursor-pointer flex items-center justify-between group rounded transition-all"
+                        [class.dark\:bg-zinc-950\/20]="svg.id !== activeSvgId()"
+                        class="p-2 border border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 hover:bg-zinc-800/40 cursor-pointer flex items-center justify-between group rounded transition-all"
                         (click)="switchSvg(svg.id)">
                         <div class="flex items-center space-x-2 truncate min-w-0 pr-1">
                           <mat-icon
@@ -178,7 +183,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
         }
 
         <!-- ================= CENTER WORKSPACE ================= -->
-        <div class="flex-1 flex flex-col relative bg-slate-950 min-w-0">
+        <div class="flex-1 flex flex-col relative bg-zinc-50 dark:bg-zinc-950 min-w-0">
           <div class="flex-1 relative min-h-0">
             <!-- Active Canvas Board -->
             <app-svg-canvas #svgCanvas [svgHtml]="enrichedSvg()" (uploadFile)="onLocalFileUploaded($event)">
@@ -192,7 +197,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
           <!-- ================= COLLAPSIBLE BOTTOM panel ================= -->
           <!-- Source Code code editor -->
           @if (isSourceOpen()) {
-            <div class="h-72 border-t border-zinc-800 relative">
+            <div class="h-72 border-t border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 relative">
               <app-svg-source [rawSource]="rawSource()" [fileName]="fileName()" (reloadSource)="onSourceReloaded($event)">
               </app-svg-source>
               <!-- Close Source drawer button -->
@@ -200,13 +205,13 @@ import { DEMO_SVGS } from '../../data/demo-templates';
                 id="close-source-drawer-btn"
                 title="Collapse Source Viewer"
                 (click)="toggleSourceDrawer()"
-                class="cursor-pointer absolute right-4 top-2 px-2.5 py-1 text-[10px] font-semibold bg-zinc-800 hover:bg-slate-705 text-slate-300 hover:text-white rounded border border-zinc-800 transition-colors flex items-center space-x-1 z-50">
+                class="cursor-pointer absolute right-4 top-2 px-2.5 py-1 text-[10px] font-semibold bg-zinc-800 hover:bg-slate-705 text-slate-300 hover:text-white rounded border border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 transition-colors flex items-center space-x-1 z-50">
                 <mat-icon class="text-sm w-4 h-4">keyboard_arrow_down</mat-icon>
               </button>
             </div>
           } @else {
             <!-- Mini handle bar to offer easy swipe up drawer action -->
-            <div class="h-10 bg-zinc-950/80 border-t border-zinc-800 px-4 py-1 flex items-center justify-between select-none font-sans shrink-0">
+            <div class="h-10 bg-white dark:bg-zinc-900/80 border-t border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 px-4 py-1 flex items-center justify-between select-none font-sans shrink-0">
               <div class="flex items-center space-x-2 text-slate-400">
                 <mat-icon class="text-sm">code</mat-icon>
                 <span class="text-[10px] font-semibold uppercase tracking-wider">Source code viewer closed</span>
@@ -215,7 +220,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
                 id="expand-source-drawer-btn"
                 title="Expand Source Pane"
                 (click)="toggleSourceDrawer()"
-                class="cursor-pointer px-2 py-0.5 bg-zinc-800 text-[10px] hover:bg-slate-705 text-slate-300 hover:text-white rounded border border-zinc-800 transition-colors flex items-center space-x-1 font-bold">
+                class="cursor-pointer px-2 py-0.5 bg-zinc-800 text-[10px] hover:bg-slate-705 text-slate-300 hover:text-white rounded border border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 transition-colors flex items-center space-x-1 font-bold">
                 <mat-icon class="text-xs">keyboard_arrow_up</mat-icon>
                 <span>Show XML Source</span>
               </button>
@@ -227,13 +232,15 @@ import { DEMO_SVGS } from '../../data/demo-templates';
         <!-- ================= RIGHT SIDEBAR ================= -->
         <!-- Properties Inspector sidebar split tabs -->
         @if (isRightSidebarOpen()) {
-          <div class="w-80 border-l border-zinc-800 flex flex-col bg-zinc-950 overflow-hidden shrink-0 select-none">
+          <div class="w-80 border-l border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 flex flex-col bg-white dark:bg-zinc-900 overflow-hidden shrink-0 select-none">
             <!-- Dual Tab Switcher -->
-            <div class="flex border-b border-zinc-800 bg-slate-950/40 font-sans p-1">
+            <div class="flex border-b border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950/40 font-sans p-1">
               <button id="tab-inspector-btn"
                 (click)="rightTab.set('inspector')"
-                [class.bg-zinc-800]="rightTab() === 'inspector'"
-                [class.text-white]="rightTab() === 'inspector'"
+                [class.bg-emerald-100]="rightTab() === 'inspector'"
+                [class.dark\:bg-emerald-900\/40]="rightTab() === 'inspector'"
+                [class.text-emerald-700]="rightTab() === 'inspector'"
+                [class.dark\:text-emerald-400]="rightTab() === 'inspector'"
                 [class.text-slate-400]="rightTab() !== 'inspector'"
                 class="cursor-pointer flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center space-x-1.5 focus:outline-none">
                 <mat-icon class="text-base">tune</mat-icon>
@@ -241,8 +248,10 @@ import { DEMO_SVGS } from '../../data/demo-templates';
               </button>
               <button id="tab-analytics-btn"
                 (click)="rightTab.set('analytics')"
-                [class.bg-zinc-800]="rightTab() === 'analytics'"
-                [class.text-white]="rightTab() === 'analytics'"
+                [class.bg-emerald-100]="rightTab() === 'analytics'"
+                [class.dark\:bg-emerald-900\/40]="rightTab() === 'analytics'"
+                [class.text-emerald-700]="rightTab() === 'analytics'"
+                [class.dark\:text-emerald-400]="rightTab() === 'analytics'"
                 [class.text-slate-400]="rightTab() !== 'analytics'"
                 class="cursor-pointer flex-1 py-1.5 px-3 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center space-x-1.5 focus:outline-none">
                 <mat-icon class="text-base">bar_chart</mat-icon>
@@ -251,7 +260,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
             </div>
 
             <!-- Scrollable Side Tab Views -->
-            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 bg-zinc-950 select-none">
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 bg-white dark:bg-zinc-900 select-none">
               @if (rightTab() === 'inspector') {
                 <app-svg-inspector></app-svg-inspector>
               } @else {

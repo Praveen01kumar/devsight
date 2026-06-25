@@ -12,6 +12,9 @@ export interface CompressionSettings {
   preserveExif: boolean;
   useWebWorker: boolean;
   autoOptimize: boolean;
+
+  targetSizeKB?: number;
+  useTargetSize?: boolean;
 }
 
 export type CompressionStatus = 'Waiting' | 'Compressing' | 'Completed' | 'Failed';
@@ -168,3 +171,47 @@ export async function compressImageFile(
   }
 }
 
+export async function compressToTargetSize(
+  file: File,
+  targetKB: number,
+  useWebWorker: boolean,
+  preserveExif: boolean
+): Promise<Blob> {
+
+  const targetBytes = targetKB * 1024;
+
+  let minQuality = 1;
+  let maxQuality = 100;
+
+  let bestBlob!: Blob;
+  let bestDiff = Number.MAX_SAFE_INTEGER;
+
+  for (let i = 0; i < 8; i++) {
+
+    const quality = Math.round(
+      (minQuality + maxQuality) / 2
+    );
+
+    const blob = await compressImageFile(
+      file,
+      quality,
+      useWebWorker,
+      preserveExif
+    );
+
+    const diff = Math.abs(blob.size - targetBytes);
+
+    if (diff < bestDiff) {
+      bestBlob = blob;
+      bestDiff = diff;
+    }
+
+    if (blob.size > targetBytes) {
+      maxQuality = quality - 1;
+    } else {
+      minQuality = quality + 1;
+    }
+  }
+
+  return bestBlob;
+}

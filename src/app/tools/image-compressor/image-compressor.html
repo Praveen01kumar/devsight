@@ -1,763 +1,736 @@
-<div [class.dark]="isDarkMode()" class="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-800 dark:text-zinc-100 transition-colors duration-300 py-8 px-4 flex items-center justify-center font-sans antialiased">
-  <!-- Container Card -->
-  <div class="w-full max-w-5xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 rounded-2xl shadow-xl overflow-hidden flex flex-col transition-all duration-300">
-    
-    <!-- Top Header -->
-    <header class="border-b border-slate-100 dark:border-zinc-800 px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-slate-50/50 dark:bg-zinc-900/50">
-      <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl">
-          <mat-icon class="scale-110">photo_size_select_large</mat-icon>
-        </div>
-        <div>
-          <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-zinc-50">Image Compressor</h1>
-          <p class="text-xs text-slate-500 dark:text-zinc-400">High-performance, secure, offline browser compression</p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <!-- Theme Toggle -->
-        <button 
-          (click)="toggleTheme()" 
-          class="p-2 text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-zinc-100 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-xl transition-all duration-200 flex items-center justify-center cursor-pointer"
-          aria-label="Toggle dark mode"
-        >
-          @if (isDarkMode()) {
-            <mat-icon class="scale-90">light_mode</mat-icon>
-          } @else {
-            <mat-icon class="scale-90">dark_mode</mat-icon>
-          }
-        </button>
-
-        <!-- Navigation Tabs -->
-        <div class="bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl flex gap-1">
-          <button 
-            (click)="setTab('single')"
-            [class]="activeTab() === 'single' ? 'bg-white dark:bg-zinc-700 text-slate-900 dark:text-zinc-50 shadow-sm' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'"
-            class="px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
-          >
-            <mat-icon class="scale-75">photo</mat-icon>
-            Single File
-          </button>
-          <button 
-            (click)="setTab('bulk')"
-            [class]="activeTab() === 'bulk' ? 'bg-white dark:bg-zinc-700 text-slate-900 dark:text-zinc-50 shadow-sm' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'"
-            class="px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
-          >
-            <mat-icon class="scale-75">photo_library</mat-icon>
-            Bulk Queue
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Validation Error Alert -->
-    @if (validationError()) {
-      <div class="mx-6 mt-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl text-red-600 dark:text-red-400 text-xs flex items-start gap-2 animate-fade-in">
-        <mat-icon class="scale-75 mt-0.5 shrink-0">error_outline</mat-icon>
-        <span class="font-medium">{{ validationError() }}</span>
-      </div>
-    }
-
-    <!-- Content Panel -->
-    <main class="p-6 flex-1 flex flex-col">
-      
-      <!-- --- SINGLE COMPRESSION TAB --- -->
-      @if (activeTab() === 'single') {
-        @if (!singleJob()) {
-          <!-- Upload Area (Single) -->
-          <div 
-            (dragover)="onDragOver($event)"
-            (drop)="onSingleFileDropped($event)"
-            class="border-2 border-dashed border-slate-200 dark:border-zinc-800 hover:border-emerald-500 dark:hover:border-emerald-400 rounded-2xl p-12 text-center transition-all duration-300 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-zinc-900/30 hover:bg-slate-50 dark:hover:bg-zinc-900/50 cursor-pointer min-h-[350px] relative focus:outline-none focus:ring-2 focus:ring-emerald-400"
-            (click)="singleFileInput.click()"
-            tabindex="0"
-            role="button"
-            (keydown.enter)="singleFileInput.click()"
-            (keydown.space)="singleFileInput.click(); $event.preventDefault()"
-            aria-label="Upload single image file"
-          >
-            <input 
-              type="file" 
-              #singleFileInput 
-              (change)="onSingleFileSelected($event)" 
-              accept="image/jpeg,image/jpg,image/png,image/webp,image/avif" 
-              class="hidden"
-            />
-            <div class="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-zinc-800 flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4 shadow-sm border border-emerald-100/50 dark:border-zinc-700/50">
-              <mat-icon class="scale-125">cloud_upload</mat-icon>
-            </div>
-            <h3 class="text-base font-semibold text-slate-800 dark:text-zinc-200">Drag & drop your image here</h3>
-            <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-sm">
-              or click to browse from your device. Supported formats: JPG, JPEG, PNG, WEBP, AVIF (Max 10 MB).
-            </p>
-          </div>
-        } @else {
-          <!-- Active Workspace (Single) -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
-            <!-- Left Side Settings and Action -->
-            <div class="lg:col-span-5 flex flex-col gap-5">
-              
-              <!-- File Details Card -->
-              <div class="bg-slate-50 dark:bg-zinc-800/40 p-4 rounded-xl border border-slate-100 dark:border-zinc-800/50">
-                <h4 class="text-xs font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-3">File Information</h4>
-                <div class="space-y-2">
-                  <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-500 dark:text-zinc-400">File Name</span>
-                    <span class="font-medium truncate max-w-[200px]" [title]="singleJob()?.name">{{ singleJob()?.name }}</span>
-                  </div>
-                  <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-500 dark:text-zinc-400">Format</span>
-                    <span class="px-2 py-0.5 font-semibold text-[10px] bg-slate-200 dark:bg-zinc-700 rounded-md text-slate-700 dark:text-zinc-300 uppercase">
-                      {{ singleJob()?.format }}
-                    </span>
-                  </div>
-                  <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-500 dark:text-zinc-400">Dimensions</span>
-                    <span class="font-medium">
-                      @if (singleJob()?.dimensions) {
-                        {{ singleJob()?.dimensions?.width }} x {{ singleJob()?.dimensions?.height }} px
-                      } @else {
-                        Detecting...
-                      }
-                    </span>
-                  </div>
-                  <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-500 dark:text-zinc-400">Original Size</span>
-                    <span class="font-medium">{{ formatSize(singleJob()?.originalSize || 0) }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slider & Preset Settings -->
-              <div class="bg-slate-50 dark:bg-zinc-800/40 p-5 rounded-xl border border-slate-100 dark:border-zinc-800/50 flex flex-col gap-4">
-                <div class="flex justify-between items-center">
-                  <h4 class="text-xs font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Compression Presets</h4>
-                </div>
-                
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2">
-                  <button 
-                    (click)="setSinglePreset('maximum')"
-                    [class]="singleSettings().preset === 'maximum' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    Max Comp (15%)
-                  </button>
-                  <button 
-                    (click)="setSinglePreset('high')"
-                    [class]="singleSettings().preset === 'high' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    High Comp (40%)
-                  </button>
-                  <button 
-                    (click)="setSinglePreset('balanced')"
-                    [class]="singleSettings().preset === 'balanced' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    Balanced (70%)
-                  </button>
-                  <button 
-                    (click)="setSinglePreset('quality')"
-                    [class]="singleSettings().preset === 'quality' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    High Quality (85%)
-                  </button>
-                  <button 
-                    (click)="setSinglePreset('lossless')"
-                    [class]="singleSettings().preset === 'lossless' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    Near Lossless (98%)
-                  </button>
-                </div>
-
-                <!-- Custom Slider -->
-                <div class="mt-2">
-                  <div class="flex justify-between items-center text-xs mb-1">
-                    <span class="text-slate-500 dark:text-zinc-400">Quality Percentage</span>
-                    <span class="font-bold text-emerald-500 dark:text-emerald-400">{{ singleSettings().quality }}%</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="100" 
-                    [value]="singleSettings().quality" 
-                    (input)="updateSingleQuality($event)" 
-                    class="w-full h-1.5 bg-slate-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-400"
-                  />
-                  <div class="flex justify-between text-[10px] text-slate-400 mt-1">
-                    <span>Aggressive (1)</span>
-                    <span>Lossless (100)</span>
-                  </div>
-                </div>
-
-                <!-- Advanced Settings Accordion -->
-                <div class="border-t border-slate-200 dark:border-zinc-700/50 pt-3 mt-1">
-                  <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-2">Advanced Parameters</span>
-                  <div class="space-y-2.5">
-                    <!-- Toggle 1: Preserve EXIF -->
-                    <div class="flex items-center justify-between cursor-pointer group">
-                      <div class="flex flex-col">
-                        <span class="text-xs font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-950 dark:group-hover:text-zinc-100">Preserve EXIF metadata</span>
-                        <span class="text-[10px] text-slate-400 dark:text-zinc-500">Maintains camera orientation/details</span>
-                      </div>
-                      <button 
-                        (click)="toggleSingleExif()"
-                        [class]="singleSettings().preserveExif ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
-                        class="w-9 h-5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
-                        aria-label="Toggle preserve EXIF metadata"
-                      >
-                        <div [class]="singleSettings().preserveExif ? 'translate-x-4' : 'translate-x-0'" class="w-4 h-4 rounded-full bg-white transition-all shadow-sm"></div>
-                      </button>
-                    </div>
-
-                    <!-- Toggle 2: Web Worker -->
-                    <div class="flex items-center justify-between cursor-pointer group">
-                      <div class="flex flex-col">
-                        <span class="text-xs font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-950 dark:group-hover:text-zinc-100">Use background Web Worker</span>
-                        <span class="text-[10px] text-slate-400 dark:text-zinc-500">Keeps the browser interface responsive</span>
-                      </div>
-                      <button 
-                        (click)="toggleSingleWebWorker()"
-                        [class]="singleSettings().useWebWorker ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
-                        class="w-9 h-5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
-                        aria-label="Toggle use background Web Worker"
-                      >
-                        <div [class]="singleSettings().useWebWorker ? 'translate-x-4' : 'translate-x-0'" class="w-4 h-4 rounded-full bg-white transition-all shadow-sm"></div>
-                      </button>
-                    </div>
-
-                    <!-- Toggle 3: Auto-Optimize -->
-                    <div class="flex items-center justify-between cursor-pointer group">
-                      <div class="flex flex-col">
-                        <span class="text-xs font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-950 dark:group-hover:text-zinc-100">Intelligent auto-optimization</span>
-                        <span class="text-[10px] text-slate-400 dark:text-zinc-500">Fine-tunes compression based on sizes</span>
-                      </div>
-                      <button 
-                        (click)="toggleSingleAutoOptimize()"
-                        [class]="singleSettings().autoOptimize ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
-                        class="w-9 h-5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
-                        aria-label="Toggle intelligent auto-optimization"
-                      >
-                        <div [class]="singleSettings().autoOptimize ? 'translate-x-4' : 'translate-x-0'" class="w-4 h-4 rounded-full bg-white transition-all shadow-sm"></div>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Main Actions Container -->
-              <div class="flex flex-col gap-2">
-                @if (singleJob()?.status === 'Waiting' || singleJob()?.status === 'Failed') {
-                  <button 
-                    (click)="compressSingle()" 
-                    [disabled]="isCompressingSingle()"
-                    class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    <mat-icon class="scale-90">compress</mat-icon>
-                    Compress Image
-                  </button>
-                }
-
-                @if (singleJob()?.status === 'Compressing') {
-                  <div class="w-full py-3 px-4 bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 font-semibold text-sm rounded-xl flex items-center justify-center gap-3">
-                    <svg class="animate-spin h-5 w-5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Compressing image file...</span>
-                  </div>
-                }
-
-                @if (singleJob()?.status === 'Completed') {
-                  <div class="grid grid-cols-2 gap-3">
-                    <button 
-                      (click)="downloadSingle()" 
-                      class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <mat-icon class="scale-90">download</mat-icon>
-                      Download Image
-                    </button>
-                    <button 
-                      (click)="resetSingle()" 
-                      class="py-3 px-4 bg-slate-200 hover:bg-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <mat-icon class="scale-90">restart_alt</mat-icon>
-                      Upload New
-                    </button>
-                  </div>
-                }
-
-                @if (singleJob()?.status === 'Failed') {
-                  <button 
-                    (click)="resetSingle()" 
-                    class="w-full py-3 px-4 bg-slate-200 hover:bg-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <mat-icon class="scale-90">refresh</mat-icon>
-                    Reset & Retry
-                  </button>
-                }
-              </div>
-            </div>
-
-            <!-- Right Side Visualizer & Results -->
-            <div class="lg:col-span-7 flex flex-col gap-5">
-              
-              <!-- Comparative Split Visualizer -->
-              <div class="flex flex-col gap-2">
-                <span class="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Before & After Visualizer</span>
-                
-                <div 
-                  #sliderContainer
-                  class="relative w-full h-[350px] md:h-[420px] overflow-hidden rounded-2xl border border-slate-150 dark:border-zinc-800/80 bg-slate-100 dark:bg-zinc-950 select-none flex items-center justify-center"
-                >
-                  <!-- Case 1: Waiting / Loading initial image -->
-                  @if (singleJob()?.status === 'Waiting') {
-                    <img 
-                      [src]="singleJob()?.previewUrl" 
-                      class="w-full h-full object-contain pointer-events-none animate-fade-in" 
-                      alt="Original Image"
-                    />
-                    <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur text-white text-xs px-2.5 py-1 rounded-lg">
-                      Original Image (Uncompressed)
-                    </div>
-                  }
-
-                  <!-- Case 2: Compressing Loader -->
-                  @if (singleJob()?.status === 'Compressing') {
-                    <div class="absolute inset-0 bg-slate-100/50 dark:bg-zinc-950/50 backdrop-blur-xs flex flex-col items-center justify-center text-center">
-                      <svg class="animate-spin h-10 w-10 text-emerald-500 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <h4 class="text-sm font-semibold text-slate-800 dark:text-zinc-100">Running Compression Engines</h4>
-                      <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1">Analyzing bytes, metadata, and pixel buffers</p>
-                    </div>
-                  }
-
-                  <!-- Case 3: Failed State -->
-                  @if (singleJob()?.status === 'Failed') {
-                    <div class="p-6 text-center max-w-sm flex flex-col items-center">
-                      <div class="p-3 bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-full mb-3">
-                        <mat-icon class="scale-110">report_problem</mat-icon>
-                      </div>
-                      <h4 class="text-sm font-bold text-slate-800 dark:text-zinc-100">Compression Engine Failed</h4>
-                      <p class="text-xs text-red-500 dark:text-red-400 mt-1.5 leading-relaxed">
-                        {{ singleJob()?.error }}
-                      </p>
-                    </div>
-                  }
-
-                  <!-- Case 4: Successful Comparison Slider -->
-                  @if (singleJob()?.status === 'Completed' && singleJob()?.previewUrl && singleJob()?.compressedPreviewUrl) {
-                    <!-- Original Image Behind -->
-                    <div class="absolute inset-0 w-full h-full flex items-center justify-center">
-                      <img 
-                        [src]="singleJob()?.previewUrl" 
-                        [style.width.px]="containerWidth()"
-                        class="h-full object-contain pointer-events-none max-w-none" 
-                        alt="Original"
-                      />
-                    </div>
-                    
-                    <!-- Left Overlay Label -->
-                    <div class="absolute top-4 left-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg z-20">
-                      Before
-                    </div>
-
-                    <!-- Compressed Image Container Clipping -->
-                    <div 
-                      class="absolute top-0 bottom-0 left-0 overflow-hidden select-none pointer-events-none flex items-center"
-                      [style.width.%]="sliderPosition()"
-                    >
-                      <div class="absolute inset-0 w-full h-full flex items-center justify-center" [style.width.px]="containerWidth()">
-                        <img 
-                          [src]="singleJob()?.compressedPreviewUrl" 
-                          [style.width.px]="containerWidth()"
-                          class="h-full object-contain pointer-events-none max-w-none" 
-                          alt="Compressed"
-                        />
-                      </div>
-                    </div>
-
-                    <!-- Right Overlay Label -->
-                    <div class="absolute top-4 right-4 bg-emerald-600/80 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg z-20">
-                      After
-                    </div>
-
-                    <!-- Divider Line and Handle -->
-                    <div 
-                      class="absolute top-0 bottom-0 w-0.5 bg-white shadow-xl pointer-events-none z-20"
-                      [style.left.%]="sliderPosition()"
-                    >
-                      <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white dark:bg-zinc-800 shadow-lg border-2 border-emerald-500 flex items-center justify-center cursor-ew-resize">
-                        <mat-icon class="text-emerald-500 scale-75 select-none pointer-events-none">unfold_more</mat-icon>
-                      </div>
-                    </div>
-
-                    <!-- Range input acting as controller overlay -->
-                    <input 
-                      type="range" 
-                      min="0" 
-                      max="100" 
-                      [value]="sliderPosition()" 
-                      (input)="onSliderChange($event)" 
-                      class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
-                      aria-label="Before after image comparison slider"
-                    />
-                  }
-                </div>
-              </div>
-
-              <!-- Results Dashboard Box -->
-              @if (singleJob()?.status === 'Completed') {
-                <div class="bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/10 dark:border-emerald-400/20 rounded-2xl p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 animate-fade-in">
-                  
-                  <div class="flex flex-col">
-                    <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">File Size Saved</span>
-                    <span class="text-xl font-extrabold text-slate-950 dark:text-zinc-50 tracking-tight mt-1">
-                      {{ formatSize(singleJob()?.bytesSaved || 0) }}
-                    </span>
-                    <span class="text-[10px] text-slate-400 dark:text-zinc-400 mt-0.5">Bytes cleared</span>
-                  </div>
-
-                  <div class="flex flex-col border-l border-slate-200 dark:border-zinc-800 pl-4">
-                    <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Reduction</span>
-                    <span class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight mt-1">
-                      {{ singleJob()?.reductionPercentage?.toFixed(1) }}%
-                    </span>
-                    <span class="text-[10px] text-slate-400 dark:text-zinc-400 mt-0.5">Smaller than origin</span>
-                  </div>
-
-                  <div class="flex flex-col border-l border-slate-200 dark:border-zinc-800 pl-4 col-span-2 sm:col-span-1">
-                    <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Compression Ratio</span>
-                    <span class="text-xl font-extrabold text-slate-950 dark:text-zinc-50 tracking-tight mt-1">
-                      {{ singleJob()?.ratio }}
-                    </span>
-                    <span class="text-[10px] text-slate-400 dark:text-zinc-400 mt-0.5">Original / Compressed</span>
-                  </div>
-
-                  <div class="col-span-2 sm:col-span-3 border-t border-slate-200/50 dark:border-zinc-800/50 pt-3 flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-slate-500 dark:text-zinc-400">
-                    <div>Original Size: <span class="font-semibold text-slate-700 dark:text-zinc-200">{{ formatSize(singleJob()?.originalSize || 0) }}</span></div>
-                    <div>Compressed Size: <span class="font-semibold text-emerald-600 dark:text-emerald-400">{{ formatSize(singleJob()?.compressedSize || 0) }}</span></div>
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-        }
-      }
-
-      <!-- --- BULK COMPRESSION TAB --- -->
-      @if (activeTab() === 'bulk') {
-        <input 
-          type="file" 
-          multiple 
-          #bulkFileInput 
-          (change)="onBulkFilesSelected($event)" 
-          accept="image/jpeg,image/jpg,image/png,image/webp,image/avif" 
-          class="hidden"
-        />
-
-        @if (isBulkQueueEmpty()) {
-          <!-- Upload Area (Bulk) -->
-          <div 
-            (dragover)="onDragOver($event)"
-            (drop)="onBulkFilesDropped($event)"
-            class="border-2 border-dashed border-slate-200 dark:border-zinc-800 hover:border-emerald-500 dark:hover:border-emerald-400 rounded-2xl p-12 text-center transition-all duration-300 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-zinc-900/30 hover:bg-slate-50 dark:hover:bg-zinc-900/50 cursor-pointer min-h-[350px] relative focus:outline-none focus:ring-2 focus:ring-emerald-400"
-            (click)="bulkFileInput.click()"
-            tabindex="0"
-            role="button"
-            (keydown.enter)="bulkFileInput.click()"
-            (keydown.space)="bulkFileInput.click(); $event.preventDefault()"
-            aria-label="Upload multiple image files"
-          >
-            <div class="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-zinc-800 flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4 shadow-sm border border-emerald-100/50 dark:border-zinc-700/50">
-              <mat-icon class="scale-125">collections</mat-icon>
-            </div>
-            <h3 class="text-base font-semibold text-slate-800 dark:text-zinc-200">Drag & drop multiple files here</h3>
-            <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-md">
-              or click to browse. Max 20 files at once, up to 10 MB per file. Supported formats: JPG, JPEG, PNG, WEBP, AVIF.
-            </p>
-          </div>
-        } @else {
-          <!-- Queue Workspace (Bulk) -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
-            <!-- Left Side Control Panel -->
-            <div class="lg:col-span-4 flex flex-col gap-4">
-              
-              <!-- Setup Controls Card -->
-              <div class="bg-slate-50 dark:bg-zinc-800/40 p-5 rounded-xl border border-slate-100 dark:border-zinc-800/50 flex flex-col gap-4">
-                <h4 class="text-xs font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Queue Settings</h4>
-                
-                <div class="grid grid-cols-2 gap-2">
-                  <button 
-                    (click)="setBulkPreset('maximum')"
-                    [class]="bulkSettings().preset === 'maximum' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    Max Comp
-                  </button>
-                  <button 
-                    (click)="setBulkPreset('high')"
-                    [class]="bulkSettings().preset === 'high' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    High Comp
-                  </button>
-                  <button 
-                    (click)="setBulkPreset('balanced')"
-                    [class]="bulkSettings().preset === 'balanced' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    Balanced
-                  </button>
-                  <button 
-                    (click)="setBulkPreset('quality')"
-                    [class]="bulkSettings().preset === 'quality' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
-                    class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    High Quality
-                  </button>
-                </div>
-
-                <!-- Custom Slider -->
-                <div>
-                  <div class="flex justify-between items-center text-xs mb-1">
-                    <span class="text-slate-500 dark:text-zinc-400">Batch Quality</span>
-                    <span class="font-bold text-emerald-500 dark:text-emerald-400">{{ bulkSettings().quality }}%</span>
-                  </div>
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="100" 
-                    [value]="bulkSettings().quality" 
-                    (input)="updateBulkQuality($event)" 
-                    class="w-full h-1.5 bg-slate-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none"
-                  />
-                </div>
-
-                <!-- Advanced Settings Toggle -->
-                <div class="border-t border-slate-200 dark:border-zinc-700/50 pt-3 flex flex-col gap-2">
-                  <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-1">Batch Parameters</span>
-                  
-                  <div class="flex items-center justify-between cursor-pointer group">
-                    <span class="text-xs text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-zinc-100">Preserve EXIF metadata</span>
-                    <button 
-                      (click)="toggleBulkExif()"
-                      [class]="bulkSettings().preserveExif ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
-                      class="w-8 h-4.5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
-                      aria-label="Toggle batch preserve EXIF metadata"
-                    >
-                      <div [class]="bulkSettings().preserveExif ? 'translate-x-3.5' : 'translate-x-0'" class="w-3.5 h-3.5 rounded-full bg-white transition-all shadow-sm"></div>
-                    </button>
-                  </div>
-
-                  <div class="flex items-center justify-between cursor-pointer group">
-                    <span class="text-xs text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-zinc-100">Web Worker background</span>
-                    <button 
-                      (click)="toggleBulkWebWorker()"
-                      [class]="bulkSettings().useWebWorker ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
-                      class="w-8 h-4.5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
-                      aria-label="Toggle batch background Web Worker"
-                    >
-                      <div [class]="bulkSettings().useWebWorker ? 'translate-x-3.5' : 'translate-x-0'" class="w-3.5 h-3.5 rounded-full bg-white transition-all shadow-sm"></div>
-                    </button>
-                  </div>
-
-                  <div class="flex items-center justify-between cursor-pointer group">
-                    <span class="text-xs text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-zinc-100">Auto-optimize buffers</span>
-                    <button 
-                      (click)="toggleBulkAutoOptimize()"
-                      [class]="bulkSettings().autoOptimize ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
-                      class="w-8 h-4.5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
-                      aria-label="Toggle batch intelligent auto-optimization"
-                    >
-                      <div [class]="bulkSettings().autoOptimize ? 'translate-x-3.5' : 'translate-x-0'" class="w-3.5 h-3.5 rounded-full bg-white transition-all shadow-sm"></div>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Queue Cumulative Stats -->
-              @if (bulkJobsSummary().completedCount > 0) {
-                <div class="bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/10 dark:border-emerald-400/20 rounded-xl p-4 flex flex-col gap-2.5 animate-fade-in">
-                  <h4 class="text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Queue Results</h4>
-                  <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span class="text-slate-400 dark:text-zinc-500 block text-[10px]">Saved</span>
-                      <span class="font-bold text-slate-800 dark:text-zinc-100 text-sm">{{ bulkJobsSummary().savedFormatted }}</span>
-                    </div>
-                    <div>
-                      <span class="text-slate-400 dark:text-zinc-500 block text-[10px]">Avg reduction</span>
-                      <span class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">{{ bulkJobsSummary().reductionPercent }}%</span>
-                    </div>
-                  </div>
-                  <div class="border-t border-slate-200/50 dark:border-zinc-800/50 pt-2 flex justify-between items-center text-[10px] text-slate-500">
-                    <span>Batch Ratio: <strong>{{ bulkJobsSummary().ratio }}</strong></span>
-                    <span>Processed: <strong>{{ bulkJobsSummary().completedCount }}/{{ bulkJobsSummary().totalCount }}</strong></span>
-                  </div>
-                </div>
-              }
-
-              <!-- Actions Drawer (Bulk) -->
-              <div class="flex flex-col gap-2">
-                @if (bulkQueueStatus() !== 'processing') {
-                  <button 
-                    (click)="compressBulk()"
-                    [disabled]="bulkJobsSummary().completedCount === bulkJobsSummary().totalCount"
-                    class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-300 dark:disabled:bg-zinc-800 disabled:text-slate-500 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    <mat-icon class="scale-90">play_arrow</mat-icon>
-                    Compress All ({{ bulkJobsSummary().totalCount - bulkJobsSummary().completedCount }} remaining)
-                  </button>
-                } @else {
-                  <button 
-                    (click)="cancelQueue()"
-                    class="w-full py-3 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <mat-icon class="scale-90">cancel</mat-icon>
-                    Cancel Queue
-                  </button>
-                }
-
-                @if (bulkJobsSummary().completedCount > 0) {
-                  <button 
-                    (click)="downloadAllBulkZIP()"
-                    class="w-full py-3 px-4 bg-slate-900 hover:bg-black dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <mat-icon class="scale-90">archive</mat-icon>
-                    Download ZIP ({{ bulkJobsSummary().completedCount }})
-                  </button>
-                }
-
-                <div class="grid grid-cols-2 gap-2">
-                  <button 
-                    (click)="bulkFileInput.click()" 
-                    [disabled]="bulkQueueStatus() === 'processing' || bulkJobs().length >= maxFilesLimit"
-                    class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    <mat-icon class="scale-75">add_to_photos</mat-icon>
-                    Add More
-                  </button>
-                  <button 
-                    (click)="clearBulkQueue()" 
-                    [disabled]="bulkQueueStatus() === 'processing'"
-                    class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-red-600 dark:text-red-400 font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed"
-                  >
-                    <mat-icon class="scale-75">delete_sweep</mat-icon>
-                    Clear Queue
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Right Side Queue List -->
-            <div class="lg:col-span-8 flex flex-col gap-3">
-              <div class="flex justify-between items-center px-1">
-                <span class="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Upload Queue ({{ bulkJobs().length }}/{{ maxFilesLimit }} files)</span>
-              </div>
-
-              <!-- Queue Container Grid -->
-              <div class="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
-                @for (job of bulkJobs(); track job.id) {
-                  <div class="p-3 bg-white dark:bg-zinc-800/20 border border-slate-150 dark:border-zinc-850 rounded-xl flex items-center justify-between gap-4 group transition-all duration-200 hover:shadow-sm">
-                    
-                    <div class="flex items-center gap-3 min-w-0">
-                      <!-- Thumbnail generated with Pica -->
-                      <div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 flex-shrink-0 overflow-hidden flex items-center justify-center relative shadow-inner">
-                        @if (job.picaThumbnailUrl) {
-                          <img [src]="job.picaThumbnailUrl" class="w-full h-full object-cover" alt="Thumb" />
-                        } @else {
-                          <div class="animate-pulse bg-slate-200 dark:bg-zinc-800 w-full h-full"></div>
-                        }
-                      </div>
-
-                      <div class="min-w-0">
-                        <h5 class="text-xs font-semibold text-slate-800 dark:text-zinc-100 truncate max-w-[150px] sm:max-w-[280px]" [title]="job.name">
-                          {{ job.name }}
-                        </h5>
-                        <p class="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
-                          <span>Original: <strong>{{ formatSize(job.originalSize) }}</strong></span>
-                          @if (job.dimensions) {
-                            <span>• {{ job.dimensions.width }}x{{ job.dimensions.height }}px</span>
-                          }
-                          <span>• <span class="uppercase font-semibold text-[9px] bg-slate-100 dark:bg-zinc-800 px-1 py-0.2 rounded">{{ job.format }}</span></span>
-                        </p>
-                      </div>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                      <!-- Status Pill -->
-                      <div>
-                        @switch (job.status) {
-                          @case ('Waiting') {
-                            <span class="px-2 py-0.5 text-[9px] font-bold bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/30 rounded-full flex items-center gap-1">
-                              <span class="w-1 h-1 rounded-full bg-amber-400 animate-pulse"></span>
-                              Waiting
-                            </span>
-                          }
-                          @case ('Compressing') {
-                            <span class="px-2 py-0.5 text-[9px] font-bold bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/30 rounded-full flex items-center gap-1">
-                              <svg class="animate-spin h-2.5 w-2.5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Running
-                            </span>
-                          }
-                          @case ('Completed') {
-                            <div class="flex flex-col items-end gap-0.5">
-                              <span class="px-2 py-0.5 text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30 rounded-full flex items-center gap-0.5">
-                                <mat-icon class="scale-[0.5] leading-none -ml-0.5">check_circle</mat-icon>
-                                -{{ job.reductionPercentage?.toFixed(0) }}%
-                              </span>
-                              <span class="text-[9px] font-semibold text-slate-500 dark:text-zinc-400 pr-1">{{ formatSize(job.compressedSize || 0) }}</span>
-                            </div>
-                          }
-                          @case ('Failed') {
-                            <span class="px-2 py-0.5 text-[9px] font-bold bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200/50 dark:border-red-900/30 rounded-full flex items-center gap-1" [title]="job.error">
-                              <mat-icon class="scale-50 mt-0.5 leading-none">error</mat-icon>
-                              Failed
-                            </span>
-                          }
-                        }
-                      </div>
-
-                      <!-- Context Actions -->
-                      <div class="flex items-center gap-1">
-                        @if (job.status === 'Completed') {
-                          <button 
-                            (click)="downloadSingleBulk(job)" 
-                            class="p-1.5 text-slate-500 hover:text-emerald-500 dark:text-zinc-400 dark:hover:text-emerald-400 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-lg transition-all cursor-pointer"
-                            title="Download compressed image"
-                          >
-                            <mat-icon class="scale-75">download</mat-icon>
-                          </button>
-                        }
-                        <button 
-                          (click)="removeBulkJob(job.id)"
-                          [disabled]="bulkQueueStatus() === 'processing'"
-                          class="p-1.5 text-slate-400 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                          title="Remove file from queue"
-                        >
-                          <mat-icon class="scale-75">delete</mat-icon>
-                        </button>
-                      </div>
-                    </div>
-
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        }
-      }
-
-    </main>
-
+<!-- Top Header -->
+<header class="flex flex-col md:flex-row md:items-center md:justify-end">
+  <!-- Navigation Tabs -->
+  <div class="bg-slate-100 dark:bg-zinc-800 p-1 rounded-xl flex gap-1">
+    <button (click)="setTab('single')"
+      [class]="activeTab() === 'single' ? 'bg-white dark:bg-zinc-700 text-slate-900 dark:text-zinc-50 shadow-sm' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'"
+      class="px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 cursor-pointer">
+      <mat-icon class="scale-75">photo</mat-icon>
+      Single File
+    </button>
+    <button (click)="setTab('bulk')"
+      [class]="activeTab() === 'bulk' ? 'bg-white dark:bg-zinc-700 text-slate-900 dark:text-zinc-50 shadow-sm' : 'text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-200'"
+      class="px-4 py-1.5 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5 cursor-pointer">
+      <mat-icon class="scale-75">photo_library</mat-icon>
+      Bulk Queue
+    </button>
   </div>
+</header>
+
+<!-- Validation Error Alert -->
+@if (validationError()) {
+<div
+  class="mx-6 mt-4 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-xl text-red-600 dark:text-red-400 text-xs flex items-start gap-2 animate-fade-in">
+  <mat-icon class="scale-75 mt-0.5 shrink-0">error_outline</mat-icon>
+  <span class="font-medium">{{ validationError() }}</span>
 </div>
+}
+
+<!-- Content Panel -->
+<main class="py-6 px-0 flex-1 flex flex-col">
+
+  <!-- --- SINGLE COMPRESSION TAB --- -->
+  @if (activeTab() === 'single') {
+  @if (!singleJob()) {
+  <!-- Upload Area (Single) -->
+  <div (dragover)="onDragOver($event)" (drop)="onSingleFileDropped($event)"
+    class="border-2 border-dashed border-slate-200 dark:border-zinc-800 hover:border-emerald-500 dark:hover:border-emerald-400 rounded-2xl p-12 text-center transition-all duration-300 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-zinc-900/30 hover:bg-slate-50 dark:hover:bg-zinc-900/50 cursor-pointer min-h-[350px] relative focus:outline-none focus:ring-2 focus:ring-emerald-400"
+    (click)="singleFileInput.click()" tabindex="0" role="button" (keydown.enter)="singleFileInput.click()"
+    (keydown.space)="singleFileInput.click(); $event.preventDefault()" aria-label="Upload single image file">
+    <input type="file" #singleFileInput (change)="onSingleFileSelected($event)"
+      accept="image/jpeg,image/jpg,image/png,image/webp,image/avif" class="hidden" />
+    <div
+      class="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-zinc-800 flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4 shadow-sm border border-emerald-100/50 dark:border-zinc-700/50">
+      <mat-icon class="scale-125">cloud_upload</mat-icon>
+    </div>
+    <h3 class="text-base font-semibold text-slate-800 dark:text-zinc-200">Drag & drop your image here</h3>
+    <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-sm">
+      or click to browse from your device. Supported formats: JPG, JPEG, PNG, WEBP, AVIF (Max 10 MB).
+    </p>
+  </div>
+  } @else {
+  <!-- Active Workspace (Single) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- Left Side Settings and Action -->
+    <div class="lg:col-span-5 flex flex-col gap-5">
+
+      <!-- File Details Card -->
+      <div class="bg-slate-50 dark:bg-zinc-800/40 p-4 rounded-xl border border-slate-100 dark:border-zinc-800/50">
+        <h4 class="text-xs font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider mb-3">File
+          Information</h4>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 dark:text-zinc-400">File Name</span>
+            <span class="font-medium truncate max-w-[200px]" [title]="singleJob()?.name">{{ singleJob()?.name
+              }}</span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 dark:text-zinc-400">Format</span>
+            <span
+              class="px-2 py-0.5 font-semibold text-[10px] bg-slate-200 dark:bg-zinc-700 rounded-md text-slate-700 dark:text-zinc-300 uppercase">
+              {{ singleJob()?.format }}
+            </span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 dark:text-zinc-400">Dimensions</span>
+            <span class="font-medium">
+              @if (singleJob()?.dimensions) {
+              {{ singleJob()?.dimensions?.width }} x {{ singleJob()?.dimensions?.height }} px
+              } @else {
+              Detecting...
+              }
+            </span>
+          </div>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-500 dark:text-zinc-400">Original Size</span>
+            <span class="font-medium">{{ formatSize(singleJob()?.originalSize || 0) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider & Preset Settings -->
+      <div
+        class="bg-slate-50 dark:bg-zinc-800/40 p-5 rounded-xl border border-slate-100 dark:border-zinc-800/50 flex flex-col gap-4">
+        <div class="flex justify-between items-center">
+          <h4 class="text-xs font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Compression
+            Presets</h4>
+        </div>
+        <div class="mt-4 border-t border-slate-200 dark:border-zinc-700 pt-4">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-medium">
+              Compress to Target Size
+            </span>
+
+            <button (click)="toggleTargetSize()"
+              [class]="singleSettings().useTargetSize ? 'bg-emerald-500' : 'bg-slate-300'"
+              class="w-10 h-5 rounded-full p-0.5">
+              <div [class]="singleSettings().useTargetSize ? 'translate-x-5' : 'translate-x-0'"
+                class="w-4 h-4 bg-white rounded-full transition-all"></div>
+            </button>
+          </div>
+
+          @if (singleSettings().useTargetSize) {
+          <input type="number" min="10" [value]="singleSettings().targetSizeKB" (input)="updateTargetSize($event)"
+            placeholder="Target size in KB"
+            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800" />
+
+          <p class="text-[10px] text-slate-400 mt-1">
+            Example: 100 = 100 KB
+          </p>
+          }
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-2">
+          <button (click)="setSinglePreset('maximum')"
+            [class]="singleSettings().preset === 'maximum' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            Max Comp (15%)
+          </button>
+          <button (click)="setSinglePreset('high')"
+            [class]="singleSettings().preset === 'high' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            High Comp (40%)
+          </button>
+          <button (click)="setSinglePreset('balanced')"
+            [class]="singleSettings().preset === 'balanced' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            Balanced (70%)
+          </button>
+          <button (click)="setSinglePreset('quality')"
+            [class]="singleSettings().preset === 'quality' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            High Quality (85%)
+          </button>
+          <button (click)="setSinglePreset('lossless')"
+            [class]="singleSettings().preset === 'lossless' ? 'bg-emerald-500 hover:bg-emerald-600 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            Near Lossless (98%)
+          </button>
+        </div>
+
+        <!-- Custom Slider -->
+        <div class="mt-2">
+          <div class="flex justify-between items-center text-xs mb-1">
+            <span class="text-slate-500 dark:text-zinc-400">Quality Percentage</span>
+            <span class="font-bold text-emerald-500 dark:text-emerald-400">{{ singleSettings().quality }}%</span>
+          </div>
+          <input type="range" min="1" max="100" [value]="singleSettings().quality" (input)="updateSingleQuality($event)"
+            class="w-full h-1.5 bg-slate-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+          <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+            <span>Aggressive (1)</span>
+            <span>Lossless (100)</span>
+          </div>
+        </div>
+
+        <!-- Advanced Settings Accordion -->
+        <div class="border-t border-slate-200 dark:border-zinc-700/50 pt-3 mt-1">
+          <span
+            class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-2">Advanced
+            Parameters</span>
+          <div class="space-y-2.5">
+            <!-- Toggle 1: Preserve EXIF -->
+            <div class="flex items-center justify-between cursor-pointer group">
+              <div class="flex flex-col">
+                <span
+                  class="text-xs font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-950 dark:group-hover:text-zinc-100">Preserve
+                  EXIF metadata</span>
+                <span class="text-[10px] text-slate-400 dark:text-zinc-500">Maintains camera
+                  orientation/details</span>
+              </div>
+              <button (click)="toggleSingleExif()"
+                [class]="singleSettings().preserveExif ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
+                class="w-9 h-5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
+                aria-label="Toggle preserve EXIF metadata">
+                <div [class]="singleSettings().preserveExif ? 'translate-x-4' : 'translate-x-0'"
+                  class="w-4 h-4 rounded-full bg-white transition-all shadow-sm"></div>
+              </button>
+            </div>
+
+            <!-- Toggle 2: Web Worker -->
+            <div class="flex items-center justify-between cursor-pointer group">
+              <div class="flex flex-col">
+                <span
+                  class="text-xs font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-950 dark:group-hover:text-zinc-100">Use
+                  background Web Worker</span>
+                <span class="text-[10px] text-slate-400 dark:text-zinc-500">Keeps the browser interface
+                  responsive</span>
+              </div>
+              <button (click)="toggleSingleWebWorker()"
+                [class]="singleSettings().useWebWorker ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
+                class="w-9 h-5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
+                aria-label="Toggle use background Web Worker">
+                <div [class]="singleSettings().useWebWorker ? 'translate-x-4' : 'translate-x-0'"
+                  class="w-4 h-4 rounded-full bg-white transition-all shadow-sm"></div>
+              </button>
+            </div>
+
+            <!-- Toggle 3: Auto-Optimize -->
+            <div class="flex items-center justify-between cursor-pointer group">
+              <div class="flex flex-col">
+                <span
+                  class="text-xs font-medium text-slate-700 dark:text-zinc-300 group-hover:text-slate-950 dark:group-hover:text-zinc-100">Intelligent
+                  auto-optimization</span>
+                <span class="text-[10px] text-slate-400 dark:text-zinc-500">Fine-tunes compression based on
+                  sizes</span>
+              </div>
+              <button (click)="toggleSingleAutoOptimize()"
+                [class]="singleSettings().autoOptimize ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
+                class="w-9 h-5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
+                aria-label="Toggle intelligent auto-optimization">
+                <div [class]="singleSettings().autoOptimize ? 'translate-x-4' : 'translate-x-0'"
+                  class="w-4 h-4 rounded-full bg-white transition-all shadow-sm"></div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Actions Container -->
+      <div class="flex flex-col gap-2">
+        @if (singleJob()?.status === 'Waiting' || singleJob()?.status === 'Failed') {
+        <button (click)="compressSingle()" [disabled]="isCompressingSingle()"
+          class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-300 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed">
+          <mat-icon class="scale-90">compress</mat-icon>
+          Compress Image
+        </button>
+        }
+
+        @if (singleJob()?.status === 'Compressing') {
+        <div
+          class="w-full py-3 px-4 bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 font-semibold text-sm rounded-xl flex items-center justify-center gap-3">
+          <svg class="animate-spin h-5 w-5 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          <span>Compressing image file...</span>
+        </div>
+        }
+
+        @if (singleJob()?.status === 'Completed') {
+        <div class="grid grid-cols-2 gap-3">
+          <button (click)="downloadSingle()"
+            class="py-3 px-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+            <mat-icon class="scale-90">download</mat-icon>
+            Download Image
+          </button>
+          <button (click)="resetSingle()"
+            class="py-3 px-4 bg-slate-200 hover:bg-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <mat-icon class="scale-90">restart_alt</mat-icon>
+            Upload New
+          </button>
+        </div>
+        }
+
+        @if (singleJob()?.status === 'Failed') {
+        <button (click)="resetSingle()"
+          class="w-full py-3 px-4 bg-slate-200 hover:bg-slate-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold text-sm rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <mat-icon class="scale-90">refresh</mat-icon>
+          Reset & Retry
+        </button>
+        }
+      </div>
+    </div>
+
+    <!-- Right Side Visualizer & Results -->
+    <div class="lg:col-span-7 flex flex-col gap-5">
+
+      <!-- Comparative Split Visualizer -->
+      <div class="flex flex-col gap-2">
+        <span class="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Before &
+          After Visualizer</span>
+
+        <div #sliderContainer
+          class="relative w-full h-[350px] md:h-[420px] overflow-hidden rounded-2xl border border-slate-150 dark:border-zinc-800/80 bg-slate-100 dark:bg-zinc-950 select-none flex items-center justify-center">
+          <!-- Case 1: Waiting / Loading initial image -->
+          @if (singleJob()?.status === 'Waiting') {
+          <img [src]="singleJob()?.previewUrl" class="w-full h-full object-contain pointer-events-none animate-fade-in"
+            alt="Original Image" />
+          <div class="absolute bottom-4 left-4 bg-black/60 backdrop-blur text-white text-xs px-2.5 py-1 rounded-lg">
+            Original Image (Uncompressed)
+          </div>
+          }
+
+          <!-- Case 2: Compressing Loader -->
+          @if (singleJob()?.status === 'Compressing') {
+          <div
+            class="absolute inset-0 bg-slate-100/50 dark:bg-zinc-950/50 backdrop-blur-xs flex flex-col items-center justify-center text-center">
+            <svg class="animate-spin h-10 w-10 text-emerald-500 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+            <h4 class="text-sm font-semibold text-slate-800 dark:text-zinc-100">Running Compression Engines</h4>
+            <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1">Analyzing bytes, metadata, and pixel buffers
+            </p>
+          </div>
+          }
+
+          <!-- Case 3: Failed State -->
+          @if (singleJob()?.status === 'Failed') {
+          <div class="p-6 text-center max-w-sm flex flex-col items-center">
+            <div class="p-3 bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-full mb-3">
+              <mat-icon class="scale-110">report_problem</mat-icon>
+            </div>
+            <h4 class="text-sm font-bold text-slate-800 dark:text-zinc-100">Compression Engine Failed</h4>
+            <p class="text-xs text-red-500 dark:text-red-400 mt-1.5 leading-relaxed">
+              {{ singleJob()?.error }}
+            </p>
+          </div>
+          }
+
+          <!-- Case 4: Successful Comparison Slider -->
+          @if (singleJob()?.status === 'Completed' && singleJob()?.previewUrl && singleJob()?.compressedPreviewUrl)
+          {
+          <!-- Original Image Behind -->
+          <div class="absolute inset-0 w-full h-full flex items-center justify-center">
+            <img [src]="singleJob()?.previewUrl" [style.width.px]="containerWidth()"
+              class="h-full object-contain pointer-events-none max-w-none" alt="Original" />
+          </div>
+
+          <!-- Left Overlay Label -->
+          <div
+            class="absolute top-4 left-4 bg-black/60 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg z-20">
+            Before
+          </div>
+
+          <!-- Compressed Image Container Clipping -->
+          <div class="absolute top-0 bottom-0 left-0 overflow-hidden select-none pointer-events-none flex items-center"
+            [style.width.%]="sliderPosition()">
+            <div class="absolute inset-0 w-full h-full flex items-center justify-center"
+              [style.width.px]="containerWidth()">
+              <img [src]="singleJob()?.compressedPreviewUrl" [style.width.px]="containerWidth()"
+                class="h-full object-contain pointer-events-none max-w-none" alt="Compressed" />
+            </div>
+          </div>
+
+          <!-- Right Overlay Label -->
+          <div
+            class="absolute top-4 right-4 bg-emerald-600/80 backdrop-blur text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg z-20">
+            After
+          </div>
+
+          <!-- Divider Line and Handle -->
+          <div class="absolute top-0 bottom-0 w-0.5 bg-white shadow-xl pointer-events-none z-20"
+            [style.left.%]="sliderPosition()">
+            <div
+              class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-white dark:bg-zinc-800 shadow-lg border-2 border-emerald-500 flex items-center justify-center cursor-ew-resize">
+              <mat-icon class="text-emerald-500 scale-75 select-none pointer-events-none">unfold_more</mat-icon>
+            </div>
+          </div>
+
+          <!-- Range input acting as controller overlay -->
+          <input type="range" min="0" max="100" [value]="sliderPosition()" (input)="onSliderChange($event)"
+            class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30"
+            aria-label="Before after image comparison slider" />
+          }
+        </div>
+      </div>
+
+      <!-- Results Dashboard Box -->
+      @if (singleJob()?.status === 'Completed') {
+      <div
+        class="bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/10 dark:border-emerald-400/20 rounded-2xl p-5 grid grid-cols-2 sm:grid-cols-3 gap-4 animate-fade-in">
+
+        <div class="flex flex-col">
+          <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">File Size
+            Saved</span>
+          <span class="text-xl font-extrabold text-slate-950 dark:text-zinc-50 tracking-tight mt-1">
+            {{ formatSize(singleJob()?.bytesSaved || 0) }}
+          </span>
+          <span class="text-[10px] text-slate-400 dark:text-zinc-400 mt-0.5">Bytes cleared</span>
+        </div>
+
+        <div class="flex flex-col border-l border-slate-200 dark:border-zinc-800 pl-4">
+          <span
+            class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Reduction</span>
+          <span class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight mt-1">
+            {{ singleJob()?.reductionPercentage?.toFixed(1) }}%
+          </span>
+          <span class="text-[10px] text-slate-400 dark:text-zinc-400 mt-0.5">Smaller than origin</span>
+        </div>
+
+        <div class="flex flex-col border-l border-slate-200 dark:border-zinc-800 pl-4 col-span-2 sm:col-span-1">
+          <span class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Compression
+            Ratio</span>
+          <span class="text-xl font-extrabold text-slate-950 dark:text-zinc-50 tracking-tight mt-1">
+            {{ singleJob()?.ratio }}
+          </span>
+          <span class="text-[10px] text-slate-400 dark:text-zinc-400 mt-0.5">Original / Compressed</span>
+        </div>
+
+        <div
+          class="col-span-2 sm:col-span-3 border-t border-slate-200/50 dark:border-zinc-800/50 pt-3 flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-slate-500 dark:text-zinc-400">
+          <div>Original Size: <span class="font-semibold text-slate-700 dark:text-zinc-200">{{
+              formatSize(singleJob()?.originalSize || 0) }}</span></div>
+          <div>Compressed Size: <span class="font-semibold text-emerald-600 dark:text-emerald-400">{{
+              formatSize(singleJob()?.compressedSize || 0) }}</span></div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+  }
+
+  <!-- --- BULK COMPRESSION TAB --- -->
+  @if (activeTab() === 'bulk') {
+  <input type="file" multiple #bulkFileInput (change)="onBulkFilesSelected($event)"
+    accept="image/jpeg,image/jpg,image/png,image/webp,image/avif" class="hidden" />
+
+  @if (isBulkQueueEmpty()) {
+  <!-- Upload Area (Bulk) -->
+  <div (dragover)="onDragOver($event)" (drop)="onBulkFilesDropped($event)"
+    class="border-2 border-dashed border-slate-200 dark:border-zinc-800 hover:border-emerald-500 dark:hover:border-emerald-400 rounded-2xl p-12 text-center transition-all duration-300 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-zinc-900/30 hover:bg-slate-50 dark:hover:bg-zinc-900/50 cursor-pointer min-h-[350px] relative focus:outline-none focus:ring-2 focus:ring-emerald-400"
+    (click)="bulkFileInput.click()" tabindex="0" role="button" (keydown.enter)="bulkFileInput.click()"
+    (keydown.space)="bulkFileInput.click(); $event.preventDefault()" aria-label="Upload multiple image files">
+    <div
+      class="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-zinc-800 flex items-center justify-center text-emerald-500 dark:text-emerald-400 mb-4 shadow-sm border border-emerald-100/50 dark:border-zinc-700/50">
+      <mat-icon class="scale-125">collections</mat-icon>
+    </div>
+    <h3 class="text-base font-semibold text-slate-800 dark:text-zinc-200">Drag & drop multiple files here</h3>
+    <p class="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-md">
+      or click to browse. Max 20 files at once, up to 10 MB per file. Supported formats: JPG, JPEG, PNG, WEBP, AVIF.
+    </p>
+  </div>
+  } @else {
+  <!-- Queue Workspace (Bulk) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- Left Side Control Panel -->
+    <div class="lg:col-span-4 flex flex-col gap-4">
+
+      <!-- Setup Controls Card -->
+      <div
+        class="bg-slate-50 dark:bg-zinc-800/40 p-5 rounded-xl border border-slate-100 dark:border-zinc-800/50 flex flex-col gap-4">
+        <h4 class="text-xs font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Queue Settings
+        </h4>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button (click)="setBulkPreset('maximum')"
+            [class]="bulkSettings().preset === 'maximum' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            Max Comp
+          </button>
+          <button (click)="setBulkPreset('high')"
+            [class]="bulkSettings().preset === 'high' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            High Comp
+          </button>
+          <button (click)="setBulkPreset('balanced')"
+            [class]="bulkSettings().preset === 'balanced' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            Balanced
+          </button>
+          <button (click)="setBulkPreset('quality')"
+            [class]="bulkSettings().preset === 'quality' ? 'bg-emerald-500 text-white border-transparent' : 'bg-white hover:bg-slate-100 dark:bg-zinc-800 dark:hover:bg-zinc-700 border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300'"
+            class="px-2 py-1.5 text-[11px] font-medium border rounded-lg transition-all cursor-pointer whitespace-nowrap">
+            High Quality
+          </button>
+        </div>
+
+        <!-- Custom Slider -->
+        <div>
+          <div class="flex justify-between items-center text-xs mb-1">
+            <span class="text-slate-500 dark:text-zinc-400">Batch Quality</span>
+            <span class="font-bold text-emerald-500 dark:text-emerald-400">{{ bulkSettings().quality }}%</span>
+          </div>
+          <input type="range" min="1" max="100" [value]="bulkSettings().quality" (input)="updateBulkQuality($event)"
+            class="w-full h-1.5 bg-slate-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 focus:outline-none" />
+        </div>
+
+        <!-- Advanced Settings Toggle -->
+        <div class="border-t border-slate-200 dark:border-zinc-700/50 pt-3 flex flex-col gap-2">
+          <span
+            class="text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest block mb-1">Batch
+            Parameters</span>
+
+          <div class="flex items-center justify-between cursor-pointer group">
+            <span
+              class="text-xs text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-zinc-100">Preserve
+              EXIF metadata</span>
+            <button (click)="toggleBulkExif()"
+              [class]="bulkSettings().preserveExif ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
+              class="w-8 h-4.5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
+              aria-label="Toggle batch preserve EXIF metadata">
+              <div [class]="bulkSettings().preserveExif ? 'translate-x-3.5' : 'translate-x-0'"
+                class="w-3.5 h-3.5 rounded-full bg-white transition-all shadow-sm"></div>
+            </button>
+          </div>
+          <div class="mt-4 border-t border-slate-200 dark:border-zinc-700 pt-4">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-medium">
+                Compress to Target Size
+              </span>
+
+              <button (click)="toggleTargetSize()"
+                [class]="singleSettings().useTargetSize ? 'bg-emerald-500' : 'bg-slate-300'"
+                class="w-10 h-5 rounded-full p-0.5">
+                <div [class]="singleSettings().useTargetSize ? 'translate-x-5' : 'translate-x-0'"
+                  class="w-4 h-4 bg-white rounded-full transition-all"></div>
+              </button>
+            </div>
+
+            @if (singleSettings().useTargetSize) {
+            <input type="number" min="10" [value]="singleSettings().targetSizeKB" (input)="updateTargetSize($event)"
+              placeholder="Target size in KB"
+              class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800" />
+
+            <p class="text-[10px] text-slate-400 mt-1">
+              Example: 100 = 100 KB
+            </p>
+            }
+          </div>
+
+          <div class="flex items-center justify-between cursor-pointer group">
+            <span
+              class="text-xs text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-zinc-100">Web
+              Worker background</span>
+            <button (click)="toggleBulkWebWorker()"
+              [class]="bulkSettings().useWebWorker ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
+              class="w-8 h-4.5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
+              aria-label="Toggle batch background Web Worker">
+              <div [class]="bulkSettings().useWebWorker ? 'translate-x-3.5' : 'translate-x-0'"
+                class="w-3.5 h-3.5 rounded-full bg-white transition-all shadow-sm"></div>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between cursor-pointer group">
+            <span
+              class="text-xs text-slate-700 dark:text-zinc-300 group-hover:text-slate-900 dark:group-hover:text-zinc-100">Auto-optimize
+              buffers</span>
+            <button (click)="toggleBulkAutoOptimize()"
+              [class]="bulkSettings().autoOptimize ? 'bg-emerald-500' : 'bg-slate-200 dark:bg-zinc-700'"
+              class="w-8 h-4.5 rounded-full p-0.5 transition-all duration-200 focus:outline-none cursor-pointer"
+              aria-label="Toggle batch intelligent auto-optimization">
+              <div [class]="bulkSettings().autoOptimize ? 'translate-x-3.5' : 'translate-x-0'"
+                class="w-3.5 h-3.5 rounded-full bg-white transition-all shadow-sm"></div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Queue Cumulative Stats -->
+      @if (bulkJobsSummary().completedCount > 0) {
+      <div
+        class="bg-emerald-500/5 dark:bg-emerald-500/10 border border-emerald-500/10 dark:border-emerald-400/20 rounded-xl p-4 flex flex-col gap-2.5 animate-fade-in">
+        <h4 class="text-xs font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">Queue Results</h4>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <span class="text-slate-400 dark:text-zinc-500 block text-[10px]">Saved</span>
+            <span class="font-bold text-slate-800 dark:text-zinc-100 text-sm">{{ bulkJobsSummary().savedFormatted
+              }}</span>
+          </div>
+          <div>
+            <span class="text-slate-400 dark:text-zinc-500 block text-[10px]">Avg reduction</span>
+            <span class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">{{
+              bulkJobsSummary().reductionPercent }}%</span>
+          </div>
+        </div>
+        <div
+          class="border-t border-slate-200/50 dark:border-zinc-800/50 pt-2 flex justify-between items-center text-[10px] text-slate-500">
+          <span>Batch Ratio: <strong>{{ bulkJobsSummary().ratio }}</strong></span>
+          <span>Processed: <strong>{{ bulkJobsSummary().completedCount }}/{{ bulkJobsSummary().totalCount
+              }}</strong></span>
+        </div>
+      </div>
+      }
+
+      <!-- Actions Drawer (Bulk) -->
+      <div class="flex flex-col gap-2">
+        @if (bulkQueueStatus() !== 'processing') {
+        <button (click)="compressBulk()" [disabled]="bulkJobsSummary().completedCount === bulkJobsSummary().totalCount"
+          class="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-300 dark:disabled:bg-zinc-800 disabled:text-slate-500 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed">
+          <mat-icon class="scale-90">play_arrow</mat-icon>
+          Compress All ({{ bulkJobsSummary().totalCount - bulkJobsSummary().completedCount }} remaining)
+        </button>
+        } @else {
+        <button (click)="cancelQueue()"
+          class="w-full py-3 px-4 bg-red-500 hover:bg-red-600 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+          <mat-icon class="scale-90">cancel</mat-icon>
+          Cancel Queue
+        </button>
+        }
+
+        @if (bulkJobsSummary().completedCount > 0) {
+        <button (click)="downloadAllBulkZIP()"
+          class="w-full py-3 px-4 bg-slate-900 hover:bg-black dark:bg-zinc-800 dark:hover:bg-zinc-700 text-white font-semibold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
+          <mat-icon class="scale-90">archive</mat-icon>
+          Download ZIP ({{ bulkJobsSummary().completedCount }})
+        </button>
+        }
+
+        <div class="grid grid-cols-2 gap-2">
+          <button (click)="bulkFileInput.click()"
+            [disabled]="bulkQueueStatus() === 'processing' || bulkJobs().length >= maxFilesLimit"
+            class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed">
+            <mat-icon class="scale-75">add_to_photos</mat-icon>
+            Add More
+          </button>
+          <button (click)="clearBulkQueue()" [disabled]="bulkQueueStatus() === 'processing'"
+            class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-red-600 dark:text-red-400 font-semibold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:cursor-not-allowed">
+            <mat-icon class="scale-75">delete_sweep</mat-icon>
+            Clear Queue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side Queue List -->
+    <div class="lg:col-span-8 flex flex-col gap-3">
+      <div class="flex justify-between items-center px-1">
+        <span class="text-xs font-semibold text-slate-400 dark:text-zinc-500 uppercase tracking-wider">Upload Queue
+          ({{ bulkJobs().length }}/{{ maxFilesLimit }} files)</span>
+      </div>
+
+      <!-- Queue Container Grid -->
+      <div class="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
+        @for (job of bulkJobs(); track job.id) {
+        <div
+          class="p-3 bg-white dark:bg-zinc-800/20 border border-slate-150 dark:border-zinc-850 rounded-xl flex items-center justify-between gap-4 group transition-all duration-200 hover:shadow-sm">
+
+          <div class="flex items-center gap-3 min-w-0">
+            <!-- Thumbnail generated with Pica -->
+            <div
+              class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 flex-shrink-0 overflow-hidden flex items-center justify-center relative shadow-inner">
+              @if (job.picaThumbnailUrl) {
+              <img [src]="job.picaThumbnailUrl" class="w-full h-full object-cover" alt="Thumb" />
+              } @else {
+              <div class="animate-pulse bg-slate-200 dark:bg-zinc-800 w-full h-full"></div>
+              }
+            </div>
+
+            <div class="min-w-0">
+              <h5
+                class="text-xs font-semibold text-slate-800 dark:text-zinc-100 truncate max-w-[150px] sm:max-w-[280px]"
+                [title]="job.name">
+                {{ job.name }}
+              </h5>
+              <p class="text-[10px] text-slate-400 dark:text-zinc-500 mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
+                <span>Original: <strong>{{ formatSize(job.originalSize) }}</strong></span>
+                @if (job.dimensions) {
+                <span>• {{ job.dimensions.width }}x{{ job.dimensions.height }}px</span>
+                }
+                <span>• <span
+                    class="uppercase font-semibold text-[9px] bg-slate-100 dark:bg-zinc-800 px-1 py-0.2 rounded">{{
+                    job.format }}</span></span>
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <!-- Status Pill -->
+            <div>
+              @switch (job.status) {
+              @case ('Waiting') {
+              <span
+                class="px-2 py-0.5 text-[9px] font-bold bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/30 rounded-full flex items-center gap-1">
+                <span class="w-1 h-1 rounded-full bg-amber-400 animate-pulse"></span>
+                Waiting
+              </span>
+              }
+              @case ('Compressing') {
+              <span
+                class="px-2 py-0.5 text-[9px] font-bold bg-blue-50 dark:bg-blue-950/20 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-900/30 rounded-full flex items-center gap-1">
+                <svg class="animate-spin h-2.5 w-2.5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
+                </svg>
+                Running
+              </span>
+              }
+              @case ('Completed') {
+              <div class="flex flex-col items-end gap-0.5">
+                <span
+                  class="px-2 py-0.5 text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 border border-emerald-200/50 dark:border-emerald-900/30 rounded-full flex items-center gap-0.5">
+                  <mat-icon class="scale-[0.5] leading-none -ml-0.5">check_circle</mat-icon>
+                  -{{ job.reductionPercentage?.toFixed(0) }}%
+                </span>
+                <span class="text-[9px] font-semibold text-slate-500 dark:text-zinc-400 pr-1">{{
+                  formatSize(job.compressedSize || 0) }}</span>
+              </div>
+              }
+              @case ('Failed') {
+              <span
+                class="px-2 py-0.5 text-[9px] font-bold bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border border-red-200/50 dark:border-red-900/30 rounded-full flex items-center gap-1"
+                [title]="job.error">
+                <mat-icon class="scale-50 mt-0.5 leading-none">error</mat-icon>
+                Failed
+              </span>
+              }
+              }
+            </div>
+
+            <!-- Context Actions -->
+            <div class="flex items-center gap-1">
+              @if (job.status === 'Completed') {
+              <button (click)="downloadSingleBulk(job)"
+                class="p-1.5 text-slate-500 hover:text-emerald-500 dark:text-zinc-400 dark:hover:text-emerald-400 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-lg transition-all cursor-pointer"
+                title="Download compressed image">
+                <mat-icon class="scale-75">download</mat-icon>
+              </button>
+              }
+              <button (click)="removeBulkJob(job.id)" [disabled]="bulkQueueStatus() === 'processing'"
+                class="p-1.5 text-slate-400 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                title="Remove file from queue">
+                <mat-icon class="scale-75">delete</mat-icon>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+  }
+
+</main>

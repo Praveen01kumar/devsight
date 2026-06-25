@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, comp
 import { MatIconModule } from '@angular/material/icon';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
-import { CompressionJob, CompressionPreset, CompressionSettings, compressImageFile, formatBytes, generateThumbnailWithPica, getImageDimensions, getOptimizedQuality } from './compression.utils';
+import { CompressionJob, CompressionPreset, CompressionSettings, compressImageFile, formatBytes, generateThumbnailWithPica, getImageDimensions, getOptimizedQuality, compressToTargetSize } from './compression.utils';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +12,6 @@ import { CompressionJob, CompressionPreset, CompressionSettings, compressImageFi
 })
 export class ImageCompressoerComponent implements AfterViewInit {
     activeTab = signal<'single' | 'bulk'>('single');
-    isDarkMode = signal<boolean>(false);
     validationError = signal<string | null>(null);
 
     maxFileSizeMB = 10;
@@ -24,6 +23,8 @@ export class ImageCompressoerComponent implements AfterViewInit {
         preserveExif: true,
         useWebWorker: true,
         autoOptimize: true,
+        useTargetSize: true,
+        targetSizeKB: 200
     });
     singleJob = signal<CompressionJob | null>(null);
     isCompressingSingle = signal<boolean>(false);
@@ -34,6 +35,8 @@ export class ImageCompressoerComponent implements AfterViewInit {
         preserveExif: true,
         useWebWorker: true,
         autoOptimize: true,
+        useTargetSize: false,
+        targetSizeKB: 200
     });
     bulkJobs = signal<CompressionJob[]>([]);
     bulkQueueStatus = signal<'idle' | 'processing' | 'cancelled'>('idle');
@@ -87,17 +90,6 @@ export class ImageCompressoerComponent implements AfterViewInit {
         };
     });
 
-    constructor() {
-        effect(() => {
-            const dark = this.isDarkMode();
-            if (dark) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        });
-    }
-
     ngAfterViewInit() {
         this.setupResizeObserver();
     }
@@ -128,10 +120,6 @@ export class ImageCompressoerComponent implements AfterViewInit {
         }
     }
 
-    toggleTheme() {
-        this.isDarkMode.update(v => !v);
-    }
-
     setTab(tab: 'single' | 'bulk') {
         this.activeTab.set(tab);
         this.validationError.set(null);
@@ -148,8 +136,111 @@ export class ImageCompressoerComponent implements AfterViewInit {
     updateSingleQuality(event: Event) {
         const val = parseInt((event.target as HTMLInputElement).value);
         this.singleSettings.update(s => ({ ...s, quality: val }));
+        const job = this.singleJob();
+        if (job?.status === 'Completed') {
+            this.singleJob.update(j => j ? {
+                ...j,
+                status: 'Waiting',
+                compressedBlob: undefined,
+                compressedSize: undefined,
+                compressedPreviewUrl: undefined,
+                reductionPercentage: undefined,
+                bytesSaved: undefined,
+                ratio: undefined
+            } : null);
+        }
     }
 
+    toggleTargetSize() {
+        this.singleSettings.update(s => ({
+            ...s,
+            useTargetSize: !s.useTargetSize
+        }));
+
+        this.markSingleForRecompression();
+    }
+    private markSingleForRecompression() {
+        const job = this.singleJob();
+
+        if (!job) return;
+
+        if (job.compressedPreviewUrl) {
+            URL.revokeObjectURL(job.compressedPreviewUrl);
+        }
+
+        this.singleJob.update(current => {
+            if (!current) return null;
+
+            return {
+                ...current,
+                status: 'Waiting',
+                compressedSize: undefined,
+                compressedBlob: undefined,
+                compressedPreviewUrl: undefined,
+                reductionPercentage: undefined,
+                bytesSaved: undefined,
+                ratio: undefined,
+                error: undefined
+            };
+        });
+    }
+ updateTargetSize(event: Event) {
+    const value = Number(
+        (event.target as HTMLInputElement).value
+    );
+
+    const job = this.singleJob();
+
+    if (job) {
+        const originalKB = Math.ceil(job.originalSize / 1024);
+
+        if (value >= originalKB) {
+            this.validationError.set(
+                `Target size cannot exceed ${originalKB - 1} KB`
+            );
+
+            this.singleSettings.update(s => ({
+                ...s,
+                targetSizeKB: originalKB - 1
+            }));
+
+            return;
+        }
+    }
+
+    this.validationError.set(null);
+
+    this.singleSettings.update(s => ({
+        ...s,
+        targetSizeKB: value
+    }));
+
+    this.markSingleForRecompression();
+}
+    private validateTargetSize(): boolean {
+        const job = this.singleJob();
+
+        if (
+            !job ||
+            !this.singleSettings().useTargetSize ||
+            !this.singleSettings().targetSizeKB
+        ) {
+            return true;
+        }
+
+        const originalKB = Math.ceil(job.originalSize / 1024);
+        const targetKB = this.singleSettings().targetSizeKB;
+
+        if (targetKB && targetKB >= originalKB) {
+            this.validationError.set(
+                `Target size must be smaller than original image size (${originalKB} KB).`
+            );
+            return false;
+        }
+
+        this.validationError.set(null);
+        return true;
+    }
     setBulkPreset(preset: CompressionPreset) {
         this.bulkSettings.update(s => ({
             ...s,
@@ -250,6 +341,9 @@ export class ImageCompressoerComponent implements AfterViewInit {
         const job = this.singleJob();
         if (!job) return;
 
+    if (!this.validateTargetSize()) {
+        return;
+    }
         this.isCompressingSingle.set(true);
         this.validationError.set(null);
 
@@ -260,13 +354,34 @@ export class ImageCompressoerComponent implements AfterViewInit {
             if (this.singleSettings().autoOptimize) {
                 finalQuality = getOptimizedQuality(job.originalSize, finalQuality);
             }
+            let compressedBlob: Blob;
 
-            const compressedBlob = await compressImageFile(
-                job.file,
-                finalQuality,
-                this.singleSettings().useWebWorker,
-                this.singleSettings().preserveExif
-            );
+            if (
+                this.singleSettings().useTargetSize &&
+                this.singleSettings().targetSizeKB
+            ) {
+                compressedBlob =
+                    await compressToTargetSize(
+                        job.file,
+                        this.singleSettings().targetSizeKB!,
+                        this.singleSettings().useWebWorker,
+                        this.singleSettings().preserveExif
+                    );
+            } else {
+                compressedBlob =
+                    await compressImageFile(
+                        job.file,
+                        finalQuality,
+                        this.singleSettings().useWebWorker,
+                        this.singleSettings().preserveExif
+                    );
+            }
+            // const compressedBlob = await compressImageFile(
+            //     job.file,
+            //     finalQuality,
+            //     this.singleSettings().useWebWorker,
+            //     this.singleSettings().preserveExif
+            // );
 
             const compressedSize = compressedBlob.size;
             const bytesSaved = job.originalSize - compressedSize;
@@ -390,6 +505,12 @@ export class ImageCompressoerComponent implements AfterViewInit {
 
     async compressBulk() {
         if (this.bulkJobs().length === 0 || this.bulkQueueStatus() === 'processing') return;
+        if (
+    this.singleSettings().useTargetSize &&
+    !this.validateTargetSize()
+) {
+    return;
+}
 
         this.bulkQueueStatus.set('processing');
         this.validationError.set(null);
@@ -410,13 +531,34 @@ export class ImageCompressoerComponent implements AfterViewInit {
                     if (this.bulkSettings().autoOptimize) {
                         finalQuality = getOptimizedQuality(job.originalSize, finalQuality);
                     }
+                    let compressedBlob: Blob;
 
-                    const compressedBlob = await compressImageFile(
-                        job.file,
-                        finalQuality,
-                        this.bulkSettings().useWebWorker,
-                        this.bulkSettings().preserveExif
-                    );
+                    if (
+                        this.singleSettings().useTargetSize &&
+                        this.singleSettings().targetSizeKB
+                    ) {
+                        compressedBlob =
+                            await compressToTargetSize(
+                                job.file,
+                                this.singleSettings().targetSizeKB!,
+                                this.singleSettings().useWebWorker,
+                                this.singleSettings().preserveExif
+                            );
+                    } else {
+                        compressedBlob =
+                            await compressImageFile(
+                                job.file,
+                                finalQuality,
+                                this.singleSettings().useWebWorker,
+                                this.singleSettings().preserveExif
+                            );
+                    }
+                    // const compressedBlob = await compressImageFile(
+                    //     job.file,
+                    //     finalQuality,
+                    //     this.bulkSettings().useWebWorker,
+                    //     this.bulkSettings().preserveExif
+                    // );
 
                     const compressedSize = compressedBlob.size;
                     const bytesSaved = job.originalSize - compressedSize;

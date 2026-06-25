@@ -626,48 +626,48 @@ export const TOOLS: ToolMetadata[] = [
   {
     id: 'image-type-converter',
     slug: 'image-type-converter',
-    name: 'image-type-converter',
-    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
-    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
-    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
+    name: 'Image Type Converter',
+    shortDescription: 'Convert images between JPG, PNG, WEBP, AVIF, TIFF, BMP and other formats directly in your browser.',
+    metaTitle: 'Image Type Converter - JPG, PNG, WEBP, AVIF, TIFF & BMP - devsight',
+    metaDescription: 'Convert images between popular formats including JPG, PNG, WEBP, AVIF, TIFF and BMP. Fast browser-based image conversion with single and bulk processing.',
     categoryId: 'design-tools',
-    icon: 'image_search',
-    tags: ['svg', 'svg-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
-    relatedTools: ['json-formatter', 'base64-encoder'],
+    icon: 'image',
+    tags: ['image-converter', 'jpg', 'png', 'webp', 'avif', 'tiff', 'bmp', 'image-tools', 'bulk-converter'],
+    relatedTools: ['image-compressor', 'svg-viewer'],
     faqs: [
       {
-        question: 'Can I edit SVG files?',
-        answer: 'Yes. Edit SVG attributes and source code with live updates.'
+        question: 'Which image formats are supported?',
+        answer: 'The converter supports JPG, JPEG, PNG, WEBP, AVIF, TIFF, TIF, and BMP formats.'
       },
       {
-        question: 'Can I inspect SVG structure?',
-        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
+        question: 'Can I convert multiple images at once?',
+        answer: 'Yes. Bulk conversion allows multiple images to be converted simultaneously.'
       },
       {
-        question: 'What information can I view?',
-        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
+        question: 'Are my files uploaded to a server?',
+        answer: 'No. All processing happens directly in your browser.'
       }
     ],
-    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
-                <p>
-                  Open, inspect, edit, and analyze SVG files directly in your browser.
-                  Explore SVG layers, modify element attributes, edit XML source, and view
-                  useful SVG statistics and color information in real time.
-                </p>
+    detailedGuide: `
+    <h2>Image Type Converter</h2>
 
-                <h3>Features</h3>
+    <p>
+      Convert images between popular formats directly in your browser.
+      Supports single-file and bulk conversion workflows with fast local processing.
+    </p>
 
-                <ul>
-                  <li>Live SVG rendering.</li>
-                  <li>SVG element tree navigation.</li>
-                  <li>Attribute and property inspection.</li>
-                  <li>Raw SVG source editor.</li>
-                  <li>Color palette extraction.</li>
-                  <li>SVG statistics and analysis.</li>
-                  <li>Multi-file SVG workspace.</li>
-                  <li>Zoom and viewport controls.</li>
-                </ul>`
-  },
+    <h3>Features</h3>
+
+    <ul>
+      <li>Convert JPG, PNG, WEBP, AVIF, TIFF, and BMP.</li>
+      <li>Single image conversion.</li>
+      <li>Bulk image conversion.</li>
+      <li>Image preview before conversion.</li>
+      <li>Browser-based processing.</li>
+      <li>ZIP download for bulk conversions.</li>
+      <li>No file uploads required.</li>
+    </ul>
+  `},
   {
     id: 'svg-viewer',
     slug: 'svg-viewer',
@@ -884,73 +884,47 @@ export const TOOLS: ToolMetadata[] = [
   {
     id: 'image-compressor',
     slug: 'image-compressor',
-    name: 'image-compressor',
-    shortDescription: 'Generate CSS filters that transform black icons and SVGs into any target color, with live preview, fine-tuning controls, and batch processing.',
-    metaTitle: 'CSS Image & SVG Filter Generator - Convert Icons to Any Color - devsight',
-    metaDescription: 'Generate accurate CSS filter values for PNG, SVG, and icon assets. Preview color matching, adjust filters manually, compare results, and export production-ready CSS instantly.',
+    name: 'Image Compressor',
+    shortDescription: 'Compress JPG, PNG, WEBP and other image formats while reducing file size and preserving visual quality.',
+    metaTitle: 'Image Compressor - Reduce JPG, PNG & WEBP File Size - devsight',
+    metaDescription: 'Compress images online with adjustable quality settings. Reduce JPG, PNG, WEBP and other image sizes directly in your browser.',
     categoryId: 'design-tools',
-    icon: 'palette',
-    tags: ['css-filter', 'svg', 'icons', 'color-generator', 'image-tools', 'css', 'frontend', 'design', 'color-matching', 'svg-color'],
-    relatedTools: ['svg-viewer', 'color-picker', 'base64-encoder'],
+    icon: 'compress',
+    tags: ['image-compressor', 'compressor', 'jpg', 'png', 'webp', 'optimization', 'image-tools'],
+    relatedTools: ['image-type-converter', 'svg-viewer'],
     faqs: [
       {
-        question: 'What does this tool do?',
-        answer: 'It generates CSS filter values that recolor black icons, SVGs, and images to closely match a target color.'
+        question: 'Which formats can be compressed?',
+        answer: 'JPG, PNG, WEBP and other common image formats can be compressed.'
       },
       {
-        question: 'Can I upload my own SVG files?',
-        answer: 'Yes. You can upload SVG, PNG, and other image formats for live preview and filter testing.'
+        question: 'Can I compress multiple images?',
+        answer: 'Yes. Batch compression is supported.'
       },
       {
-        question: 'Can I manually adjust the generated filter?',
-        answer: 'Yes. Fine-tune invert, sepia, saturation, hue rotation, brightness, and contrast values to achieve the desired result.'
-      },
-      {
-        question: 'Does it support batch processing?',
-        answer: 'Yes. Multiple images can be loaded and previewed using the same generated filter settings.'
-      },
-      {
-        question: 'Does it provide SVG color recommendations?',
-        answer: 'Yes. For SVG files, the tool suggests direct fill and stroke color replacements as an alternative to CSS filters.'
+        question: 'Will image quality be affected?',
+        answer: 'Compression settings allow balancing file size and visual quality.'
       }
     ],
     detailedGuide: `
-    <h2>CSS Filter Color Generator</h2>
+    <h2>Image Compressor</h2>
 
     <p>
-      Convert black SVGs, icons, and images into any target color using
-      automatically generated CSS filter values.
+      Reduce image file sizes while maintaining visual quality.
+      Compress images directly in your browser without uploading files.
     </p>
 
     <h3>Features</h3>
 
     <ul>
-      <li>Generate CSS filters from any HEX or RGB color.</li>
-      <li>Live icon and image preview.</li>
-      <li>Upload SVG, PNG, and other image formats.</li>
-      <li>Manual filter adjustment controls.</li>
-      <li>Color accuracy scoring and comparison.</li>
-      <li>SVG fill and stroke color recommendations.</li>
-      <li>Batch image preview mode.</li>
-      <li>Copy-ready CSS output.</li>
+      <li>Compress JPG, PNG and WEBP images.</li>
+      <li>Adjustable compression settings.</li>
+      <li>Single and bulk compression.</li>
+      <li>Real-time size comparison.</li>
+      <li>Download optimized images instantly.</li>
+      <li>Client-side processing.</li>
     </ul>
-
-    <h3>Use Cases</h3>
-
-    <ul>
-      <li>Recolor monochrome SVG icons.</li>
-      <li>Generate CSS filters for design systems.</li>
-      <li>Match brand colors without editing assets.</li>
-      <li>Preview color transformations before deployment.</li>
-      <li>Optimize icon theming for web applications.</li>
-    </ul>
-
-    <p>
-      All calculations and previews run entirely in the browser without
-      uploading files to external servers.
-    </p>
-  `
-  },
+  `},
   {
     id: 'date-difference',
     slug: 'date-difference',

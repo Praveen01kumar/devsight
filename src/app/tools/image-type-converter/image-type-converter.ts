@@ -31,7 +31,6 @@ interface BulkFile {
 export class ImageTypeConverter implements OnInit, OnDestroy {
   // Navigation & Theme
   currentTab = signal<'single' | 'bulk'>('single');
-  theme = signal<'light' | 'dark'>('dark');
 
   // Drag states
   isSingleDragging = signal<boolean>(false);
@@ -97,36 +96,14 @@ export class ImageTypeConverter implements OnInit, OnDestroy {
   ];
 
   constructor() {
-    // Theme effect
-    effect(() => {
-      const currentTheme = this.theme();
-      if (typeof window !== 'undefined') {
-        const root = document.documentElement;
-        if (currentTheme === 'dark') {
-          root.classList.add('dark');
-        } else {
-          root.classList.remove('dark');
-        }
-        localStorage.setItem('theme', currentTheme);
-      }
-    });
   }
 
   ngOnInit() {
-    if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.theme.set(savedTheme || (prefersDark ? 'dark' : 'light'));
-    }
+
   }
 
   ngOnDestroy() {
     this.clearAllUrls();
-  }
-
-  // --- Theme Toggle ---
-  toggleTheme() {
-    this.theme.set(this.theme() === 'dark' ? 'light' : 'dark');
   }
 
   // --- URL Tracking & Cleanup ---
