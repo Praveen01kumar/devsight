@@ -246,8 +246,8 @@ import { SeoService } from '../../core/services/seo';
   `
 })
 export class LandingPageComponent implements OnInit {
-  private toolboxService = inject(ToolboxService);
-  private seoService = inject(SeoService);
+  private readonly toolboxService = inject(ToolboxService);
+  private readonly seoService = inject(SeoService);
 
   public categories = CATEGORIES;
   public tools = TOOLS;

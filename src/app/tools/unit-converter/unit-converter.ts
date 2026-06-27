@@ -14,42 +14,61 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
                 <!-- LEFT PANEL: Category selector grid & Main conversion engine card (8 columns on desktop) -->
                 <section id="conversion-workspace" class="flex flex-col space-y-4 md:space-y-6">
                 <!-- Category Browser & Filter Search -->
-                <div id="category-browser-card" class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/35 rounded-2xl p-4 relative shadow-sm">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                    <div class="flex items-center space-x-2.5">
-                        <mat-icon class="text-emerald-600 dark:text-emerald-400">grid_view</mat-icon>
-                        <h2 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Select Conversion Class</h2>
+                <aside class="m-0 mb-2 relative w-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-sm transition-all duration-300">
+                    <!-- Toggle Button -->
+                    <button (click)="toggleSidebar()" type="button" tabindex="0" class="absolute top-2 cursor-pointer right-3 z-20 p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200 rounded-lg flex items-center justify-center transition"
+                    [title]="sidebarExpanded() ? 'Collapse tools' : 'Expand tools'">
+                    <mat-icon style="font-size:18px;width:18px;height:18px;">
+                        {{ sidebarExpanded() ? 'expand_circle_up' : 'expand_circle_down' }}
+                    </mat-icon>
+                    </button>
+                    @if (sidebarExpanded()) {
+                    <!-- Expanded State -->
+                    <div class="p-4 pr-12 border-b border-zinc-150 dark:border-zinc-850">
+                        <span class="text-[10px] font-mono font-extrabold tracking-wider text-zinc-500 dark:text-zinc-400 uppercase">
+                        <div class="flex items-center space-x-2.5">
+                            <mat-icon class="text-emerald-600 dark:text-emerald-400">grid_view</mat-icon>
+                            <h2 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Select Conversion Class</h2>
+                        </div>
+                        </span>
                     </div>
+                    <!-- Active files container with drag handles -->
+                    <div class="p-2 space-y-3">
+                        <!-- Scrollable Category Grid -->
+                        <div id="category-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-[220px] overflow-y-auto pr-1">
+                        @for (cat of filteredCategories(); track cat.id) {
+                            <button [id]="'cat-btn-' + cat.id"
+                                    (click)="selectCategory(cat.id)"
+                                    [class.bg-emerald-600]="activeCategory().id === cat.id"
+                                    [class.text-white]="activeCategory().id === cat.id"
+                                    [class.border-emerald-600]="activeCategory().id === cat.id"
+                                    [class.dark:bg-emerald-500]="activeCategory().id === cat.id"
+                                    [class.bg-slate-50]="activeCategory().id !== cat.id"
+                                    [class.text-slate-700]="activeCategory().id !== cat.id"
+                                    [class.dark:text-slate-300]="activeCategory().id !== cat.id"
+                                    [class.dark:bg-slate-800/50]="activeCategory().id !== cat.id"
+                                    [class.border-slate-200]="activeCategory().id !== cat.id"
+                                    [class.dark:border-slate-800]="activeCategory().id !== cat.id"
+                                    class="cursor-pointer flex items-center space-x-2.5 p-2.5 rounded-xl border text-left text-xs sm:text-sm font-medium hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer truncate shadow-sm">
+                            <mat-icon [class.text-emerald-500]="activeCategory().id !== cat.id" [class.text-white]="activeCategory().id === cat.id" class="text-lg flex-shrink-0">{{ cat.icon }}</mat-icon>
+                            <span class="truncate">{{ cat.name }}</span>
+                            </button>
+                        } @empty {
+                            <div class="col-span-full py-8 text-center text-slate-400 dark:text-slate-500 text-sm">
+                            <mat-icon class="text-3xl mb-1">sentiment_dissatisfied</mat-icon>
+                            <p>No categories found matching search.</p>
+                            </div>
+                        }
+                        </div>
                     </div>
-
-                    <!-- Scrollable Category Grid -->
-                    <div id="category-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-[220px] overflow-y-auto pr-1">
-                    @for (cat of filteredCategories(); track cat.id) {
-                        <button [id]="'cat-btn-' + cat.id"
-                                (click)="selectCategory(cat.id)"
-                                [class.bg-emerald-600]="activeCategory().id === cat.id"
-                                [class.text-white]="activeCategory().id === cat.id"
-                                [class.border-emerald-600]="activeCategory().id === cat.id"
-                                [class.dark:bg-emerald-500]="activeCategory().id === cat.id"
-                                [class.bg-slate-50]="activeCategory().id !== cat.id"
-                                [class.text-slate-700]="activeCategory().id !== cat.id"
-                                [class.dark:text-slate-300]="activeCategory().id !== cat.id"
-                                [class.dark:bg-slate-800/50]="activeCategory().id !== cat.id"
-                                [class.border-slate-200]="activeCategory().id !== cat.id"
-                                [class.dark:border-slate-800]="activeCategory().id !== cat.id"
-                                class="cursor-pointer flex items-center space-x-2.5 p-2.5 rounded-xl border text-left text-xs sm:text-sm font-medium hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer truncate shadow-sm">
-                        <mat-icon [class.text-emerald-500]="activeCategory().id !== cat.id" [class.text-white]="activeCategory().id === cat.id" class="text-lg flex-shrink-0">{{ cat.icon }}</mat-icon>
-                        <span class="truncate">{{ cat.name }}</span>
-                        </button>
-                    } @empty {
-                        <div class="col-span-full py-8 text-center text-slate-400 dark:text-slate-500 text-sm">
-                        <mat-icon class="text-3xl mb-1">sentiment_dissatisfied</mat-icon>
-                        <p>No categories found matching search.</p>
+                    } @else {
+                        <!-- Collapsed State -->
+                        <div class="flex items-center gap-2 p-2">
+                            <mat-icon class="text-emerald-600 dark:text-emerald-400">grid_view</mat-icon>
+                            <h2 class="text-lg font-bold tracking-tight text-slate-800 dark:text-white">Select Conversion Class</h2>
                         </div>
                     }
-                    </div>
-                </div>
-
+                </aside>
                 <!-- Main Engine Converter Card -->
                  @if (activeCategory().id !== 'percentage') {
                 <div id="converter-primary-card" class="bg-white dark:bg-slate-900/35 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-6 md:p-8 shadow-md relative overflow-hidden transition-all duration-300">
@@ -465,7 +484,7 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
 
             </div>
             `,
-changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UnitConverterComponent implements OnInit {
     private readonly titleService = inject(Title);
@@ -559,9 +578,9 @@ export class UnitConverterComponent implements OnInit {
     // Filtered categories based on the layout search query
     filteredCategories = computed(() => this.conversionService.categories);
     // Core conversions values
-    currentFromUnit = computed(() => this.conversionService.allUnits.find((u:any) => u.id === this.fromUnitId()));
+    currentFromUnit = computed(() => this.conversionService.allUnits.find((u: any) => u.id === this.fromUnitId()));
 
-    currentToUnit = computed(() => this.conversionService.allUnits.find((u:any) => u.id === this.toUnitId()));
+    currentToUnit = computed(() => this.conversionService.allUnits.find((u: any) => u.id === this.toUnitId()));
 
     convertedValue = computed(() => {
         const from = this.currentFromUnit();
@@ -618,6 +637,10 @@ export class UnitConverterComponent implements OnInit {
 
     }
 
+    public sidebarExpanded = signal<boolean>(false);
+    public toggleSidebar(): void {
+        this.sidebarExpanded.update(v => !v);
+    }
     ngOnInit(): void {
         // Set SEO metadata and titles
         this.titleService.setTitle('Unit Converter - Standalone Precision Conversions');
@@ -727,8 +750,8 @@ export class UnitConverterComponent implements OnInit {
         if (!cat) return;
 
         // Search and extract units representing active item
-        const fromUnitOpt = this.conversionService.allUnits.find((u:any) => u.name === item.fromUnitName && u.categoryId === item.categoryId);
-        const toUnitOpt = this.conversionService.allUnits.find((u:any) => u.name === item.toUnitName && u.categoryId === item.categoryId);
+        const fromUnitOpt = this.conversionService.allUnits.find((u: any) => u.name === item.fromUnitName && u.categoryId === item.categoryId);
+        const toUnitOpt = this.conversionService.allUnits.find((u: any) => u.name === item.toUnitName && u.categoryId === item.categoryId);
 
         if (!fromUnitOpt || !toUnitOpt) {
             this.snackBar.open('Historical unit mappings are no longer available in engine data.', 'Close', { duration: 2000 });

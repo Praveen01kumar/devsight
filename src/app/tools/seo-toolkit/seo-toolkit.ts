@@ -50,7 +50,6 @@ export class SeoToolkitComponent {
 
   // Status flags and operational variables
   public showCopiedMessage = signal<boolean>(false);
-  
   // ----------------------------------------------------
   // Form State Signals : META TAG GENERATOR
   // ----------------------------------------------------

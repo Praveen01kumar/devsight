@@ -32,19 +32,19 @@ import { MatIconModule } from '@angular/material/icon';
             <!-- Global Spacing padding -->
             <div class="space-y-1">
               <div class="flex justify-between text-zinc-400 font-bold"><span>CONTAINER PADDING</span><span>{{ spacing() }}px</span></div>
-              <input type="range" min="8" max="44" [value]="spacing()" (input)="spacing.set(getParsedSlider($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+              <input type="range" min="8" max="44" [value]="spacing()" (input)="spacing.set(getParsedSlider($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
             </div>
 
             <!-- Global Radiuses -->
             <div class="space-y-1">
               <div class="flex justify-between text-zinc-400 font-bold"><span>BORDER RADIUS LEVEL</span><span>{{ radius() }}px</span></div>
-              <input type="range" min="0" max="28" [value]="radius()" (input)="radius.set(getParsedSlider($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+              <input type="range" min="0" max="28" [value]="radius()" (input)="radius.set(getParsedSlider($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
             </div>
 
             <!-- Global Base FontSize -->
             <div class="space-y-1">
               <div class="flex justify-between text-zinc-400 font-bold"><span>TEXT BASE SIZE</span><span>{{ fontSize() }}px</span></div>
-              <input type="range" min="12" max="24" [value]="fontSize()" (input)="fontSize.set(getParsedSlider($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+              <input type="range" min="12" max="24" [value]="fontSize()" (input)="fontSize.set(getParsedSlider($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
             </div>
           </div>
         </div>

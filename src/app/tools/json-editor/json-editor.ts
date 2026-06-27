@@ -76,29 +76,6 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
   template: `
     <div class="space-y-4 select-text text-left">
       <!-- File Operations & Utility Toolbar -->
-
-      <!-- Segment Tabs (Editor vs Compare vs Projection vs Schema validation) -->
-      <div class="border-b border-zinc-800 flex flex-wrap items-center justify-between gap-4">
-        <div class="flex flex-wrap gap-1">
-          @for (tab of ['editor', 'diff', 'transformations', 'schema']; track tab) {
-            <button (click)="activeTab.set(tab)"
-              [class.border-emerald-500]="activeTab() === tab"
-              [class.text-emerald-400]="activeTab() === tab"
-              [class.border-transparent]="activeTab() !== tab"
-              [class.text-zinc-450]="activeTab() !== tab"
-              class="px-4 py-2 border-b-2 font-mono text-xs font-bold uppercase transition hover:text-white cursor-pointer">
-              {{ tab === 'diff' ? 'Diff Comparison' : tab }}
-            </button>
-          }
-        </div>
-
-        <div class="flex items-center gap-2 text-[10px] font-mono text-zinc-500 leading-none mr-2">
-          <span class="text-[10px] text-zinc-500 font-mono italic hidden sm:inline">Drag & drop files to open</span> | 
-          <span>SIZE: {{ jsonSize() }} bytes</span>
-          <span>&bull;</span>
-          <span>KEYS: {{ jsonKeyCount() }}</span>
-        </div>
-      </div>
       <ng-template #formatToolbar>
         <div class="flex flex-wrap items-center bg-zinc-950 px-1.5 py-1 rounded-lg border border-zinc-800 gap-1 select-none">
           <button (click)="unfoldAll()"
@@ -188,7 +165,7 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
         </div>
       </ng-template>
       <!-- TAB 1: INTERACTIVE EDITOR -->
-        <div class="space-y-4" [hidden]="activeTab() !== 'editor'">
+        <div class="space-y-4">
           <!-- Sub-view choices layout selector -->
           <div class="flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-2 flex-wrap">
@@ -364,233 +341,6 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
               </div>
           </div>
         </div>
-
-      <!-- TAB 2: SIDE BY SIDE DIFF COMPONENT -->
-        <div class="space-y-4"  [hidden]="activeTab() !== 'diff'">
-          <div class="p-4 bg-zinc-900 border border-zinc-800 rounded-2xl block space-y-3">
-            <h3 class="text-sm font-bold text-white font-sans">Compare Active with Secondary JSON</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-1">
-                <span class="text-[10px] text-zinc-400 font-bold font-mono block">SECONDARY COMPARISON RAW INPUT</span>
-                <div #compareEditor class="w-full h-32 border border-zinc-850 rounded-xl overflow-hidden"></div>
-              </div>
-
-              <!-- Stats panel and helpers -->
-              <div class="p-4 bg-zinc-950 rounded-xl border border-zinc-850 flex flex-col justify-between">
-                <div class="space-y-2">
-                  <span class="text-[10px] font-bold text-zinc-505 font-mono tracking-wider block">COMPARATIVE STATS</span>
-                  <div class="grid grid-cols-3 gap-2 text-center text-xs font-mono">
-                    <div class="p-1.5 border border-emerald-900 bg-emerald-950/10 text-emerald-400 rounded-lg font-bold">
-                      <div class="text-sm leading-none">{{ diffStats().added }}</div>
-                      <div class="text-[8px] uppercase tracking-wide text-zinc-505">Adds</div>
-                    </div>
-                    <div class="p-1.5 border border-rose-950 bg-rose-955/10 text-rose-450 rounded-lg font-bold">
-                      <div class="text-sm leading-none">{{ diffStats().removed }}</div>
-                      <div class="text-[8px] uppercase tracking-wide text-zinc-505">Dels</div>
-                    </div>
-                    <div class="p-1.5 border border-amber-950 bg-amber-955/10 text-amber-400 rounded-lg font-bold">
-                      <div class="text-sm leading-none">{{ diffStats().modified }}</div>
-                      <div class="text-[8px] uppercase tracking-wide text-zinc-505">Mods</div>
-                    </div>
-                  </div>
-                </div>
-
-                <button (click)="compareText.set(rawText())" class="px-3 py-1.5 hover:bg-zinc-800 bg-zinc-900 border border-zinc-800 text-[10px] font-mono font-bold text-zinc-400 hover:text-white rounded-lg transition self-start select-none cursor-pointer">
-                  COPY CURRENT ACTIVE SOURCE
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Diff Grid renders side-by-side layout -->
-          <div class="grid grid-cols-1 md:grid-cols-2 border border-zinc-800 bg-zinc-900 rounded-2xl overflow-hidden font-mono text-xs">
-            <!-- Left active view panel -->
-            <div class="flex flex-col border-b md:border-b-0 md:border-r border-zinc-800">
-              <div class="px-4 py-2 bg-zinc-950/50 border-b border-zinc-800 text-[10px] font-bold text-zinc-505">
-                ACTIVE CODES (A)
-              </div>
-              <div 
-                [class.max-h-80]="!isEditorFullScreen()"
-                [class.h-[60vh]]="isEditorFullScreen()"
-                class="p-3 overflow-auto bg-zinc-950/15 space-y-0.5"
-              >
-                @for (dLine of finalDiff().left; track $index) {
-                  <div 
-                    [class.bg-rose-950/30]="dLine.type === 'removed'"
-                    [class.text-rose-400]="dLine.type === 'removed'"
-                    [class.bg-amber-950/20]="dLine.type === 'modified'"
-                    [class.text-amber-400]="dLine.type === 'modified'"
-                    class="flex items-baseline"
-                  >
-                    <span class="w-8 select-none text-zinc-705 text-[9px] text-right pr-2 shrink-0">{{ dLine.leftLineNum || '' }}</span>
-                    <span class="whitespace-pre-wrap select-all">{{ dLine.content || ' ' }}</span>
-                  </div>
-                }
-              </div>
-            </div>
-
-            <!-- Right compare target view panel -->
-            <div class="flex flex-col">
-              <div class="px-4 py-2 bg-zinc-950/50 border-b border-zinc-800 text-[10px] font-bold text-zinc-505">
-                COMPARE CODES (B)
-              </div>
-              <div 
-                [class.max-h-80]="!isEditorFullScreen()"
-                [class.h-[60vh]]="isEditorFullScreen()"
-                class="p-3 overflow-auto bg-zinc-950/15 space-y-0.5"
-              >
-                @for (dLine of finalDiff().right; track $index) {
-                  <div 
-                    [class.bg-emerald-950/20]="dLine.type === 'added'"
-                    [class.text-emerald-400]="dLine.type === 'added'"
-                    [class.bg-amber-950/20]="dLine.type === 'modified'"
-                    [class.text-amber-400]="dLine.type === 'modified'"
-                    class="flex items-baseline"
-                  >
-                    <span class="w-8 select-none text-zinc-705 text-[9px] text-right pr-2 shrink-0">{{ dLine.rightLineNum || '' }}</span>
-                    <span class="whitespace-pre-wrap select-all">{{ dLine.content || ' ' }}</span>
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-
-      <!-- TAB 3: KEY TRANSFORMATIONS -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" [hidden]="activeTab() !== 'transformations'">
-          <div class="p-5 border border-zinc-800 bg-zinc-900 rounded-2xl block space-y-4">
-            <div>
-              <h3 class="text-sm font-semibold text-white">Filtering & Path Projections</h3>
-              <p class="text-[11px] text-zinc-455 mt-0.5">Retrieve values inside nested nodes using keys or array indices.</p>
-            </div>
-
-            <div class="space-y-4">
-              <!-- Field query input -->
-              <div class="space-y-1.5">
-                <span class="text-[10px] font-mono text-zinc-455 font-bold block">DOT NOTATION FILTER PATH</span>
-                <div class="flex gap-2">
-                  <input 
-                    #projectionInput
-                    type="text" 
-                    placeholder="e.g. metadata.name or items[0]" 
-                    class="flex-1 bg-zinc-950 border border-zinc-850 p-2.5 text-xs font-mono rounded-xl outline-none text-zinc-200 focus:border-zinc-700" 
-                  />
-                  <button (click)="runProjectionQuery(projectionInput.value)" class="px-4 py-2 bg-emerald-900 hover:bg-emerald-800 transition text-[11px] font-mono font-bold rounded-xl text-emerald-100 cursor-pointer">
-                    FIND
-                  </button>
-                </div>
-              </div>
-
-              <div class="h-px bg-zinc-850"></div>
-
-              <!-- General Operations -->
-              <div class="space-y-2">
-                <span class="text-[10px] font-bold text-zinc-505 font-mono block">CONVERSION TRANSFORMERS</span>
-                <div class="grid grid-cols-2 gap-2">
-                  <button (click)="flattenPayload()" class="p-2.5 border border-zinc-850 hover:bg-zinc-950/40 bg-zinc-950/20 text-[11px] font-mono rounded-xl text-zinc-200 hover:text-white flex items-center gap-1.5 transition cursor-pointer">
-                    <mat-icon class="text-sm">splitscreen</mat-icon> FLATTEN
-                  </button>
-                  <button (click)="unflattenPayload()" class="p-2.5 border border-zinc-850 hover:bg-zinc-950/40 bg-zinc-950/20 text-[11px] font-mono rounded-xl text-zinc-200 hover:text-white flex items-center gap-1.5 transition cursor-pointer">
-                    <mat-icon class="text-sm">layers</mat-icon> UNFLATTEN
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Projected subfields outcome -->
-          <div class="p-5 border border-zinc-800 bg-zinc-900 rounded-2xl flex flex-col justify-between">
-            <div class="space-y-1.5">
-              <span class="text-[10px] font-bold text-zinc-500 font-mono block">OUTCOME PREVIEW</span>
-              <div 
-                [class.h-44]="!isEditorFullScreen()"
-                [class.h-80]="isEditorFullScreen()"
-                class="bg-zinc-950 p-3 rounded-xl border border-zinc-850 font-mono text-xs overflow-auto text-zinc-200"
-              >
-                @if (transformationPreview()) {
-                  <pre class="leading-relaxed whitespace-pre select-all text-zinc-100" [innerHTML]="highlightedTransformationPreview()"></pre>
-                } @else {
-                  <div class="h-full flex items-center justify-center text-zinc-655 italic select-none">No active queries executed...</div>
-                }
-              </div>
-            </div>
-
-            @if (transformationPreview()) {
-              <button (click)="overwriteActiveWithTransformation()" class="px-3.5 py-1.5 bg-emerald-900 hover:bg-emerald-800 transition font-mono font-bold rounded-xl text-emerald-100 text-xs mt-3 select-none cursor-pointer">
-                OVERWRITE CURRENT WITH THIS RESULT
-              </button>
-            }
-          </div>
-        </div>
-
-      <!-- TAB 4: SCHEMA COMPLIANCE CHECKS -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" [hidden]="activeTab() !== 'schema'">
-          <div class="p-5 border border-zinc-800 bg-zinc-900 rounded-2xl block space-y-4">
-            <div class="flex items-center justify-between flex-wrap gap-2">
-              <div>
-                <h3 class="text-sm font-semibold text-white">JSON Schema Validation</h3>
-                <p class="text-[11px] text-zinc-455 mt-0.5">Input custom standards or apply standard profiles.</p>
-              </div>
-
-              <select 
-                #schSelected
-                (change)="applySchemaPreset(schSelected.value)"
-                class="bg-zinc-950 border border-zinc-850 text-xs font-mono text-zinc-400 rounded-lg p-1 px-2 focus:ring-1 focus:ring-emerald-500 outline-none"
-              >
-                <option value="custom">Custom Schema</option>
-                <option value="basic-profile">User Profile Preset</option>
-                <option value="package-json">package.json Preset</option>
-                <option value="config-options">App Configurations Preset</option>
-              </select>
-            </div>
-              <div #schemaEditor 
-                class="w-full border border-zinc-850 rounded-xl overflow-hidden"
-                [class.h-56]="!isEditorFullScreen()"
-                [class.h-80]="isEditorFullScreen()">
-              </div>
-          </div>
-
-          <!-- Feedbacks of Validation -->
-          <div class="p-5 border border-zinc-800 bg-zinc-900 rounded-2xl flex flex-col justify-between">
-            <div class="space-y-2 flex-1 flex flex-col justify-start">
-              <span class="text-[10px] font-bold text-zinc-500 font-mono block">SCHEMA REPORTS</span>
-              <div [class.max-h-56]="!isEditorFullScreen()" [class.h-80]="isEditorFullScreen()"
-                class="flex-1 overflow-auto p-3 bg-zinc-950 rounded-xl border border-zinc-850 space-y-2"
-              >
-                @if (schemaSyntaxParseError()) {
-                  <div class="p-2.5 bg-rose-955/20 text-rose-400 border border-rose-900/40 text-xs rounded-lg font-mono leading-relaxed font-semibold">
-                    <strong>Schema Parsing Syntax Error:</strong>
-                    <p class="text-[11px] text-rose-300 font-normal mt-0.5">{{ schemaSyntaxParseError() }}</p>
-                  </div>
-                } @else {
-                  @if (schemaComplianceReports().length === 0) {
-                    <div class="py-12 flex flex-col items-center justify-center text-center text-emerald-400 space-y-1.5 select-none font-mono">
-                      <mat-icon class="text-4xl text-emerald-500">verified</mat-icon>
-                      <h4 class="font-bold text-xs select-none">VALIDATION SUCCESS!</h4>
-                      <p class="text-[11px] text-zinc-500 font-sans max-w-xs">All fields completely match the defined JSON Schema bounds.</p>
-                    </div>
-                  } @else {
-                    <div class="space-y-2 select-text text-left">
-                      <span class="text-[10.5px] font-mono uppercase font-bold text-rose-450 block mb-2">Non-Compliant Errors Found:</span>
-                      @for (err of schemaComplianceReports(); track $index) {
-                        <div class="p-2.5 border border-zinc-850 bg-zinc-955/30 rounded-lg text-xs font-mono text-zinc-350">
-                          <div class="font-bold text-emerald-450">Field: {{ err.path }}</div>
-                          <p class="text-[11px] text-zinc-400 mt-0.5 leading-normal">{{ err.message }}</p>
-                          @if (err.expected) {
-                            <div class="text-[10px] text-zinc-505 font-bold flex gap-3 flex-wrap mt-1">
-                              <span>Config Target: <code class="text-amber-450">{{ err.expected }}</code></span>
-                              <span>Found Type: <code class="text-rose-450">{{ err.actual }}</code></span>
-                            </div>
-                          }
-                        </div>
-                      }
-                    </div>
-                  }
-                }
-              </div>
-            </div>
-          </div>
-        </div>
     </div>
   `,
   styles: `
@@ -600,18 +350,11 @@ const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
   `
 })
 export class JsonEditorComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('compareEditor') private compareEditorRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('schemaEditor') private schemaEditorRef!: ElementRef<HTMLDivElement>;
   @ViewChild('monacoEditor') private monacoEditorRef!: ElementRef<HTMLDivElement>;
   @ViewChild('splitMonacoEditor') private splitMonacoEditorRef!: ElementRef<HTMLDivElement>;
-
   private splitEditor!: monaco.editor.IStandaloneCodeEditor;
-  private compareEditor!: monaco.editor.IStandaloneCodeEditor;
-  private schemaEditor!: monaco.editor.IStandaloneCodeEditor;
   private editor!: monaco.editor.IStandaloneCodeEditor;
   public rawText = signal<string>('{\n  "id": 1,\n  "name": "devsight - JSON Editor Test",\n  "version": "1.0.0",\n  "active": true,\n  "tags": ["formatting", "validation", "comparison"],\n  "metadata": {\n    "author": "Google DeepMind",\n    "port": 3000\n  }\n}');
-  public compareText = signal<string>('{\n  "id": 1,\n  "name": "devsight - JSON Editor Compare",\n  "version": "1.0.1",\n  "active": false,\n  "tags": ["formatting", "validation", "diff"],\n  "metadata": {\n    "author": "DeepMind",\n    "port": 3000\n  }\n}');
-  public activeTab = signal<string>('editor');
   public editorSubView = signal<string>('text');
   public defaultExpandState = signal<{ state: boolean; version: number }>({ state: true, version: 0 });
 
@@ -623,23 +366,23 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
   private historyPointer = -1;
   public justCopied = signal<boolean>(false);
   public isDraggingOver = signal<boolean>(false);
-
-  // Schema state declarations
-  public schemaRulesText = signal<string>('{\n  "type": "object",\n  "required": ["id", "name", "version"],\n  "properties": {\n    "id": { "type": "number", "minimum": 1 },\n    "name": { "type": "string", "minLength": 3 },\n    "version": { "type": "string" },\n    "active": { "type": "boolean" },\n    "tags": {\n      "type": "array",\n      "items": { "type": "string" }\n    }\n  }\n}');
-
   // Custom Transformations projection results preview
   public transformationPreview = signal<string>('');
 
   constructor() {
     effect(() => {
+      if (this.editorSubView() === 'split') {
+        queueMicrotask(() => {
+          this.splitEditor?.layout();
+        });
+      }
+    });
+    effect(() => {
       this.editorSubView();
-      this.activeTab();
       this.isEditorFullScreen();
       this.layoutEditors();
     });
     this.syncMonacoSignal(() => this.rawText(), () => this.editor);
-    this.syncMonacoSignal(() => this.compareText(), () => this.compareEditor);
-    this.syncMonacoSignal(() => this.schemaRulesText(), () => this.schemaEditor);
     this.syncMonacoSignal(() => this.rawText(), () => this.splitEditor);
   }
 
@@ -654,30 +397,6 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
         automaticLayout: true,
         folding: true,
         showFoldingControls: 'always',
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false
-      }
-    );
-
-    this.compareEditor = monacoInstance.editor.create(
-      this.compareEditorRef?.nativeElement,
-      {
-        value: this.compareText(),
-        language: 'json',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false
-      }
-    );
-
-    this.schemaEditor = monacoInstance.editor.create(
-      this.schemaEditorRef.nativeElement,
-      {
-        value: this.schemaRulesText(),
-        language: 'json',
-        theme: 'vs-dark',
-        automaticLayout: true,
         minimap: { enabled: false },
         scrollBeyondLastLine: false
       }
@@ -713,24 +432,8 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
       }
     });
 
-    this.compareEditor.onDidChangeModelContent(() => {
-      const value = this.compareEditor.getValue();
-      if (value !== this.compareText()) {
-        this.compareText.set(value);
-      }
-    });
-
-    this.schemaEditor.onDidChangeModelContent(() => {
-      const value = this.schemaEditor.getValue();
-      if (value !== this.schemaRulesText()) {
-        this.schemaRulesText.set(value);
-      }
-    });
-
     setTimeout(() => {
       this.editor.layout();
-      this.compareEditor.layout();
-      this.schemaEditor.layout();
     });
   }
 
@@ -740,10 +443,6 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
       this.editor.setValue(value);
     }
     this.recordStateInHistory(value);
-  }
-
-  private updateTransformationPreview(value: unknown): void {
-    this.transformationPreview.set(typeof value === 'string' ? value : JSON.stringify(value, null, 2));
   }
 
   private withParsedData(callback: (data: unknown) => string): void {
@@ -758,8 +457,6 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
     queueMicrotask(() => {
       this.editor?.layout();
       this.splitEditor?.layout();
-      this.compareEditor?.layout();
-      this.schemaEditor?.layout();
     });
   }
 
@@ -781,37 +478,6 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
     return JSON.stringify(data, null, 2);
   }
 
-  public highlightedTransformationPreview = computed(() => {
-    return this.highlightJson(this.transformationPreview());
-  });
-
-  public highlightJson(json: string): string {
-    if (!json) return '';
-    const escaped = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    return escaped.replace(
-      /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
-      (match) => {
-        let cls = 'text-amber-400 font-semibold';
-        if (/^"/.test(match)) {
-          if (/:$/.test(match)) {
-            cls = 'text-purple-400 font-semibold';
-          } else {
-            cls = 'text-emerald-400 font-medium';
-          }
-        } else if (/true|false/.test(match)) {
-          cls = 'text-blue-400 font-bold';
-        } else if (/null/.test(match)) {
-          cls = 'text-rose-450 font-bold';
-        }
-        if (/:$/.test(match)) {
-          const key = match.substring(0, match.length - 1);
-          return `<span class="${cls}">${key}</span>:`;
-        }
-        return `<span class="${cls}">${match}</span>`;
-      }
-    );
-  }
-
   // Reactive state conversions
   public parsedData = computed<unknown>(() => {
     const txt = this.rawText().trim();
@@ -825,8 +491,6 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.editor?.dispose();
-    this.compareEditor?.dispose();
-    this.schemaEditor?.dispose();
     this.splitEditor?.dispose();
   }
 
@@ -841,32 +505,6 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
         return e.message;
       }
       return 'JSON Parser verification rejected standard parameters.';
-    }
-  });
-
-  public schemaSyntaxParseError = computed<string | null>(() => {
-    const rulesStr = this.schemaRulesText().trim();
-    if (!rulesStr) return null;
-    try {
-      JSON.parse(rulesStr);
-      return null;
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        return e.message;
-      }
-      return 'Invalid Schema syntax. Paste standard JSON Schema draft content.';
-    }
-  });
-
-  public schemaComplianceReports = computed<SchemaValidationError[]>(() => {
-    const data = this.parsedData();
-    const syntaxErr = this.schemaSyntaxParseError();
-    if (!data || syntaxErr) return [];
-    try {
-      const sch = JSON.parse(this.schemaRulesText()) as Record<string, unknown>;
-      return this.validateRulesSchema(data, sch);
-    } catch {
-      return [];
     }
   });
 
@@ -905,39 +543,10 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
     return data as Record<string, unknown>[];
   });
 
-  // Diff Calculations
-  public finalDiff = computed<{ left: DiffLine[], right: DiffLine[] }>(() => {
-    return this.computeSideBySideDiff(this.rawText(), this.compareText());
-  });
-
-  public diffStats = computed<{ added: number, removed: number, modified: number }>(() => {
-    const differences = this.finalDiff();
-    let added = 0;
-    let removed = 0;
-    let modified = 0;
-    differences.left.forEach((l) => {
-      if (l.type === 'removed') removed++;
-      if (l.type === 'modified') modified++;
-    });
-    differences.right.forEach((r) => {
-      if (r.type === 'added') added++;
-    });
-    return { added, removed, modified };
-  });
-
   // Raw text handler with Undo storage
   public onRawTextChange(val: string): void {
     this.rawText.set(val);
     this.recordStateInHistory(val);
-  }
-
-  // Schema presets selection
-  public applySchemaPreset(presetName: string): void {
-    if (presetName === 'custom') return;
-    const rules = SCHEMA_PRESETS[presetName];
-    if (rules) {
-      this.schemaRulesText.set(JSON.stringify(rules, null, 2));
-    }
   }
 
   // Undo / Redo engine
@@ -1161,15 +770,11 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
   public foldAll(): void {
     this.editor.getAction('editor.foldAll')?.run();
     this.splitEditor.getAction('editor.foldAll')?.run();
-    this.compareEditor.getAction('editor.foldAll')?.run();
-    this.schemaEditor.getAction('editor.foldAll')?.run();
   }
 
   public unfoldAll(): void {
     this.editor.getAction('editor.unfoldAll')?.run();
     this.splitEditor.getAction('editor.unfoldAll')?.run();
-    this.compareEditor.getAction('editor.unfoldAll')?.run();
-    this.schemaEditor.getAction('editor.unfoldAll')?.run();
   }
 
   // Table cell handlers
@@ -1232,128 +837,6 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
     const output = JSON.stringify(list, null, 2);
     this.rawText.set(output);
     this.recordStateInHistory(output);
-  }
-
-  // Transformation Queries projection helpers
-  public runProjectionQuery(path: string): void {
-    const data = this.parsedData();
-    if (!data) {
-      this.transformationPreview.set('Cannot run projection when source has JSON syntax errors.');
-      return;
-    }
-    try {
-      const queryResult = this.resolvePathProjection(data, path);
-      this.transformationPreview.set(JSON.stringify(queryResult, null, 2));
-    } catch {
-      this.transformationPreview.set('Invalid path query parameters or non-existent path elements.');
-    }
-  }
-
-  private resolvePathProjection(obj: unknown, path: string): unknown {
-    if (!path.trim()) return obj;
-    // Normalize path by splitting properties and brackets
-    const parts = path.split(/\.|\b(?=\[)/g);
-    let current: unknown = obj;
-    for (let part of parts) {
-      part = part.trim();
-      if (!part) continue;
-      if (part.startsWith('[')) {
-        const indexStr = part.replace('[', '').replace(']', '').trim();
-        const indexNum = Number(indexStr);
-        if (Array.isArray(current)) {
-          current = current[indexNum];
-        } else {
-          return undefined;
-        }
-      } else {
-        if (current && typeof current === 'object') {
-          current = (current as Record<string, unknown>)[part];
-        } else {
-          return undefined;
-        }
-      }
-    }
-    return current;
-  }
-
-  public overwriteActiveWithTransformation(): void {
-    const preview = this.transformationPreview().trim();
-    if (preview && !preview.includes('Cannot run') && !preview.includes('Invalid path')) {
-      this.rawText.set(preview);
-      this.recordStateInHistory(preview);
-      this.activeTab.set('editor');
-      queueMicrotask(() => {
-        this.editor?.layout();
-        this.compareEditor?.layout();
-        this.schemaEditor?.layout();
-      });
-    }
-  }
-
-  public flattenPayload(): void {
-    const data = this.parsedData();
-
-    if (data) {
-      this.updateTransformationPreview(
-        this.flattenObjectRecursive(data)
-      );
-    }
-  }
-
-  private flattenObjectRecursive(ob: unknown, prefix = ''): Record<string, unknown> {
-    const toReturn: Record<string, unknown> = {};
-    if (ob && typeof ob === 'object') {
-      const casted = ob as Record<string, unknown>;
-      for (const i in casted) {
-        if (Object.prototype.hasOwnProperty.call(casted, i)) {
-          if (typeof casted[i] === 'object' && casted[i] !== null) {
-            const flatObject = this.flattenObjectRecursive(casted[i], prefix ? prefix + '.' + i : i);
-            for (const x in flatObject) {
-              if (Object.prototype.hasOwnProperty.call(flatObject, x)) {
-                toReturn[x] = flatObject[x];
-              }
-            }
-          } else {
-            toReturn[prefix ? prefix + '.' + i : i] = casted[i];
-          }
-        }
-      }
-    }
-    return toReturn;
-  }
-
-  public unflattenPayload(): void {
-    const data = this.parsedData();
-    if (data && typeof data === 'object' && !Array.isArray(data)) {
-      const casted = data as Record<string, unknown>;
-      const unflattened = this.unflattenObjectRecursive(casted);
-      const text = JSON.stringify(unflattened, null, 2);
-      this.transformationPreview.set(text);
-    } else {
-      this.transformationPreview.set('Unflatten is only compatible with flat key-value object dictionaries.');
-    }
-  }
-
-  private unflattenObjectRecursive(ob: Record<string, unknown>): unknown {
-    const result: Record<string, unknown> = {};
-    for (const i in ob) {
-      if (Object.prototype.hasOwnProperty.call(ob, i)) {
-        const keys = i.split('.');
-        let current = result;
-        for (let j = 0; j < keys.length; j++) {
-          const key = keys[j];
-          if (j === keys.length - 1) {
-            current[key] = ob[i];
-          } else {
-            if (!current[key] || typeof current[key] !== 'object') {
-              current[key] = {};
-            }
-            current = current[key] as Record<string, unknown>;
-          }
-        }
-      }
-    }
-    return result;
   }
 
   // Recursively check elements schema validation helper

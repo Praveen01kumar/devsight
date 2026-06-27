@@ -130,7 +130,7 @@ export class JwtDecoderComponent {
   public tokenInput = signal<string>('');
 
   // Slices JWT sections
-  private segments = computed(() => {
+  private readonly segments = computed(() => {
     const raw = this.tokenInput().trim();
     if (!raw) return [];
     return raw.split('.');
@@ -143,7 +143,6 @@ export class JwtDecoderComponent {
     if (parts.length !== 3) {
       return `JWT tokens must comprise 3 base64URL sections separated by periods. Found ${parts.length} segments.`;
     }
-    
     // Check if sections are parsable
     try {
       this.decodeBase64Url(parts[0]);
@@ -238,8 +237,7 @@ export class JwtDecoderComponent {
     let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
     while (base64.length % 4) {
       base64 += '=';
-    }
-    
+    } 
     // Convert to native string safely supporting UTF-8 content unicode ranges
     const raw = atob(base64);
     const codePoints = new Uint8Array(raw.length);

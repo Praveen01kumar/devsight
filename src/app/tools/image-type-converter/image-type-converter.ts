@@ -81,7 +81,7 @@ export class ImageTypeConverter implements OnInit, OnDestroy {
   canDownloadAllZip = computed(() => this.bulkFiles().some(f => f.status === 'completed' && f.convertedBlob));
 
   // Registered Object URLs to clean up and prevent memory leaks
-  private createdUrls = new Set<string>();
+  private readonly createdUrls = new Set<string>();
 
   // Available options
   readonly outputFormats = ['JPG', 'PNG', 'WEBP', 'AVIF', 'TIFF', 'ICO'];

@@ -21,12 +21,12 @@ import { MatIconModule } from '@angular/material/icon';
               <!-- P1_X -->
               <div class="space-y-1">
                 <div class="flex justify-between text-zinc-400 font-bold"><span>P1_X</span><span>{{ p1x() }}</span></div>
-                <input type="range" min="0" max="1" step="0.05" [value]="p1x()" (input)="p1x.set(getParsedSlider($event))" class="w-full h-1 rounded-lg accent-emerald-500 cursor-pointer" />
+                <input type="range" min="0" max="1" step="0.05" [value]="p1x()" (input)="p1x.set(getParsedSlider($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
               </div>
               <!-- P1_Y -->
               <div class="space-y-1">
                 <div class="flex justify-between text-zinc-400 font-bold"><span>P1_Y</span><span>{{ p1y() }}</span></div>
-                <input type="range" min="-1" max="2" step="0.05" [value]="p1y()" (input)="p1y.set(getParsedSlider($event))" class="w-full h-1 rounded-lg accent-emerald-500 cursor-pointer" />
+                <input type="range" min="-1" max="2" step="0.05" [value]="p1y()" (input)="p1y.set(getParsedSlider($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
               </div>
             </div>
 
@@ -34,12 +34,12 @@ import { MatIconModule } from '@angular/material/icon';
               <!-- P2_X -->
               <div class="space-y-1">
                 <div class="flex justify-between text-zinc-400 font-bold"><span>P2_X</span><span>{{ p2x() }}</span></div>
-                <input type="range" min="0" max="1" step="0.05" [value]="p2x()" (input)="p2x.set(getParsedSlider($event))" class="w-full h-1 rounded-lg accent-emerald-500 cursor-pointer" />
+                <input type="range" min="0" max="1" step="0.05" [value]="p2x()" (input)="p2x.set(getParsedSlider($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
               </div>
               <!-- P2_Y -->
               <div class="space-y-1">
                 <div class="flex justify-between text-zinc-400 font-bold"><span>P2_Y</span><span>{{ p2y() }}</span></div>
-                <input type="range" min="-1" max="2" step="0.05" [value]="p2y()" (input)="p2y.set(getParsedSlider($event))" class="w-full h-1 rounded-lg accent-emerald-500 cursor-pointer" />
+                <input type="range" min="-1" max="2" step="0.05" [value]="p2y()" (input)="p2y.set(getParsedSlider($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
               </div>
             </div>
           </div>

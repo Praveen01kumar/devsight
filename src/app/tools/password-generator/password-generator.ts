@@ -119,13 +119,9 @@ const WEAK_DICTIONARY = [
                   <span class="font-bold text-zinc-400 uppercase">PASSWORD CHARACTER COUNT</span>
                   <span class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/20">{{ length() }} Chars</span>
                 </div>
-                <input
-                  type="range"
-                  [min]="passwordTemplateId() === 'pin' ? 4 : passwordTemplateId() === 'recovery' ? 16 : 6"
-                  [max]="passwordTemplateId() === 'pin' ? 12 : 128"
-                  [value]="length()"
-                  (input)="onLengthChange($event)"
-                  class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                <input type="range" [min]="passwordTemplateId() === 'pin' ? 4 : passwordTemplateId() === 'recovery' ? 16 : 6"
+                  [max]="passwordTemplateId() === 'pin' ? 12 : 128" [value]="length()" (input)="onLengthChange($event)"
+                  class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"
                 />
                 <div class="flex items-center justify-between text-[9px] font-mono text-zinc-500">
                   <span>{{ passwordTemplateId() === 'pin' ? '4 Digits' : '6 Characters' }}</span>
@@ -261,7 +257,7 @@ const WEAK_DICTIONARY = [
                       <span class="font-bold text-emerald-400">{{ bulkQuantity() }} Keys</span>
                     </div>
                     <input type="range" min="5" max="100" step="5" [value]="bulkQuantity()" (input)="onBulkQuantityChange($event)"
-                      class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"/>
+                      class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"/>
                   </div>
                   <button (click)="generateBulk()"
                     class="py-2.5 px-4 bg-zinc-950 hover:bg-zinc-800/80 text-zinc-300 font-mono text-xs font-bold rounded-xl border border-zinc-800 transition active:scale-95 shrink-0 w-full sm:w-auto text-center cursor-pointer">
@@ -345,7 +341,7 @@ const WEAK_DICTIONARY = [
                     <span class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-md border border-emerald-500/20">{{ passphraseWordCount() }} Words</span>
                   </div>
                   <input type="range" min="3" max="10" [value]="passphraseWordCount()" (input)="onPassphraseWordCountChange($event)"
-                    class="w-full h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"/>
+                    class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"/>
                   <div class="flex items-center justify-between text-[9px] font-mono text-zinc-500">
                     <span>3 Words (Basic)</span>
                     <span>5 Words (Strong)</span>
@@ -827,12 +823,12 @@ export class PasswordGeneratorComponent {
   public computedSalt = signal<string>('');
 
   // Regeneration helper trigger incrementor
-  private refreshTrigger = signal<number>(0);
+  private readonly refreshTrigger = signal<number>(0);
   public copySuccess = signal<boolean>(false);
 
   // Auto clear counts tracker
   public clipboardAutoClear = signal<boolean>(false);
-  private clearTimeCount = signal<number>(0);
+  private readonly clearTimeCount = signal<number>(0);
   public copiedProgress = signal<number>(0);
   private clearTimerId: ReturnType<typeof setInterval> | null = null;
 
@@ -1105,9 +1101,8 @@ export class PasswordGeneratorComponent {
   }
 
   // Reactive Standard Password calculations
-  private standardCandidateSecret = computed<string>(() => {
+  private readonly standardCandidateSecret = computed<string>(() => {
     this.refreshTrigger();
-    
     const tId = this.passwordTemplateId();
     const len = this.length();
 
@@ -1202,7 +1197,7 @@ export class PasswordGeneratorComponent {
   });
 
   // Reactive Shuffled Passphrase diceware generator logic
-  private passphraseCandidateSecret = computed<string>(() => {
+  private readonly passphraseCandidateSecret = computed<string>(() => {
     this.refreshTrigger();
 
     const wCount = this.passphraseWordCount();
@@ -1337,7 +1332,7 @@ export class PasswordGeneratorComponent {
     return this.asyncHashesSignal();
   });
 
-  private asyncHashesSignal = signal<{ sha256: string, sha1: string, sha512: string }>({ sha256: '', sha1: '', sha512: '' });
+  private readonly asyncHashesSignal = signal<{ sha256: string, sha1: string, sha512: string }>({ sha256: '', sha1: '', sha512: '' });
 
   private lastHashedSecret = '';
   private async calculateAsyncHashes(secret: string): Promise<void> {

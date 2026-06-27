@@ -113,11 +113,9 @@ interface OccurenceRow {
 
       <!-- MAIN CONTAINER: Switches view panels based on [activeMode] -->
       <main class="space-y-6">
-        
         <!-- ======================= 1. DATE DIFFERENCE & DAYS / MONTHS / YEARS CALCULATOR ======================= -->
         @if (activeMode() === 'date-difference' || activeMode() === 'days-calculator' || activeMode() === 'months-calculator' || activeMode() === 'years-calculator') {
           <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-            
             <!-- Controls block -->
             <div class="lg:col-span-2 space-y-4 text-left">
               <div class="p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl space-y-4 shadow-sm">
@@ -454,11 +452,8 @@ interface OccurenceRow {
                       <span class="text-zinc-500 uppercase">Years</span>
                       <span class="text-zinc-855 dark:text-zinc-100">{{ addYears() }} yrs</span>
                     </div>
-                    <input 
-                      type="range" min="0" max="100" 
-                      #yearInputRange [value]="addYears()" 
-                      (input)="addYears.set(toInt(yearInputRange.value))"
-                      class="w-full accent-emerald-500"
+                    <input type="range" min="0" max="100" #yearInputRange [value]="addYears()" (input)="addYears.set(toInt(yearInputRange.value))"
+                      class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"
                     />
                   </div>
 
@@ -468,11 +463,8 @@ interface OccurenceRow {
                       <span class="text-zinc-500 uppercase">Months</span>
                       <span class="text-zinc-855 dark:text-zinc-100">{{ addMonths() }} mos</span>
                     </div>
-                    <input 
-                      type="range" min="0" max="60" 
-                      #monthInputRange [value]="addMonths()" 
-                      (input)="addMonths.set(toInt(monthInputRange.value))"
-                      class="w-full accent-emerald-500"
+                    <input type="range" min="0" max="60" #monthInputRange [value]="addMonths()" (input)="addMonths.set(toInt(monthInputRange.value))"
+                      class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"
                     />
                   </div>
 
@@ -482,11 +474,8 @@ interface OccurenceRow {
                       <span class="text-zinc-500 uppercase">Days</span>
                       <span class="text-zinc-855 dark:text-zinc-100">{{ addDays() }} days</span>
                     </div>
-                    <input 
-                      type="range" min="0" max="365" 
-                      #daysInputRange [value]="addDays()" 
-                      (input)="addDays.set(toInt(daysInputRange.value))"
-                      class="w-full accent-emerald-500"
+                    <input type="range" min="0" max="365" #daysInputRange [value]="addDays()" (input)="addDays.set(toInt(daysInputRange.value))"
+                      class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"
                     />
                   </div>
 
@@ -496,11 +485,8 @@ interface OccurenceRow {
                       <span class="text-zinc-500 uppercase">Hours</span>
                       <span class="text-zinc-855 dark:text-zinc-100">{{ addHours() }} hrs</span>
                     </div>
-                    <input 
-                      type="range" min="0" max="72" 
-                      #hoursInputRange [value]="addHours()" 
-                      (input)="addHours.set(toInt(hoursInputRange.value))"
-                      class="w-full accent-emerald-500"
+                    <input type="range" min="0" max="72" #hoursInputRange [value]="addHours()" (input)="addHours.set(toInt(hoursInputRange.value))"
+                      class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"
                     />
                   </div>
                 </div>
@@ -508,18 +494,14 @@ interface OccurenceRow {
                 <!-- Skip weekends option -->
                 <div class="pt-2 flex items-center justify-between border-t border-zinc-150 dark:border-zinc-850 text-xs font-mono select-none">
                   <span class="text-zinc-400 font-bold">Skip Weekends (Add working days)</span>
-                  <button 
-                    (click)="addSkipWeekends.set(!addSkipWeekends())"
+                  <button (click)="addSkipWeekends.set(!addSkipWeekends())"
                     [class.bg-emerald-500]="addSkipWeekends()"
                     [class.bg-zinc-200]="!addSkipWeekends()"
                     [class.dark:bg-zinc-800]="!addSkipWeekends()"
-                    class="w-10 h-6 rounded-full p-1 transition-colors relative cursor-pointer"
-                  >
-                    <span 
-                      [class.translate-x-4]="addSkipWeekends()"
+                    class="w-10 h-6 rounded-full p-1 transition-colors relative cursor-pointer">
+                    <span [class.translate-x-4]="addSkipWeekends()"
                       [class.translate-x-0]="!addSkipWeekends()"
-                      class="w-4 h-4 bg-white rounded-full block transition-transform"
-                    ></span>
+                      class="w-4 h-4 bg-white rounded-full block transition-transform"></span>
                   </button>
                 </div>
               </div>
@@ -549,7 +531,6 @@ interface OccurenceRow {
                 <!-- Code Friendly Formats List -->
                 <div class="space-y-3 font-mono text-xs">
                   <span class="text-[10px] font-mono font-bold tracking-widest text-[#9CA3AF] block uppercase">DEVELOPER READY EXPORTS</span>
-                  
                   <div class="p-3.5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/40 dark:bg-zinc-950/20 rounded-xl space-y-2">
                     <div class="flex items-center justify-between">
                       <span class="text-zinc-500 text-[10px] uppercase font-bold">JavaScript Date Instantiation</span>
@@ -582,10 +563,8 @@ interface OccurenceRow {
         <!-- ======================= 4. TIMEZONE CONVERTER & WORLD CLOCK ======================= -->
         @if (activeMode() === 'timezone-converter') {
           <div class="space-y-6">
-            
             <!-- Target converters block -->
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-              
               <div class="lg:col-span-2 space-y-4 text-left">
                 <div class="p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl space-y-4 shadow-sm">
                   <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-350 pb-2 border-b border-zinc-150 dark:border-zinc-850 block flex items-center gap-1.5 select-none">
@@ -1246,7 +1225,7 @@ export class DateTimeSuite implements OnInit, OnDestroy {
   // Compute total units cumulative
   public totalDiffUnits = computed(() => {
     if (!this.isDiffValid()) return { years: 0, months: 0, weeks: 0, days: 0, businessDays: 0, hours: 0, minutes: 0, seconds: 0 };
-    
+
     const d1 = new Date(this.diffStart());
     const d2 = new Date(this.diffEnd());
     const msDiff = Math.abs(d2.getTime() - d1.getTime());
@@ -1368,7 +1347,7 @@ Total years: ${u.years.toFixed(2)} years`;
   public computedAge = computed(() => {
     const dobStr = this.ageDob();
     if (!dobStr) return { years: 0, months: 0, days: 0 };
-    
+
     // account for birthtime if provided
     const tobStr = this.ageTob() || '00:00';
     const dob = new Date(`${dobStr}T${tobStr}`);
@@ -1468,11 +1447,11 @@ Cumulative Hours lived: ${stats.hours.toLocaleString()} hours`;
     if (isNaN(date.getTime())) return '';
 
     const sign = this.addOperation() === 'add' ? 1 : -1;
-    
+
     // Years & Months shifting
     const newYear = date.getFullYear() + (this.addYears() * sign);
     const newMonth = date.getMonth() + (this.addMonths() * sign);
-    
+
     // adjust month and year overflows gracefully
     date.setFullYear(newYear, newMonth);
 
@@ -1501,12 +1480,12 @@ Cumulative Hours lived: ${stats.hours.toLocaleString()} hours`;
     const iso = this.targetISOString();
     if (!iso) return 'Invalid parameters';
     const d = new Date(iso);
-    return d.toLocaleString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric', 
-      hour: '2-digit', 
+    return d.toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
       minute: '2-digit',
       hour12: true
     });
@@ -1655,7 +1634,7 @@ Cumulative Hours lived: ${stats.hours.toLocaleString()} hours`;
     try {
       const date = new Date(tgt);
       if (isNaN(date.getTime())) return '';
-      
+
       const secondsDiff = Math.floor((date.getTime() - Date.now()) / 1000);
       const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto', style: 'long' });
 
@@ -1700,7 +1679,7 @@ Cumulative Hours lived: ${stats.hours.toLocaleString()} hours`;
     }
 
     const [min, hour, dom, mon, dow] = fields;
-    
+
     // Check simple replacements
     const minDesc = min === '*' ? 'every minute' : `at minute ${min}`;
     const hourDesc = hour === '*' ? 'of every hour' : `at hour ${hour}`;
@@ -1719,12 +1698,12 @@ Cumulative Hours lived: ${stats.hours.toLocaleString()} hours`;
 
     const now = new Date();
     const list: OccurenceRow[] = [];
-    
+
     // Simulate runs based on fields dynamically
     let hoursOffset = 1;
     for (let i = 1; i <= 5; i++) {
       const simRun = new Date(now.getTime());
-      
+
       // Simulating realistic cron intervals based on common indicators
       if (expr.includes('* * * * *')) {
         simRun.setMinutes(now.getMinutes() + i);

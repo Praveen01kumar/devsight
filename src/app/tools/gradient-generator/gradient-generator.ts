@@ -58,7 +58,7 @@ export interface GradientStop {
                 <span>ANGLE</span>
                 <span>{{ angle() }}&deg;</span>
               </div>
-              <input type="range" min="0" max="360" [value]="angle()" (input)="onAngleInput($event)" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+              <input type="range" min="0" max="360" [value]="angle()" (input)="onAngleInput($event)" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
             </div>
           }
 
@@ -82,7 +82,7 @@ export interface GradientStop {
                     <div class="w-full h-full" [style.background-color]="stop.color"></div>
                   </div>
                   <input type="range" min="0" max="100" [value]="stop.position" (input)="onStopPositionInput($event, $index)"
-                    class="flex-1 cursor-pointer h-1.5 rounded-lg accent-zinc-500"/>
+                    class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"/>
                   <span class="text-[10px] font-mono font-bold text-zinc-400 w-8 text-right">{{ stop.position }}%</span>
                   @if (stops().length > 2) {
                     <button (click)="removeStop($index)"

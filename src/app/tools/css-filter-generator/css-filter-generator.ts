@@ -18,31 +18,31 @@ import { MatIconModule } from '@angular/material/icon';
           <!-- Brightness -->
           <div class="space-y-1 font-mono text-xs">
             <div class="flex justify-between text-zinc-400 font-bold"><span>BRIGHTNESS</span><span>{{ brightness() }}%</span></div>
-            <input type="range" min="0" max="200" [value]="brightness()" (input)="brightness.set(getSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="200" [value]="brightness()" (input)="brightness.set(getSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Contrast -->
           <div class="space-y-1 font-mono text-xs">
             <div class="flex justify-between text-zinc-400 font-bold"><span>CONTRAST</span><span>{{ contrast() }}%</span></div>
-            <input type="range" min="0" max="200" [value]="contrast()" (input)="contrast.set(getSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="200" [value]="contrast()" (input)="contrast.set(getSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Saturation -->
           <div class="space-y-1 font-mono text-xs">
             <div class="flex justify-between text-zinc-400 font-bold"><span>SATURATE</span><span>{{ saturate() }}%</span></div>
-            <input type="range" min="0" max="250" [value]="saturate()" (input)="saturate.set(getSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="250" [value]="saturate()" (input)="saturate.set(getSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Blur -->
           <div class="space-y-1 font-mono text-xs">
             <div class="flex justify-between text-zinc-400 font-bold"><span>BLUR</span><span>{{ blur() }}px</span></div>
-            <input type="range" min="0" max="20" [value]="blur()" (input)="blur.set(getSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="20" [value]="blur()" (input)="blur.set(getSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Hue Rotate -->
           <div class="space-y-1 font-mono text-xs">
             <div class="flex justify-between text-zinc-400 font-bold"><span>HUE ROTATE</span><span>{{ hueRotate() }}&deg;</span></div>
-            <input type="range" min="0" max="360" [value]="hueRotate()" (input)="hueRotate.set(getSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="360" [value]="hueRotate()" (input)="hueRotate.set(getSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Sepia / Grayscale / Inversion togglers in grid -->

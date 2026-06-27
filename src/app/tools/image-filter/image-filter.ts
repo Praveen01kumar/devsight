@@ -80,8 +80,6 @@ function safeBtoa(str: string): string {
   templateUrl: './image-filter.html'
 })
 export class ImageFilterComponent {
-  private document = inject(DOCUMENT);
-
   // Default icons list
   defaultIcons = DEFAULT_ICONS;
 

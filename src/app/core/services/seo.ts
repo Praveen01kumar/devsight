@@ -7,9 +7,9 @@ import { SITE_CONFIG } from '../../constants/constant';
   providedIn: 'root',
 })
 export class SeoService {
-  private titleService = inject(Title);
-  private metaService = inject(Meta);
-  private document = inject(DOCUMENT);
+  private readonly titleService = inject(Title);
+  private readonly metaService = inject(Meta);
+  private readonly document = inject(DOCUMENT);
 
   /**
    * Dynamically write SEO attributes

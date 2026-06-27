@@ -26,7 +26,6 @@ import { FlexboxPlaygroundComponent } from '../../tools/flexbox-playground/flexb
 import { TypescriptWorkspaceComponent } from '../../tools/typescript-workspace/typescript-workspace';
 import { RxjsVisualizerComponent } from '../../tools/rxjs-visualizer/rxjs-visualizer';
 import { RegexStudioComponent } from '../../tools/regex-studio/regex-studio';
-import { JsonCompareComponent } from '../../tools/json-compare/json-compare';
 import { HtmlViewerComponent } from '../../tools/html-viewer/html-viewer';
 import { DateTimeSuite } from '../../tools/date-time-suite/date-time-suite';
 import { TextToolkitComponent } from '../../tools/text-toolkit/text-toolkit';
@@ -51,6 +50,10 @@ import { CubicBezierGeneratorComponent } from '../../tools/cubic-bezier-generato
 import { DesignTokenStudioComponent } from '../../tools/design-token-studio/design-token-studio';
 import { DevUtilitiesComponent } from '../../tools/dev-utilities/dev-utilities';
 import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-preview-studio';
+import { ParquetViewerComponent } from '../../tools/parquet-viewer/parquet-viewer';
+import { FakeDataGeneratorComponent } from '../../tools/fake-data-generator/fake-data-generator.component';
+import { JsonDifferenceComponent } from '../../tools/json-difference/json-difference';
+import { JsonMergeComponent } from '../../tools/json-merge/json-merge.component';
 
 @Component({
   selector: 'app-tool-wrapper',
@@ -68,6 +71,10 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
     UnixTimestampComponent,
     UnitConverterComponent,
     SvgViewer,
+    ParquetViewerComponent,
+    FakeDataGeneratorComponent,
+    JsonDifferenceComponent,
+    JsonMergeComponent,
     ImageFilterComponent,
     ImageCompressoerComponent,
     ImageTypeConverter,
@@ -75,7 +82,6 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
     TypescriptWorkspaceComponent,
     RxjsVisualizerComponent,
     RegexStudioComponent,
-    JsonCompareComponent,
     HtmlViewerComponent,
     DateTimeSuite,
     TextToolkitComponent,
@@ -167,24 +173,13 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
                   </div>
                   @for (tool of categoryAllTools(); track tool.id) {
                     <a
-                      [routerLink]="[
-                        tool.categoryId === 'seo-tools' ? '/seo' : '/tools',
-                        tool.slug
-                      ]"
-                      [class]="
-                        tool.id === currentTool()?.id
-                          ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-150 dark:border-emerald-500/20 font-semibold'
-                          : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-transparent hover:border-zinc-100 dark:hover:border-zinc-800'
-                      "
-                      class="p-2.5 rounded-xl transition-all duration-150 flex items-center gap-2.5 text-xs font-medium"
-                    >
-                      <mat-icon
-                        style="font-size:14px;width:14px;height:14px;"
-                        class="leading-none shrink-0"
-                      >
+                      [routerLink]="[tool.categoryId === 'seo-tools' ? '/seo' : '/tools', tool.slug]"
+                      [class]="tool.id === currentTool()?.id ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-150 dark:border-emerald-500/20 font-semibold' : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 border border-transparent hover:border-zinc-100 dark:hover:border-zinc-800'"
+                      class="p-2.5 rounded-xl transition-all duration-150 flex items-center gap-2.5 text-xs font-medium">
+                      <mat-icon style="font-size:14px;width:14px;height:14px;"
+                        class="leading-none shrink-0">
                         {{ tool.icon }}
                       </mat-icon>
-
                       <span class="truncate">
                         {{ tool.name }}
                       </span>
@@ -218,22 +213,13 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
             <section class="min-h-[200px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/35 rounded-2xl p-4 relative shadow-sm">
               @if (currentTool()?.id === 'json-editor') {
                 <app-json-editor />
-              } @else if (currentTool()?.id === 'json-compare') {
-                <app-json-compare />
-              } @else if (currentTool()?.id === 'password-generator' || currentTool()?.id === 'passphrase-generator' || currentTool()?.id === 'password-strength-checker') {
+              } @else if (currentTool()?.id === 'password-generator') {
                 <app-password-generator [mode]="currentTool()?.id || 'password-generator'" />
               } @else if (currentTool()?.id === 'uuid-generator') {
                 <app-uuid-generator />
               } @else if (currentTool()?.id === 'jwt-decoder') {
                 <app-jwt-decoder />
-              } @else if (currentTool()?.id && [
-                'base64-toolkit',
-                'base64-encoder',
-                'base64-decoder',
-                'base64-validator',
-                'image-to-base64',
-                'data-uri-generator'
-              ].includes(currentTool()!.id)) {
+              } @else if (currentTool()?.id  === 'base64-toolkit') {
                 <app-base64-encoder [mode]="currentTool()!.id" />
               } @else if (currentTool()?.id === 'angular-component-generator') {
                 <app-angular-component-generator />
@@ -247,19 +233,17 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
                 <app-image-compressor />
               }@else if (currentTool()?.id === 'svg-viewer') {
                 <app-svg-viewer-root />
+              }@else if (currentTool()?.id === 'parquet-viewer') {
+                <app-parquet-viewer />
+              }@else if (currentTool()?.id === 'fake-data-generator') {
+                <app-fake-data-generator />
+              }@else if (currentTool()?.id === 'json-difference') {
+                <app-json-difference />
+              }@else if (currentTool()?.id === 'json-merge') {
+                <app-json-merge />
               }@else if (currentTool()?.id === 'image-type-converter') {
                 <app-image-type-converter />
-              }@else if (currentTool()?.id && [
-                'date-difference',
-                'age-calculator',
-                'date-add-subtract',
-                'days-calculator',
-                'months-calculator',
-                'years-calculator',
-                'unix-timestamp-converter',
-                'timezone-converter',
-                'duration-calculator'
-              ].includes(currentTool()!.id)) {
+              }@else if (currentTool()?.id === 'date-difference') {
                 <app-date-time-suite [mode]="currentTool()!.id" />
               } @else if (currentTool()?.id === 'flexbox-playground') {
                 <app-flexbox-playground />
@@ -269,8 +253,8 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
                 <app-rxjs-visualizer />
               } @else if (currentTool()?.id === 'regex-studio') {
                 <app-regex-studio />
-              } @else if (currentTool()?.id === 'html-viewer' || currentTool()?.id === 'html-editor' || currentTool()?.id === 'html-preview') {
-                <app-html-viewer [mode]="currentTool()?.id || 'html-viewer'" />
+              } @else if (currentTool()?.id === 'html-viewer') {
+                <app-html-viewer/>
               } @else if (currentTool()?.id === 'color-picker') {
                 <app-color-picker />
               } @else if (currentTool()?.id === 'contrast-checker') {
@@ -318,7 +302,6 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <!-- Main text layouts (Instruction Guide, detailed guide, and FAQ elements) -->
               <div class="lg:col-span-2 space-y-8 text-left select-text prose prose-invert prose-emerald max-w-none">
-                
                 <!-- Long Form Detailed Guide -->
                 <div class="p-6 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60 rounded-2xl block text-zinc-700 dark:text-zinc-350 select-all space-y-4 shadow-sm">
                   <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 dark:text-zinc-400 font-bold block">PLATFORM OPERATING MANUAL</span>
@@ -375,10 +358,10 @@ import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-previ
   `
 })
 export class ToolWrapperComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private toolboxService = inject(ToolboxService);
-  private seoService = inject(SeoService);
-  private destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly toolboxService = inject(ToolboxService);
+  private readonly seoService = inject(SeoService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public currentTool = signal<typeof TOOLS[0] | null>(null);
   public sidebarExpanded = signal<boolean>(false);
@@ -424,10 +407,10 @@ export class ToolWrapperComponent implements OnInit {
       .subscribe((params) => {
         const slug = params.get('slug');
         const match = TOOLS.find(t => t.slug === slug);
-        
+
         if (match) {
           this.currentTool.set(match);
-          
+
           // Auto record usage history
           this.toolboxService.recordUsage(match.slug);
 

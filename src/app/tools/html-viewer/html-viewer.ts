@@ -731,9 +731,7 @@ interface ValidationIssue {
   `]
 })
 export class HtmlViewerComponent implements AfterViewInit, OnChanges {
-  // Input route mode mapping ('html-viewer' | 'html-editor' | 'html-preview')
   public mode = input<string>('html-viewer');
-
   // Interactive core source signals
   public htmlCode = signal<string>('');
   // Full screen view toggles
@@ -874,14 +872,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
   // Intercept route mode mutations
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['mode'] && changes['mode'].currentValue) {
-      const currentVal = changes['mode'].currentValue;
-      if (currentVal === 'html-editor') {
-        this.activeTab.set('editor');
-      } else if (currentVal === 'html-preview') {
-        this.activeTab.set('seo-preview');
-      } else {
-        this.activeTab.set('playground');
-      }
+      this.activeTab.set('playground');
     }
   }
 
@@ -952,7 +943,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
   public onFileDrop(event: DragEvent): void {
     event.preventDefault();
     this.isDraggingOver.set(false);
-    
+
     if (event.dataTransfer && event.dataTransfer.files.length > 0) {
       const file = event.dataTransfer.files[0];
       const reader = new FileReader();
@@ -1001,7 +992,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     if (event.key === '>') {
       const start = textarea.selectionStart;
       const val = textarea.value;
-      
+
       const textBefore = val.substring(0, start);
       const tagMatch = textBefore.match(/<([a-zA-Z0-9_\-:]+)(?:\s+[^>]*?)?>$/);
       if (tagMatch) {
@@ -1053,7 +1044,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     }
   }
 </script>`;
-      
+
       // Inject CDN into head
       if (rawContent.includes('<head>')) {
         rawContent = rawContent.replace('<head>', `<head>\n  ${tailwindScript}`);
@@ -1085,7 +1076,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     try {
       const parser = new DOMParser();
       const parsedDoc = parser.parseFromString(rawContent, 'text/html');
-      
+
       let count = 0;
       const recurseAssign = (element: Element) => {
         count++;
@@ -1124,7 +1115,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
 
     try {
       const doc = iframe.contentWindow.document;
-      
+
       // Reset previous targets
       doc.querySelectorAll('.data-ds-highlighted').forEach(el => {
         el.classList.remove('data-ds-highlighted');
@@ -1161,7 +1152,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
 
     let count = 0;
     let target: Element | null = null;
-    
+
     const locate = (element: Element) => {
       count++;
       if (`node-${count}` === nodeId) {
@@ -1182,10 +1173,10 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     if (target) {
       (target as Element).setAttribute(attrName, attrVal);
       this.htmlCode.set(doc.documentElement.outerHTML);
-      
+
       // Auto-update interactive selector values
       this.recomputeDOMTree(this.htmlCode());
-      
+
       // Clear inputs
       nameInput.value = '';
       valueInput.value = '';
@@ -1199,7 +1190,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
 
     let count = 0;
     let target: Element | null = null;
-    
+
     const locate = (element: Element) => {
       count++;
       if (`node-${count}` === nodeId) {
@@ -1229,13 +1220,11 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     try {
       const parser = new DOMParser();
       const doc = parser.parseFromString(code, 'text/html');
-      
       let nodeIndex = 0;
 
       const parseElement = (el: Element): DOMNode => {
         nodeIndex++;
         const uniqueId = `node-${nodeIndex}`;
-        
         // Extract tag attributes
         const attributes: { name: string, value: string }[] = [];
         const elAttributes = Array.from(el.attributes);
@@ -1379,12 +1368,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     const raw = this.htmlCode();
     if (!raw.trim()) return;
 
-    const encoded = raw
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+    const encoded = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 
     this.htmlCode.set(encoded);
     if (this.codeEditorEl) {
@@ -1397,13 +1381,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     const raw = this.htmlCode();
     if (!raw.trim()) return;
 
-    const decoded = raw
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#039;/g, "'")
-      .replace(/&apos;/g, "'");
+    const decoded = raw.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&apos;/g, "'");
 
     this.htmlCode.set(decoded);
     if (this.codeEditorEl) {
@@ -1423,7 +1401,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
       jsx = jsx.replace(/class=/g, 'className=');
       // Convert standard contentfor targets
       jsx = jsx.replace(/for=/g, 'htmlFor=');
-      
+
       // Inline styles to JSX expressions objects
       jsx = jsx.replace(/style="([^"]*)"/g, (match, p1) => {
         const rules = p1.split(';').filter((r: string) => r.trim());
@@ -1476,12 +1454,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     }
 
     if (mode === 'entity') {
-      return code
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+      return code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
 
     return code;
@@ -1563,7 +1536,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
       const rawCountOpens = (code.match(/<[\w-]+(?:\s+[^>]*?)?>/g) || []).length;
       const rawCountCloses = (code.match(/<\/[\w-]+>/g) || []).length;
       const singleTags = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'];
-      
+
       const singleTagsCount = singleTags.reduce((sum, tag) => {
         const r = new RegExp(`<${tag}(?:\\s+[^>]*?)?>`, 'gi');
         return sum + (code.match(r) || []).length;
@@ -1594,7 +1567,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
 
     const val = textarea.value;
     const index = val.indexOf(textToFind, textarea.selectionStart + 1);
-    
+
     if (index !== -1) {
       textarea.focus();
       textarea.setSelectionRange(index, index + textToFind.length);
@@ -1612,7 +1585,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
     const textToFind = this.findControl.value;
     const textToReplace = this.replaceControl.value || '';
     const textarea = this.codeEditorEl?.nativeElement;
-    
+
     if (!textarea || !textToFind) return;
 
     const start = textarea.selectionStart;
@@ -1698,12 +1671,12 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
 
     const fileBlob = new Blob([text], { type: 'text/html' });
     const fileUrl = URL.createObjectURL(fileBlob);
-    
+
     const clickLink = document.createElement('a');
     clickLink.href = fileUrl;
     clickLink.download = 'devsight_sandbox_markup.html';
     clickLink.click();
-    
+
     URL.revokeObjectURL(fileUrl);
   }
 }

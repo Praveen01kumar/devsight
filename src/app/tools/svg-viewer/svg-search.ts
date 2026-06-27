@@ -80,7 +80,7 @@ import { SelectionController } from './services/selection-controller';
   `
 })
 export class SvgSearch {
-  private selection = inject(SelectionController);
+  private readonly selection = inject(SelectionController);
 
   query = signal<string>('');
   matchesCount = this.selection.searchResults.asReadonly();

@@ -139,11 +139,9 @@ export class UuidGeneratorComponent {
 
     for (let i = 0; i < limit; i++) {
       let id = ver === 'v4' ? this.generateV4() : this.generateV1();
-      
       if (!this.hyphens()) {
         id = id.replace(/-/g, '');
       }
-      
       if (this.uppercase()) {
         id = id.toUpperCase();
       }
@@ -200,7 +198,6 @@ export class UuidGeneratorComponent {
     // Collect microseconds epoch timestamps, simulating standard clock sequences
     const timestamp = Date.now() * 10000 + 122192928000000000; // Offset since Greg Gregorian epoch
     const timeHex = timestamp.toString(16).padStart(15, '0');
-    
     const timeLow = timeHex.slice(7, 15);
     const timeMid = timeHex.slice(3, 7);
     const timeHiAndVersion = '1' + timeHex.slice(0, 3); // V1
@@ -214,10 +211,8 @@ export class UuidGeneratorComponent {
   private generateV1Node(): string {
     const arr = new Uint8Array(8);
     crypto.getRandomValues(arr);
-    
     // Ensure multicast bit set to represent locally generated address coordinates
     arr[0] = arr[0] | 0x01;
-    
     const hex: string[] = [];
     for (let i = 0; i < 8; i++) {
       hex.push(arr[i].toString(16).padStart(2, '0'));

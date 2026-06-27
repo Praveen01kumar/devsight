@@ -77,7 +77,7 @@ import { SvgColorInfo } from '../../data/svg.model';
   `
 })
 export class SvgPalette {
-  private selection = inject(SelectionController);
+  private readonly selection = inject(SelectionController);
 
   colors = input<SvgColorInfo[]>([]);
   showToast = signal<boolean>(false);

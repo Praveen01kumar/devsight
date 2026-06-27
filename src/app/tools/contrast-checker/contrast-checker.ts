@@ -52,7 +52,7 @@ import { hexToRgb, rgbToHex, getContrastRatio, getApcaContrast, RGB } from '../c
                 <span>FONT SIZE</span>
                 <span>{{ fontSize() }}px</span>
               </div>
-              <input type="range" min="12" max="64" [value]="fontSize()" (input)="onFontSizeInput($event)" class="w-full select-none accent-emerald-500 cursor-pointer h-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+              <input type="range" min="12" max="64" [value]="fontSize()" (input)="onFontSizeInput($event)" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
             </div>
 
             <div class="space-y-1.5">
@@ -60,7 +60,7 @@ import { hexToRgb, rgbToHex, getContrastRatio, getApcaContrast, RGB } from '../c
                 <span>FONT WEIGHT</span>
                 <span>{{ fontWeight() }}</span>
               </div>
-              <input type="range" min="100" max="900" step="100" [value]="fontWeight()" (input)="onFontWeightInput($event)" class="w-full select-none accent-emerald-500 cursor-pointer h-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+              <input type="range" min="100" max="900" step="100" [value]="fontWeight()" (input)="onFontWeightInput($event)" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
             </div>
 
             <div class="space-y-1.5">
@@ -68,7 +68,7 @@ import { hexToRgb, rgbToHex, getContrastRatio, getApcaContrast, RGB } from '../c
                 <span>LINE HEIGHT</span>
                 <span>{{ lineHeight() }}x</span>
               </div>
-              <input type="range" min="1" max="2" step="0.1" [value]="lineHeight()" (input)="onLineHeightInput($event)" class="w-full select-none accent-emerald-500 cursor-pointer h-1.5 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+              <input type="range" min="1" max="2" step="0.1" [value]="lineHeight()" (input)="onLineHeightInput($event)" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
             </div>
           </div>
         </div>
@@ -258,10 +258,8 @@ export class ContrastCheckerComponent {
 
   public autofixContrast(): void {
     // Attempt simple lightness shift. If background is dark make text lighter; if background is bright make text darker.
-    const bgLuminance = this.bgHex();
     const lRgb = this.bgRgb();
     const avgL = (lRgb.r + lRgb.g + lRgb.b) / 3;
-    
     if (avgL < 128) {
       // Dark surface -> Make text pure white / highly bright emerald
       this.textHex.set('#FFFFFF');

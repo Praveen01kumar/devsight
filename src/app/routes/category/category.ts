@@ -170,11 +170,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   `
 })
 export class CategoryPageComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private toolboxService = inject(ToolboxService);
-  private seoService = inject(SeoService);
-  private destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly toolboxService = inject(ToolboxService);
+  private readonly seoService = inject(SeoService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public currentCategory = signal<typeof CATEGORIES[0] | null>(null);
   public isGridView = signal<boolean>(true);

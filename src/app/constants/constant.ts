@@ -50,7 +50,7 @@ export interface StaticPageContent {
 
 export const SITE_CONFIG: SiteConfig = {
   name: 'DevSight',
-  baseUrl: 'https://devsight.dev', // Will fall back to current host dynamically
+  baseUrl: 'https://devsight.dev',
   description: 'DevSight is a modern, high-performance, developer toolbox with 100% offline, privacy-focused utilities including JSON formatters, JWT decoders, security tools, and state generators.',
   author: 'DevSight Team',
   twitterUsername: '@devsightToolbox',
@@ -172,78 +172,162 @@ export const TOOLS: ToolMetadata[] = [
   {
     id: 'json-editor',
     slug: 'json-editor',
-    name: 'Advanced JSON Editor & Tree Developer',
-    shortDescription: 'An advanced, interactive JSON editor featuring visual tree nodes, dynamic grid tables, real-time schema validation, diff visualizers, and code formatting utilities.',
-    metaTitle: 'Advanced JSON Editor, Tree Viewer, & Schema Validator - devsight',
-    metaDescription: 'Interactive client-side JSON editor. Modify node keys and values directly, view data in grid tables, run search-and-replace, and visualize JSON diff comparison online.',
+    name: 'Advanced JSON Editor & Tree Viewer',
+    shortDescription:
+      'Edit, format, validate, and visualize JSON using text, tree, and table views with real-time schema validation and formatting tools.',
+    metaTitle:
+      'Advanced JSON Editor, Tree Viewer & Validator Online | devsight',
+    metaDescription:
+      'Edit JSON online with an interactive tree editor, table view, code editor, schema validation, formatting, search and replace, and transformation tools.',
     categoryId: 'json-tools',
     icon: 'edit_note',
-    tags: ['json', 'editor', 'tree-view', 'validator', 'schema', 'diff-viewer', 'table-view'],
-    relatedTools: ['jwt-decoder', 'typescript-workspace'],
+    tags: [      'json',      'editor',      'tree',      'tree-view',      'formatter',      'validator',      'schema',      'table-view'    ],
+    relatedTools: ['json-merge', 'json-difference'],
     faqs: [
       {
-        question: 'How do I edit my JSON structure using the Tree View?',
-        answer: 'Our interactive Tree View represents each key-value pair as a dynamic tree node. You can click on keys and values directly to modify them inline, click duplicate buttons to copy them, or add properties with specific types (String, Number, Boolean, Object, Array, Null) immediately.'
+        question: 'How can I edit JSON using the Tree View?',
+        answer:
+          'The Tree View displays every object and array as expandable nodes. You can edit keys and values inline, add or remove properties, change value types, duplicate nodes, and reorganize nested structures without manually editing brackets or commas.'
       },
       {
-        question: 'Can I compare and see diffs between two JSON payloads?',
-        answer: 'Yes, our comparison panel accepts two separate JSON inputs, parses them, and produces a visual highlighted side-by-side split comparison highlighting additions, modifications, and deletions.'
+        question: 'Does the editor validate JSON automatically?',
+        answer:
+          'Yes. The editor validates JSON syntax in real time and supports JSON Schema validation to identify structural issues and provide detailed validation messages.'
       },
       {
-        question: 'Is there support for JSON schema validation?',
-        answer: 'Absolutely. You can paste a standard JSON Schema draft, and we validate your JSON in real-time. Any non-compliance errors will trigger red warning markers with precise descriptive suggestions.'
+        question: 'What editing features are available?',
+        answer:
+          'The editor includes formatting, minification, key sorting, search and replace, tree editing, table view for arrays, syntax highlighting, and data transformation utilities.'
       }
     ],
     detailedGuide: `
-      <h2>Advanced Operational Manual for JSON Editor</h2>
-      <p>This editor provides a multi-mode workbench (Text, Tree, Table) to format, validate, compare, and modify JSON arrays or objects elegantly.</p>
-      <h3>Using the Three Workspace Views</h3>
-      <ul>
-        <li><strong>Text Code Editor:</strong> A rich text view with exact line numbering, code folding, error trace indicators, syntax highlighting, and formatting utilities (beautify, minify, key sorting).</li>
-        <li><strong>Interactive Tree:</strong> Avoid editing nested commas and brackets manually. Add, delete, duplicate, or reorder keys, convert data types, and expand/collapse levels recursively with direct visual feedback.</li>
-        <li><strong>Table Grid:</strong> Designed specifically for JSON arrays of objects. View attributes arranged in clear responsive columns and edit values right inside spreadsheet elements.</li>
-      </ul>
-      <h3>Performing Transformations & Diff Comparison</h3>
-      <p>Click on the Transform tab to query and manipulate fields using JS/TS-like inline projections, or launch the Split Diff-Compare window to see structural differences between standard schema files.</p>
-    `
-  },
-  {
-    id: 'json-compare',
-    slug: 'json-compare',
-    name: 'JSON Compare & Semantic Merge System',
-    shortDescription: 'An advanced JSON comparison tool. Align nested schemas side-by-side, ignore key order and case, resolve structural conflicts in real-time, generate RFC 6902 JSON Patches, and export merged reports.',
-    metaTitle: 'Advanced JSON Compare - Online Structural Difference Checker - devsight',
-    metaDescription: 'Secure online JSON comparison tool. Design dynamic schemas side-by-side, ignore key order, case or whitespace, resolve structural conflicts in real-time, generate RFC 6902 JSON Patches, and export diff reports.',
+    <h2>JSON Editor User Guide</h2>
+    <p>Edit, validate, and format JSON efficiently using multiple workspace views designed for both simple and complex documents.</p>
+    <h3>Workspace Modes</h3>
+    <ul>
+      <li><strong>Text Editor:</strong> Edit JSON with syntax highlighting, formatting, line numbers, error detection, and code folding.</li>
+      <li><strong>Tree View:</strong> Expand nested objects, edit properties inline, add or remove nodes, duplicate values, and change data types visually.</li>
+      <li><strong>Table View:</strong> Display JSON arrays of objects as editable tables for quick data modification.</li>
+    </ul>
+    <h3>Available Tools</h3>
+    <ul>
+      <li>Beautify and Minify JSON</li>
+      <li>Sort Object Keys</li>
+      <li>Search and Replace</li>
+      <li>JSON Schema Validation</li>
+      <li>JSON Transformations</li>
+      <li>Copy and Download JSON</li>
+    </ul>
+    <h3>Who Is It For?</h3>
+    <p>The editor is ideal for developers, API testing, configuration editing, debugging payloads, and managing large nested JSON documents directly in the browser.</p>
+  `
+  }, {
+    id: 'json-difference',
+    slug: 'json-difference',
+    name: 'Advanced JSON Difference Checker',
+    shortDescription:
+      'Compare two JSON documents side-by-side, highlight added, removed, and modified values, ignore key order or whitespace, and generate detailed difference reports.',
+    metaTitle:
+      'Advanced JSON Difference Checker Online - Side-by-Side JSON Diff | devsight',
+    metaDescription:
+      'Compare JSON files online with semantic diff detection. Highlight additions, deletions, and modifications, ignore key order or whitespace, and export detailed JSON difference reports.',
     categoryId: 'json-tools',
     icon: 'compare',
-    tags: ['json', 'compare', 'diff', 'validator', 'schema', 'patch', 'merging'],
-    relatedTools: ['json-editor', 'typescript-workspace'],
+    tags: [      'json',      'difference',      'compare',      'diff',      'json diff',      'schema',      'validator'    ],
+    relatedTools: ['json-merge', 'json-editor'],
     faqs: [
       {
-        question: 'How does Semantic JSON Compare differ from standard text diff engines?',
-        answer: 'Traditional text diff tools compare files line-by-line, causing major false warnings if properties are rearranged or key-order is mixed. Our Semantic JSON Compare parses strings into structured JSON trees to perform semantic property matching, letting you optionally ignore key ordering, naming case, and leading/trailing whitespace.'
+        question: 'How does the JSON Difference Checker work?',
+        answer:
+          'The tool parses both JSON documents into structured objects before comparing them. Instead of performing a simple text comparison, it detects additions, removals, modifications, and moved properties while minimizing false positives caused by formatting differences.'
       },
       {
-        question: 'What is an RFC 6902 JSON Patch?',
-        answer: 'An RFC 6902 JSON Patch is a standardized operations structure (add, remove, replace operations array) representing exactly which updates are required to sync code and data from JSON A into JSON B. You can use it directly in automation workflows or backend systems.'
+        question: 'Can I ignore key order or whitespace during comparison?',
+        answer:
+          'Yes. You can ignore key ordering, whitespace, and optionally property name casing so that only meaningful structural differences are highlighted.'
       },
       {
-        question: 'Can I resolve conflicts and compile a merged dataset?',
-        answer: 'Yes, our interactive Hierarchical Diff Tree displays conflict resolution triggers next to every modified, added, or deleted attribute. Simply click USE A or USE B inline to compile a clean, parsed, merged output and download it immediately.'
+        question: 'Can I export the comparison results?',
+        answer:
+          'Yes. After comparison, you can export the highlighted differences or generate a detailed report for documentation, reviews, debugging, or auditing purposes.'
       }
     ],
     detailedGuide: `
-      <h2>Operational Manual: JSON Semantic Comparison & Live Conflict Resolution</h2>
-      <p>devsight's JSON Compare System is a fully secure, client-side diff workbench designed to compare complex, nested structures without exposing sensitive configuration data or API credentials to remote servers.</p>
-      <h3>Step-by-Step Instructions</h3>
-      <ol>
-        <li><strong>Load Source JSON:</strong> Paste or drag-and-drop the original structure (baseline JSON A) into the left text box.</li>
-        <li><strong>Load Target JSON:</strong> Paste or drag-and-drop the modified structure (revised JSON B) into the right text box.</li>
-        <li><strong>Configure Comparison Parameters:</strong> Use the checkboxes to toggle whitespace, ignore key order (useful when keys are sorted differently but mean the same), ignore case, or show only differing elements.</li>
-        <li><strong>Choose Compare Layouts:</strong> Toggle between Split Column View, Unified diff lines, Interactive Tree Graph containing conflict switches, or text code highlighting blocks.</li>
-        <li><strong>Build Merged Files:</strong> Navigate differences with previous/next change markers, toggle USE A/B switches on modified tree branches, and use the merge console to compile and export the final merged file.</li>
-      </ol>
-    `
+    <h2>JSON Difference Checker User Guide</h2>
+    <p>Compare two JSON documents to quickly identify structural and value differences. The comparison is performed semantically, making it more accurate than traditional text-based diff tools.</p>
+
+    <h3>How to Compare JSON</h3>
+    <ol>
+      <li><strong>Paste Original JSON:</strong> Load the first JSON document into the left editor.</li>
+      <li><strong>Paste Updated JSON:</strong> Load the second JSON document into the right editor.</li>
+      <li><strong>Select Comparison Options:</strong> Ignore key order, whitespace, or property name case as needed.</li>
+      <li><strong>Run Comparison:</strong> View additions, deletions, modifications, and unchanged nodes in an interactive diff viewer.</li>
+      <li><strong>Export Results:</strong> Download or copy the comparison report for debugging, code review, or documentation.</li>
+    </ol>
+
+    <h3>Comparison Features</h3>
+    <ul>
+      <li><strong>Semantic JSON Comparison:</strong> Compare JSON structures instead of raw text.</li>
+      <li><strong>Side-by-Side Diff View:</strong> Easily inspect differences between two documents.</li>
+      <li><strong>Unified Diff View:</strong> Review all changes in a single continuous view.</li>
+      <li><strong>Difference Summary:</strong> Quickly see the number of added, removed, and modified nodes.</li>
+      <li><strong>Flexible Comparison:</strong> Ignore formatting differences such as whitespace, key order, and optional case sensitivity.</li>
+    </ul>
+  `
+  }, {
+    id: 'json-merge',
+    slug: 'json-merge',
+    name: 'Advanced JSON Merge Tool',
+    shortDescription:
+      'Merge two JSON documents with interactive conflict resolution, semantic comparison, RFC 6902 patch generation, and merged JSON export.',
+    metaTitle:
+      'Advanced JSON Merge Tool Online | Merge & Resolve JSON Conflicts | devsight',
+    metaDescription:
+      'Merge JSON files online with semantic comparison, interactive conflict resolution, automatic merging, RFC 6902 JSON Patch generation, and merged output export.',
+    categoryId: 'json-tools',
+    icon: 'merge',
+    tags: [      'json',      'merge',      'compare',      'conflict',      'json patch',      'rfc6902',      'diff'    ],
+    relatedTools: ['json-difference', 'json-editor'],
+    faqs: [
+      {
+        question: 'How does JSON Merge work?',
+        answer:
+          'The tool compares two JSON documents, automatically merges non-conflicting changes, and highlights conflicts that require manual review before generating the final merged JSON.'
+      },
+      {
+        question: 'Can I resolve merge conflicts manually?',
+        answer:
+          'Yes. Each conflicting value can be reviewed individually, allowing you to choose the value from either JSON document before generating the merged result.'
+      },
+      {
+        question: 'Does the tool generate JSON Patch files?',
+        answer:
+          'Yes. You can generate RFC 6902 JSON Patch operations representing the changes between the original and merged documents for use in APIs and automation workflows.'
+      }
+    ],
+    detailedGuide: `
+    <h2>JSON Merge Tool User Guide</h2>
+    <p>Merge two JSON documents intelligently by combining matching structures, resolving conflicts, and exporting a clean merged result.</p>
+    <h3>How to Merge JSON</h3>
+    <ol>
+      <li><strong>Load Source JSON:</strong> Paste the original JSON into the left editor.</li>
+      <li><strong>Load Target JSON:</strong> Paste the updated JSON into the right editor.</li>
+      <li><strong>Compare Structures:</strong> The tool automatically detects additions, deletions, and conflicting values.</li>
+      <li><strong>Resolve Conflicts:</strong> Review highlighted conflicts and choose which value should appear in the final document.</li>
+      <li><strong>Generate Output:</strong> Export the merged JSON or generate an RFC 6902 JSON Patch.</li>
+    </ol>
+    <h3>Features</h3>
+    <ul>
+      <li>Semantic JSON Merge</li>
+      <li>Automatic Merge for Non-conflicting Changes</li>
+      <li>Interactive Conflict Resolution</li>
+      <li>Side-by-Side Comparison</li>
+      <li>RFC 6902 JSON Patch Generation</li>
+      <li>Export Merged JSON</li>
+    </ul>
+    <h3>Common Use Cases</h3>
+    <p>Perfect for configuration management, API payload updates, collaborative development, version control workflows, and combining multiple JSON datasets.</p>
+  `
   },
   {
     id: 'password-generator',
@@ -278,70 +362,6 @@ export const TOOLS: ToolMetadata[] = [
     `
   },
   {
-    id: 'passphrase-generator',
-    slug: 'passphrase-generator',
-    name: 'Cryptographic Passphrase & Memorability Generator',
-    shortDescription: 'Construct easy-to-remember, highly secure passphrases using multi-word diceware sequences, customizable separators, and capitalization options.',
-    metaTitle: 'Secure Passphrase Generator - Multi-word Memorable Keys - devsight',
-    metaDescription: 'Generate cryptic but memorable multi-word passphrases locally using diceware list algorithms. Choose separators, digits padding, and capitalization styles.',
-    categoryId: 'security-tools',
-    icon: 'vpn_key',
-    tags: ['passphrase', 'diceware', 'memorable', 'credentials', 'security', 'entropy'],
-    relatedTools: ['password-generator', 'uuid-generator'],
-    faqs: [
-      {
-        question: 'What is a passphrase and why is it secure?',
-        answer: 'A passphrase combines multiple randomly selected dictionary words. While each word is simple, the combined entropy of 4 to 6 random words creates a vast search space (e.g., billions of combinations), making standard brute-forcing mathematically unfeasible while remaining exceptionally easy for a human to remember.'
-      },
-      {
-        question: 'How are the words selected?',
-        answer: 'Our passphrase engine uses standard cryptographically secure random number generation (Web Crypto API) to pick words from an audited, child-safe, high-frequency english dictionary list, preventing predictive pattern generation.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Operational Manual: Dynamic Diceware Passphrase Generation</h2>
-      <p>Passphrases represent the modern standard for secure, human-memorable access codes. This offline generator compiles sequences that are effortless to type but robust against offline cracking attacks.</p>
-      <h3>Passphrase Configuration Guidelines</h3>
-      <ul>
-        <li><strong>Word Count:</strong> We recommend at least 4 words for daily web accounts and 5 to 6 words for master keys, password managers, or server root profiles.</li>
-        <li><strong>Separators:</strong> Custom characters like hyphens (-), underscores (_), or periods (.) separate words to satisfy standard policy requirements without reducing recall.</li>
-        <li><strong>Padding & Case:</strong> Adding random digits or uppercase switches to your passphrase meets complex enterprise policies while maintaining high readability.</li>
-      </ul>
-    `
-  },
-  {
-    id: 'password-strength-checker',
-    slug: 'password-strength-checker',
-    name: 'Enterprise Password Strength & Policy Checker',
-    shortDescription: 'Conduct advanced analysis of credential complexity with dynamic entropy calculation, real-time enterprise policy validation, and HaveIBeenPwned breach detection.',
-    metaTitle: 'Enterprise Password Strength Checker - Compliance Validator - devsight',
-    metaDescription: 'Check credentials against common policy matrices, evaluate raw binary entropy bits, search HaveIBeenPwned range servers, and locate repeating patterns or dictionary keys.',
-    categoryId: 'security-tools',
-    icon: 'security',
-    tags: ['security', 'policy', 'checker', 'breach', 'entropy', 'compliance'],
-    relatedTools: ['password-generator', 'passphrase-generator'],
-    faqs: [
-      {
-        question: 'Does checking my password here expose it?',
-        answer: 'Absolutely not. In compliance with high privacy standards, the Breach Detection utilizes k-Anonymity. We compute the SHA-1 hash of your password locally in your browser and transmit ONLY the first 5 hexadecimal characters of that hash to the HaveIBeenPwned API. The API returns a list of suffix matching records, which we check locally. Your full password or full hash never leaves your machine.'
-      },
-      {
-        question: 'What is the k-Anonymity protocol?',
-        answer: 'k-Anonymity is a secure lookup method where you query a subset of hash prefixes. From the list of suffixes returned, the match is determined client-side. This mathematically prevents the remote server from learning which password has been checked, preserving absolute confidentiality.'
-      }
-    ],
-    detailedGuide: `
-      <h2>How to audit password compliance and safety</h2>
-      <p>This checker offers a deep diagnostic workspace to evaluate existing credentials or enterprise criteria against standard cryptographic defenses.</p>
-      <h3>Evaluating the Parameters</h3>
-      <ul>
-        <li><strong>Entropy Bits:</strong> Aim for higher than 60 bits of entropy for modern web standards, and 80+ bits for critical databases.</li>
-        <li><strong>Policy Compliance:</strong> Our validator evaluates standard rules including length benchmarks, character variety, consecutive repeated characters, and digit progressions.</li>
-        <li><strong>Breach Search:</strong> Checks if your string has been exposed in historic public data leaks, making it a high priority for rotation.</li>
-      </ul>
-    `
-  },
-  {
     id: 'uuid-generator',
     slug: 'uuid-generator',
     name: 'Cryptographic UUID & GUID Generator',
@@ -351,7 +371,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'security-tools',
     icon: 'fingerprint',
     tags: ['uuid', 'guid', 'rfc4122', 'key-generator', 'unique', 'random'],
-    relatedTools: ['password-generator', 'base64-encoder'],
+    relatedTools: ['password-generator'],
     faqs: [
       {
         question: 'What is an RFC 4122 UUID?',
@@ -379,7 +399,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'security-tools',
     icon: 'gavel',
     tags: ['jwt', 'jsonwebtoken', 'oauth', 'decode', 'payload', 'claims'],
-    relatedTools: ['password-generator', 'base64-encoder'],
+    relatedTools: ['password-generator'],
     faqs: [
       {
         question: 'Does devsight store token keys?',
@@ -411,7 +431,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'security-tools',
     icon: 'construction',
     tags: ['base64', 'toolkit', 'binary', 'url-safe', 'atob', 'btoa'],
-    relatedTools: ['base64-encoder', 'base64-decoder', 'base64-validator', 'image-to-base64', 'data-uri-generator'],
+    relatedTools: [],
     faqs: [
       {
         question: 'Is there raw data leakage or server uploads in the Base64 Toolkit?',
@@ -431,152 +451,6 @@ export const TOOLS: ToolMetadata[] = [
         <li><strong>Advanced Previews:</strong> View output in rich split panels. Dynamic viewers let you test images, play audio streams, scan PDF documents, or inspect highlighted HTML directly.</li>
         <li><strong>Transformer Controls:</strong> Strip spaces, normalize padding, customize line limits (chunking), and format parsed JSON.</li>
       </ul>
-    `
-  },
-  {
-    id: 'base64-encoder',
-    slug: 'base64-encoder',
-    name: 'Base64 Text & Byte Encoder Pro',
-    shortDescription: 'Encode text strings, binary files, HEX, or Unicode characters into standard or URL-Safe Base64 with code output templates.',
-    metaTitle: 'Base64 Encoder - Securely Encode Text, Files, and HEX - devsight',
-    metaDescription: 'Highly secure local Base64 encoder. Supports standard and URL-Safe outputs, Unicode/UTF-8/ASCII bytes, hex streams, and instant copy/paste.',
-    categoryId: 'security-tools',
-    icon: 'swap_horiz',
-    tags: ['base64', 'encoder', 'unicode', 'hex', 'binary', 'url-safe'],
-    relatedTools: ['base64-toolkit', 'base64-decoder', 'base64-validator', 'image-to-base64'],
-    faqs: [
-      {
-        question: 'How does this encoder handle non-ASCII Unicode characters?',
-        answer: 'Our encoder reads text using the Web API TextEncoder, which compiles standard UTF-8 binary streams before performing standard btoa translation. This prevents corruption or encoding collapse on emoji and special characters.'
-      },
-      {
-        question: 'What is URL-Safe Base64?',
-        answer: `Url-Safe Base64 swaps '+' for '-', '/' for '_', and trims the padding '=' indicators. This lets you append the output directly as a URL search or path parameter without encoding errors.`
-      }
-    ],
-    detailedGuide: `
-      <h2>Modern Base64 Encoding Operational Manual</h2>
-      <p>Encoding data transforms cleartext or raw bytes into a format safe for transport across systems. Use this tool to standard-format strings and prepare file assets.</p>
-      <h3>Encoding Options</h3>
-      <ul>
-        <li><strong>Text Encoding:</strong> Paste any text. Choose between standard representation or URL-Safe variants.</li>
-        <li><strong>Hex to Base64:</strong> Input raw hexadecimal strings (e.g. '48656c6c6f') and convert them instantly to Base64 string format.</li>
-        <li><strong>Code Ready Snippets:</strong> Access direct copy tags for HTML Images, CSS Background-Image attributes, Angular templates, and fetch payloads.</li>
-      </ul>
-    `
-  },
-  {
-    id: 'base64-decoder',
-    slug: 'base64-decoder',
-    name: 'Base64 Decoder & File Explorer',
-    shortDescription: 'Deconstruct and decode any Base64 string back into plain Unicode text, pretty-printed JSON, live sandboxed images, interactive HTML, or downloadable binaries.',
-    metaTitle: 'Base64 Decoder - Parse Base64 to Text, JSON, Image, and Files - devsight',
-    metaDescription: 'Instant safe offline Base64 decoder. Read Base64 sequence structures back into plain text, download decoded original files (PDF, image, audio), or view JSON objects.',
-    categoryId: 'security-tools',
-    icon: 'settings_ethernet',
-    tags: ['base64', 'decoder', 'atob', 'json', 'data-uri', 'media-player'],
-    relatedTools: ['base64-toolkit', 'base64-encoder', 'base64-validator', 'image-to-base64'],
-    faqs: [
-      {
-        question: 'How does the image/payload preview sandbox protect my browser?',
-        answer: 'All HTML renders are mounted in sandboxed iframes. Script execution is strictly isolated, ensuring malicious HTML embeds inside encoded characters cannot execute cross-site script hooks.'
-      },
-      {
-        question: 'Does the decoder automatically detect the mime-type?',
-        answer: `Yes. By analyzing header bytes (the first few bytes of the decoded binary stream, e.g. PNG signature '89 50 4E 47'), the compiler determines whether the source represents an image, PDF, text doc, or JSON layout.`
-      }
-    ],
-    detailedGuide: `
-      <h2>Operational Manual: Decoding Base64 Streams</h2>
-      <p>Decoding reverses Base64 byte groupings back into their original binary or string states. Use the integrated decoder workspace to inspect payloads instantly.</p>
-      <h3>Supported Workflows</h3>
-      <ol>
-        <li>Paste standard Base64 string. The engine cleans spaces and padding automatically.</li>
-        <li>Check the live auto-detected format: JSON layouts will be formatted, markup will render inside an isolated preview frame, and audio assets can be played back.</li>
-        <li>Download the original binary files directly to your device securely.</li>
-      </ol>
-    `
-  },
-  {
-    id: 'base64-validator',
-    slug: 'base64-validator',
-    name: 'Base64 Validator, Repair & Health Analyzer',
-    shortDescription: 'Validate Base64 inputs inline. Identify invalid structural characters, detect corruption offsets, repair missing padding, and scan payload integrity.',
-    metaTitle: 'Base64 Validator & Health Checker - Repair Corrupt Base64 - devsight',
-    metaDescription: 'Validate Base64 structures in real-time. Detect non-base64 character offsets, parse mime-types, repair bad padding, and evaluate binary health metrics.',
-    categoryId: 'security-tools',
-    icon: 'health_and_safety',
-    tags: ['base64', 'validator', 'syntactical', 'repair', 'health', 'analysis'],
-    relatedTools: ['base64-toolkit', 'base64-encoder', 'base64-decoder'],
-    faqs: [
-      {
-        question: 'What causes a Base64 string to be marked invalid?',
-        answer: 'Common causes include whitespace within URL contexts, raw non-alphanumeric characters outside the standard Base64 index (A-Z, a-z, 0-9, +, /), invalid padding lengths, or characters out of range.'
-      },
-      {
-        question: 'Can this tool repair corrupted Base64 codes?',
-        answer: `Yes, it repairs standard problems like trailing pad '=' mismatches, strips illegal carriage returns or whitespace blocks, and attempts to reconstruct cut-off payloads.`
-      }
-    ],
-    detailedGuide: `
-      <h2>Base64 Validation & Diagnostic Analyzer Guide</h2>
-      <p>When Base64 data fails to compile, finding the exact issue can be tedious. This validator executes strict syntactical rulesets to verify compliance.</p>
-      <h3>Diagnostic Audit Points</h3>
-      <ul>
-        <li><strong>Character Scanner:</strong> Highlights characters that are illegal in standard or URL-safe alphabets.</li>
-        <li><strong>Padding Validator:</strong> Evaluates character modular arithmetic (Base64 length must be divisible by 4) and adds appropriate pad symbols.</li>
-        <li><strong>Mime and Payload Estimator:</strong> Pinpoints block sizes and estimates resource contents.</li>
-      </ul>
-    `
-  },
-  {
-    id: 'image-to-base64',
-    slug: 'image-to-base64',
-    name: 'Image to Base64 & Canvas Converter',
-    shortDescription: 'Convert images (PNG, JPG, SVG, SVG vector) into clean optimized Base64, clean Data URIs, CSS background styles, or HTML image tags.',
-    metaTitle: 'Image to Base64 Converter - Direct SVG and PNG Encoder - devsight',
-    metaDescription: 'Secure offline image to Base64 encoder. Drag and drop PNG, JPG, WebP or SVG and copy production-ready CSS background rules or HTML tags.',
-    categoryId: 'security-tools',
-    icon: 'image',
-    tags: ['image', 'base64', 'data-uri', 'svg', 'png', 'css-helper'],
-    relatedTools: ['base64-toolkit', 'data-uri-generator', 'base64-encoder'],
-    faqs: [
-      {
-        question: 'Is there any resolution or capacity limit for image conversions?',
-        answer: 'No strict limit is imposed, but modern browsers process files up to 25MB efficiently. All processing is local and has zero telemetry or backend bandwidth lags.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Image-To-Base64 Coding Guide</h2>
-      <p>Inline images reduce HTTP requests by embedding vector or layout codes directly in stylesheets or markup templates. This tool compiles images into copy-ready tags.</p>
-      <h3>Step-by-Step PNG/SVG Embedding</h3>
-      <ol>
-        <li>Drag and drop the local file asset or select it from your folders.</li>
-        <li>Review file parameters (Dimensions, File Size, Mimetype).</li>
-        <li>Isolate standard HTML Image tags, Background CSS URLs, or Angular template bindings as needed.</li>
-      </ol>
-    `
-  },
-  {
-    id: 'data-uri-generator',
-    slug: 'data-uri-generator',
-    name: 'Data URI & RFC 2397 Generator Suite',
-    shortDescription: 'Compile text scripts, CSS layers, SVG vectors, or audio arrays into valid formatted RFC 2397 Data URIs ready for markup embedding.',
-    metaTitle: 'Data URI Generator - RFC 2397 Compliant Asset Encoder - devsight',
-    metaDescription: 'Generate RFC 2397 Data URIs offline. Encode text, SVGs, audio, stylesheets, or scripts directly into high-performance source files.',
-    categoryId: 'security-tools',
-    icon: 'link',
-    tags: ['data-uri', 'rfc2397', 'svg', 'css', 'inline-assets', 'encoder'],
-    relatedTools: ['base64-toolkit', 'image-to-base64', 'base64-encoder'],
-    faqs: [
-      {
-        question: 'What is an RFC 2397 Data URI?',
-        answer: 'A Data URI allows content creators to include small files inline in matches like: data:[&lt;mediatype&gt;][;base64],&lt;data&gt; instead of requiring external link resource fetch requests.'
-      }
-    ],
-    detailedGuide: `
-      <h2>RFC 2397 Data URI Generation Handbook</h2>
-      <p>Embed styling scripts or vectors straight inside templates. Our generator helps you format valid structures across all mime-types representing custom configurations.</p>
     `
   },
   {
@@ -602,28 +476,6 @@ export const TOOLS: ToolMetadata[] = [
     `
   },
   {
-    id: 'unix-timestamp',
-    slug: 'unix-timestamp',
-    name: 'Unix Epoch Timestamp Converter & Local Time Tracker',
-    shortDescription: 'Parse millisecond and second-level timestamps to ISO-8601, local calendars, and generate current database stamps.',
-    metaTitle: 'Unix Epoch Converter - Convert Timestamps to Human Dates - devsight',
-    metaDescription: 'A high-performance Unix Timestamp converter tool. Translate seconds, milliseconds or nanoseconds into local human calendar datetimes and ISO-8601 format.',
-    categoryId: 'date-time-tools',
-    icon: 'access_time',
-    tags: ['unix', 'timestamp', 'epoch', 'conversion', 'iso-8601', 'datetime'],
-    relatedTools: ['uuid-generator', 'password-generator'],
-    faqs: [
-      {
-        question: 'What is Unix/Epoch Time?',
-        answer: 'It measures the cumulative seconds that have transpired since midnight UTC on January 1, 1970, excluding leap seconds.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Managing Datetime Transformations Offline</h2>
-      <p>API exchanges convey time metrics in milliseconds. Convert inputs dynamically to troubleshoot server timestamps and verify localization.</p>
-    `
-  },
-  {
     id: 'image-type-converter',
     slug: 'image-type-converter',
     name: 'Image Type Converter',
@@ -631,7 +483,7 @@ export const TOOLS: ToolMetadata[] = [
     metaTitle: 'Image Type Converter - JPG, PNG, WEBP, AVIF, TIFF & BMP - devsight',
     metaDescription: 'Convert images between popular formats including JPG, PNG, WEBP, AVIF, TIFF and BMP. Fast browser-based image conversion with single and bulk processing.',
     categoryId: 'design-tools',
-    icon: 'image',
+    icon: 'swap_horiz',
     tags: ['image-converter', 'jpg', 'png', 'webp', 'avif', 'tiff', 'bmp', 'image-tools', 'bulk-converter'],
     relatedTools: ['image-compressor', 'svg-viewer'],
     faqs: [
@@ -669,16 +521,16 @@ export const TOOLS: ToolMetadata[] = [
     </ul>
   `},
   {
-    id: 'svg-viewer',
-    slug: 'svg-viewer',
-    name: 'SVG Viewer & Editor',
+    id: 'fake-data-generator',
+    slug: 'fake-data-generator',
+    name: 'fake-data-generator',
     shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
     metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
     metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
     categoryId: 'design-tools',
-    icon: 'image_search',
-    tags: ['svg', 'svg-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
-    relatedTools: ['json-formatter', 'base64-encoder'],
+    icon: 'dataset',
+    tags: ['svg', 'fake-data-generator', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
+    relatedTools: ['json-formatter'],
     faqs: [
       {
         question: 'Can I edit SVG files?',
@@ -714,103 +566,95 @@ export const TOOLS: ToolMetadata[] = [
                 </ul>`
   },
   {
-    id: 'unit-converter',
-    slug: 'unit-converter',
-    name: 'Universal Unit Converter & Measurement Calculator',
-    shortDescription: 'Convert length, weight, temperature, speed, pressure, energy, data storage, electrical units, fuel economy, and dozens of other measurement categories instantly.',
-    metaTitle: 'Unit Converter - Convert Length, Weight, Temperature & More - devsight',
-    metaDescription: 'Advanced offline unit converter supporting 30+ categories including length, mass, temperature, pressure, energy, data storage, electrical units, cooking measurements, fuel economy, and more.',
-    categoryId: 'measurement-tools',
-    icon: 'swap_horiz',
-    tags: ['unit-converter', 'measurement', 'length', 'temperature', 'weight', 'speed', 'pressure', 'energy', 'data-storage', 'engineering'],
-    relatedTools: ['unix-timestamp', 'date-difference', 'age-calculator'],
+    id: 'parquet-viewer',
+    slug: 'parquet-viewer',
+    name: 'parquet-viewer',
+    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
+    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
+    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
+    categoryId: 'design-tools',
+    icon: 'analytics',
+    tags: ['svg', 'parquet-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
+    relatedTools: ['json-formatter'],
     faqs: [
       {
-        question: 'How many measurement categories are supported?',
-        answer: 'The converter supports more than 30 categories including length, area, volume, mass, temperature, time, speed, pressure, energy, power, electrical measurements, data storage, fuel economy, cooking measurements, typography units, and more.'
+        question: 'Can I edit SVG files?',
+        answer: 'Yes. Edit SVG attributes and source code with live updates.'
       },
       {
-        question: 'Are temperature conversions handled correctly?',
-        answer: 'Yes. Temperature conversions use dedicated formulas for Celsius, Fahrenheit, and Kelvin, ensuring accurate offset-based calculations instead of simple multiplication factors.'
+        question: 'Can I inspect SVG structure?',
+        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
       },
       {
-        question: 'How is fuel economy converted?',
-        answer: 'Fuel economy supports reciprocal calculations between km/L, MPG (US), MPG (Imperial), and L/100km, using specialized conversion logic for accurate results.'
-      },
-      {
-        question: 'Can I see the conversion formula?',
-        answer: 'Yes. The tool provides detailed formulas, conversion factors, and step-by-step explanations showing exactly how each result is calculated.'
+        question: 'What information can I view?',
+        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
       }
     ],
-    detailedGuide: `
-      <h2>Universal Measurement Conversion Tool</h2>
+    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
+                <p>
+                  Open, inspect, edit, and analyze SVG files directly in your browser.
+                  Explore SVG layers, modify element attributes, edit XML source, and view
+                  useful SVG statistics and color information in real time.
+                </p>
 
-      <p>
-        Convert values across more than 30 engineering, scientific, technical,
-        and everyday measurement categories. All calculations are performed
-        instantly in your browser with no server processing required.
-      </p>
+                <h3>Features</h3>
 
-      <h3>Supported Categories</h3>
+                <ul>
+                  <li>Live SVG rendering.</li>
+                  <li>SVG element tree navigation.</li>
+                  <li>Attribute and property inspection.</li>
+                  <li>Raw SVG source editor.</li>
+                  <li>Color palette extraction.</li>
+                  <li>SVG statistics and analysis.</li>
+                  <li>Multi-file SVG workspace.</li>
+                  <li>Zoom and viewport controls.</li>
+                </ul>`
+  },
+  {
+    id: 'svg-viewer',
+    slug: 'svg-viewer',
+    name: 'SVG Viewer & Editor',
+    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
+    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
+    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
+    categoryId: 'design-tools',
+    icon: 'image_search',
+    tags: ['svg', 'svg-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
+    relatedTools: ['json-formatter'],
+    faqs: [
+      {
+        question: 'Can I edit SVG files?',
+        answer: 'Yes. Edit SVG attributes and source code with live updates.'
+      },
+      {
+        question: 'Can I inspect SVG structure?',
+        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
+      },
+      {
+        question: 'What information can I view?',
+        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
+      }
+    ],
+    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
+                <p>
+                  Open, inspect, edit, and analyze SVG files directly in your browser.
+                  Explore SVG layers, modify element attributes, edit XML source, and view
+                  useful SVG statistics and color information in real time.
+                </p>
 
-      <div>
-        <span>Length</span>
-        <span>Area</span>
-        <span>Volume</span>
-        <span>Mass & Weight</span>
-        <span>Temperature</span>
-        <span>Time</span>
-        <span>Speed</span>
-        <span>Pressure</span>
-        <span>Energy</span>
-        <span>Power</span>
-        <span>Force</span>
-        <span>Frequency</span>
-        <span>Data Storage</span>
-        <span>Data Transfer Rate</span>
-        <span>Fuel Economy</span>
-        <span>Angle</span>
-        <span>Density</span>
-        <span>Electric Current</span>
-        <span>Voltage</span>
-        <span>Resistance</span>
-        <span>Capacitance</span>
-        <span>Inductance</span>
-        <span>Charge</span>
-        <span>Illuminance</span>
-        <span>Luminous Flux</span>
-        <span>Magnetic Field</span>
-        <span>Torque</span>
-        <span>Flow Rate</span>
-        <span>Typography</span>
-        <span>Cooking Measurements</span>
-        <span>Percentages & Ratios</span>
-      </div>
+                <h3>Features</h3>
 
-      <h3>Key Features</h3>
-
-      <ul>
-        <li>Instant bidirectional conversions.</li>
-        <li>Custom decimal precision controls.</li>
-        <li>Temperature-specific conversion formulas.</li>
-        <li>Advanced fuel economy calculations.</li>
-        <li>Step-by-step conversion explanations.</li>
-        <li>Engineering and scientific unit support.</li>
-        <li>Offline browser-based calculations.</li>
-        <li>Conversion history tracking.</li>
-      </ul>
-
-      <h3>How It Works</h3>
-
-      <ol>
-        <li>Select a measurement category.</li>
-        <li>Choose the source unit.</li>
-        <li>Choose the destination unit.</li>
-        <li>Enter a value to convert.</li>
-        <li>View the converted result instantly.</li>
-        <li>Review the formula and calculation steps.</li>
-      </ol>
-  `},
+                <ul>
+                  <li>Live SVG rendering.</li>
+                  <li>SVG element tree navigation.</li>
+                  <li>Attribute and property inspection.</li>
+                  <li>Raw SVG source editor.</li>
+                  <li>Color palette extraction.</li>
+                  <li>SVG statistics and analysis.</li>
+                  <li>Multi-file SVG workspace.</li>
+                  <li>Zoom and viewport controls.</li>
+                </ul>`
+  },
   {
     id: 'image-filter',
     slug: 'image-filter',
@@ -819,9 +663,9 @@ export const TOOLS: ToolMetadata[] = [
     metaTitle: 'CSS Image & SVG Filter Generator - Convert Icons to Any Color - devsight',
     metaDescription: 'Generate accurate CSS filter values for PNG, SVG, and icon assets. Preview color matching, adjust filters manually, compare results, and export production-ready CSS instantly.',
     categoryId: 'design-tools',
-    icon: 'palette',
+    icon: 'filter',
     tags: ['css-filter', 'svg', 'icons', 'color-generator', 'image-tools', 'css', 'frontend', 'design', 'color-matching', 'svg-color'],
-    relatedTools: ['svg-viewer', 'color-picker', 'base64-encoder'],
+    relatedTools: ['svg-viewer', 'color-picker'],
     faqs: [
       {
         question: 'What does this tool do?',
@@ -926,6 +770,104 @@ export const TOOLS: ToolMetadata[] = [
     </ul>
   `},
   {
+    id: 'unit-converter',
+    slug: 'unit-converter',
+    name: 'Universal Unit Converter & Measurement Calculator',
+    shortDescription: 'Convert length, weight, temperature, speed, pressure, energy, data storage, electrical units, fuel economy, and dozens of other measurement categories instantly.',
+    metaTitle: 'Unit Converter - Convert Length, Weight, Temperature & More - devsight',
+    metaDescription: 'Advanced offline unit converter supporting 30+ categories including length, mass, temperature, pressure, energy, data storage, electrical units, cooking measurements, fuel economy, and more.',
+    categoryId: 'measurement-tools',
+    icon: 'swap_horiz',
+    tags: ['unit-converter', 'measurement', 'length', 'temperature', 'weight', 'speed', 'pressure', 'energy', 'data-storage', 'engineering'],
+    relatedTools: ['unix-timestamp'],
+    faqs: [
+      {
+        question: 'How many measurement categories are supported?',
+        answer: 'The converter supports more than 30 categories including length, area, volume, mass, temperature, time, speed, pressure, energy, power, electrical measurements, data storage, fuel economy, cooking measurements, typography units, and more.'
+      },
+      {
+        question: 'Are temperature conversions handled correctly?',
+        answer: 'Yes. Temperature conversions use dedicated formulas for Celsius, Fahrenheit, and Kelvin, ensuring accurate offset-based calculations instead of simple multiplication factors.'
+      },
+      {
+        question: 'How is fuel economy converted?',
+        answer: 'Fuel economy supports reciprocal calculations between km/L, MPG (US), MPG (Imperial), and L/100km, using specialized conversion logic for accurate results.'
+      },
+      {
+        question: 'Can I see the conversion formula?',
+        answer: 'Yes. The tool provides detailed formulas, conversion factors, and step-by-step explanations showing exactly how each result is calculated.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Universal Measurement Conversion Tool</h2>
+
+      <p>
+        Convert values across more than 30 engineering, scientific, technical,
+        and everyday measurement categories. All calculations are performed
+        instantly in your browser with no server processing required.
+      </p>
+
+      <h3>Supported Categories</h3>
+
+      <div>
+        <span>Length</span>
+        <span>Area</span>
+        <span>Volume</span>
+        <span>Mass & Weight</span>
+        <span>Temperature</span>
+        <span>Time</span>
+        <span>Speed</span>
+        <span>Pressure</span>
+        <span>Energy</span>
+        <span>Power</span>
+        <span>Force</span>
+        <span>Frequency</span>
+        <span>Data Storage</span>
+        <span>Data Transfer Rate</span>
+        <span>Fuel Economy</span>
+        <span>Angle</span>
+        <span>Density</span>
+        <span>Electric Current</span>
+        <span>Voltage</span>
+        <span>Resistance</span>
+        <span>Capacitance</span>
+        <span>Inductance</span>
+        <span>Charge</span>
+        <span>Illuminance</span>
+        <span>Luminous Flux</span>
+        <span>Magnetic Field</span>
+        <span>Torque</span>
+        <span>Flow Rate</span>
+        <span>Typography</span>
+        <span>Cooking Measurements</span>
+        <span>Percentages & Ratios</span>
+      </div>
+
+      <h3>Key Features</h3>
+
+      <ul>
+        <li>Instant bidirectional conversions.</li>
+        <li>Custom decimal precision controls.</li>
+        <li>Temperature-specific conversion formulas.</li>
+        <li>Advanced fuel economy calculations.</li>
+        <li>Step-by-step conversion explanations.</li>
+        <li>Engineering and scientific unit support.</li>
+        <li>Offline browser-based calculations.</li>
+        <li>Conversion history tracking.</li>
+      </ul>
+
+      <h3>How It Works</h3>
+
+      <ol>
+        <li>Select a measurement category.</li>
+        <li>Choose the source unit.</li>
+        <li>Choose the destination unit.</li>
+        <li>Enter a value to convert.</li>
+        <li>View the converted result instantly.</li>
+        <li>Review the formula and calculation steps.</li>
+      </ol>
+  `},
+  {
     id: 'date-difference',
     slug: 'date-difference',
     name: 'Date Difference Calculator & Business Day Counter',
@@ -933,9 +875,9 @@ export const TOOLS: ToolMetadata[] = [
     metaTitle: 'Date Difference Calculator - Count Days & Business Days - devsight',
     metaDescription: 'An advanced date difference calculator. Extract exact chronological increments (Y/M/D/H/M/S), total units, and skip weekends for business days count.',
     categoryId: 'date-time-tools',
-    icon: 'difference',
+    icon: 'date_range',
     tags: ['date', 'difference', 'days-counter', 'business-days', 'calendar', 'cron'],
-    relatedTools: ['days-calculator', 'months-calculator', 'years-calculator'],
+    relatedTools: [],
     faqs: [
       {
         question: 'How does the date difference calculator count business days?',
@@ -952,183 +894,25 @@ export const TOOLS: ToolMetadata[] = [
     `
   },
   {
-    id: 'age-calculator',
-    slug: 'age-calculator',
-    name: 'Chronological Age Calculator & Birthday Countdown',
-    shortDescription: 'Find your exact chronological age down to the minute, compile lifetime seconds elapsed, and view an active birthday countdown.',
-    metaTitle: 'Chronological Age Calculator - Live Birthday Ticker - devsight',
-    metaDescription: 'Track your exact chronological age in years, months, days, and hours. Compute total elapsed days lived, and see a real-time countdown to your next birthday.',
+    id: 'unix-timestamp',
+    slug: 'unix-timestamp',
+    name: 'Unix Epoch Timestamp Converter & Local Time Tracker',
+    shortDescription: 'Parse millisecond and second-level timestamps to ISO-8601, local calendars, and generate current database stamps.',
+    metaTitle: 'Unix Epoch Converter - Convert Timestamps to Human Dates - devsight',
+    metaDescription: 'A high-performance Unix Timestamp converter tool. Translate seconds, milliseconds or nanoseconds into local human calendar datetimes and ISO-8601 format.',
     categoryId: 'date-time-tools',
-    icon: 'cake',
-    tags: ['age', 'birthday', 'countdown', 'seconds-lived', 'leap-year', 'statistics'],
-    relatedTools: ['date-difference', 'duration-calculator'],
+    icon: 'access_time',
+    tags: ['unix', 'timestamp', 'epoch', 'conversion', 'iso-8601', 'datetime'],
+    relatedTools: ['uuid-generator', 'password-generator'],
     faqs: [
       {
-        question: 'How is the next birthday countdown estimated?',
-        answer: 'The tool projects your birth month and day onto the current year. If that day has already passed in the current year, it shifts to the subsequent year to estimate the exact ticking countdown.'
-      },
-      {
-        question: 'Does the age calculator respect leap year birthdays?',
-        answer: 'Yes, leap year babies born on February 29th are fully supported, and the calculation engine adjusts correctly depending on standard calendar periods.'
+        question: 'What is Unix/Epoch Time?',
+        answer: 'It measures the cumulative seconds that have transpired since midnight UTC on January 1, 1970, excluding leap seconds.'
       }
     ],
     detailedGuide: `
-      <h2>Accurate Biological & Chronological Age Tracking</h2>
-      <p>Enter your birthdate and birthtime to instantly view your precise, fully localized age. Explore highly detailed statistics including total days lived, total seconds, and track your coming birthday milestone.</p>
-    `
-  },
-  {
-    id: 'date-add-subtract',
-    slug: 'date-add-subtract',
-    name: 'Date Add & Subtract Calculator (Business Days)',
-    shortDescription: 'Shift date-times forward or backward by custom increments. Skip weekends to add business days with ease.',
-    metaTitle: 'Date Add and Subtract Calculator - Date Shifter - devsight',
-    metaDescription: 'Modify dates with precision. Add or subtract years, months, weeks, days, hours and custom periods. Skip weekends to ensure timeline matches business targets.',
-    categoryId: 'date-time-tools',
-    icon: 'add_circle',
-    tags: ['date-add', 'date-subtract', 'offset', 'time-shift', 'business-timeline'],
-    relatedTools: ['date-difference', 'unix-timestamp-converter'],
-    faqs: [
-      {
-        question: `What does 'Skip weekends' do?`,
-        answer: `When enabled, adding days shifts the date forward through standard weekdays only, completely bypassing Saturdays and Sundays (ideal for SLA or sprint estimation).`
-      }
-    ],
-    detailedGuide: `
-      <h2>Interactive Temporal Shifting Operations</h2>
-      <p>Whether estimating sprint deadlines or scheduling database queries, adjust starting date parameters, choose addition/subtraction, and use sliders to instantly see target dates with copies for JS Date objects, ISO JSON strings, and SQL timestamps.</p>
-    `
-  },
-  {
-    id: 'days-calculator',
-    slug: 'days-calculator',
-    name: 'Days Base Calculator & Working Days Counter',
-    shortDescription: 'Count exact days, weekdays, and weekends between two points. Compute total hours, minutes and seconds.',
-    metaTitle: 'Days Calculator - Clean Working Days Solver - devsight',
-    metaDescription: 'Dedicated high-performance days calculator. Solve standard and business days differences between two date bounds with absolute precision.',
-    categoryId: 'date-time-tools',
-    icon: 'calendar_today',
-    tags: ['days', 'difference', 'working-days', 'timeline'],
-    relatedTools: ['date-difference', 'months-calculator'],
-    faqs: [
-      {
-        question: 'What is the standard calendar day count format?',
-        answer: 'It measures the direct absolute number of midnights traversed between the starting and ending dates.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Calculate Days & Weekday Ratios</h2>
-      <p>A specialized utility focusing strictly on days computations. Get the perfect ratio of weekdays to weekends and copy the results instantly.</p>
-    `
-  },
-  {
-    id: 'months-calculator',
-    slug: 'months-calculator',
-    name: 'Months Calculator & Fractional Interval Solver',
-    shortDescription: 'Compute exact and decimal months between two dates. Ideal for subscriptions and contract terms.',
-    metaTitle: 'Months Calculator - Decimal Months Solver - devsight',
-    metaDescription: 'Determine absolute and fractional months elapsed between two calendar dates. Perfect for analyzing quarterly subscription cycles and billing schedules.',
-    categoryId: 'date-time-tools',
-    icon: 'date_range',
-    tags: ['months', 'decimal-months', 'quarterly', 'contract-term'],
-    relatedTools: ['date-difference', 'years-calculator'],
-    faqs: [
-      {
-        question: 'How is a fractional month calculated?',
-        answer: 'Fractional months are computed based on the ratio of overflow days relative to the actual total days in that specific calendar month.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Accurate Monthly Interval Metrics</h2>
-      <p>Perfect for project planners and accounting worksheets, solve month-level gaps between custom periods automatically.</p>
-    `
-  },
-  {
-    id: 'years-calculator',
-    slug: 'years-calculator',
-    name: 'Years Calculator & Traversed Leap Year Checker',
-    shortDescription: 'Translate historical gaps into exact and decimal years, listing traverse leap years automatically.',
-    metaTitle: 'Years Calculator - Traverse Leap Years - devsight',
-    metaDescription: 'Precise years-focused calculation tool. Compute decimal years elapsed and verify the number of leap years containing February 29th traversed.',
-    categoryId: 'date-time-tools',
-    icon: 'event',
-    tags: ['years', 'decimal-years', 'leap-year-checker', 'epoch-span'],
-    relatedTools: ['date-difference', 'months-calculator'],
-    faqs: [
-      {
-        question: 'What is a decimal calendar year?',
-        answer: 'A decimal year factors in standard 365-day years and the extra 366th day added during a leap year (365.2425 days average) for fractional conversion.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Calculate Decimal Years & Historic Spans</h2>
-      <p>Gain absolute statistical clarity on multidecade scales. Set starting and ending years and review decimal years, days traversed, and leap cycles.</p>
-    `
-  },
-  {
-    id: 'unix-timestamp-converter',
-    slug: 'unix-timestamp-converter',
-    name: 'Unix Epoch Converter & Cron Expression Analyst',
-    shortDescription: 'Perform cron expression analyses, forecast schedule runs, and translate Unix seconds, milliseconds, or nanoseconds bidirectionally.',
-    metaTitle: 'Unix Epoch Converter & Cron Scheduler Analyst - devsight',
-    metaDescription: 'Advanced epoch analysis tool. Decrypt seconds, milliseconds, and microseconds to local and UTC formats, and check scheduled runs from crontab syntax.',
-    categoryId: 'date-time-tools',
-    icon: 'schedule',
-    tags: ['unix', 'epoch', 'timestamp', 'cron-scheduler', 'crontab', 'next-run'],
-    relatedTools: ['unix-timestamp', 'date-add-subtract'],
-    faqs: [
-      {
-        question: 'How does the Cron Expression Parser work?',
-        answer: 'It breaks down standard 5-field cron strings into human-readable sentences and simulates future execution times using starting reference coordinates.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Developer Cron & Epoch Workstation</h2>
-      <p>Quickly decode system logs containing timestamps, translate them to human calendars, and optimize cron expressions from an interactive crontab workbench.</p>
-    `
-  },
-  {
-    id: 'timezone-converter',
-    slug: 'timezone-converter',
-    name: 'Global Timezone Converter & Live World City Clock',
-    shortDescription: 'Align dates and times across multiple world zones globally. Features live ticking flags and city clocks.',
-    metaTitle: 'Global Timezone Converter - Multi-Zone World Clock - devsight',
-    metaDescription: 'Convert and compare times across New York, London, Tokyo, Sydney, Paris, and UTC. Instantly add searchable custom zones to compile alignments.',
-    categoryId: 'date-time-tools',
-    icon: 'public',
-    tags: ['timezone', 'world-clock', 'utc', 'gmt', 'timezone-alignment'],
-    relatedTools: ['unix-timestamp-converter', 'duration-calculator'],
-    faqs: [
-      {
-        question: 'How are timezone offsets adjusted?',
-        answer: 'The application leverages the standard native ECMAScript Intl API which references real-time Olson zone names, automatically adapting to daylight saving changes.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Map & Align Global Meeting Coordinates</h2>
-      <p>Resolve scheduling confusion instantly. Input a date-time in local time and instantly check conversion across Coordinated Universal Time (UTC) and popular world coordinates.</p>
-    `
-  },
-  {
-    id: 'duration-calculator',
-    slug: 'duration-calculator',
-    name: 'Live Event Countdown & Duration Tracker',
-    shortDescription: 'Build dynamic tictoc countdowns or historic elapsed counters. Formats relative expressions elegantly.',
-    metaTitle: 'Duration Calculator - Continuous Countdown and Relative Time - devsight',
-    metaDescription: 'Measure time durations precisely. View real-time active countdowns to future events or track elapsed time from milestone history points.',
-    categoryId: 'date-time-tools',
-    icon: 'timer',
-    tags: ['duration', 'countdown', 'elapsed-time', 'relative-time', 'milestone'],
-    relatedTools: ['age-calculator', 'date-difference'],
-    faqs: [
-      {
-        question: 'Is relative locale wording supported?',
-        answer: `Yes, the tool utilizes the modern Web standard Intl.RelativeTimeFormat to generate clean, native expressions such as 'in 3 months' or '2 years ago'.`
-      }
-    ],
-    detailedGuide: `
-      <h2>Track Elapsed & Ticking Milestones</h2>
-      <p>Configure custom event name labels alongside future or past date targets to review exact ticker countdowns, total aggregated seconds, and formatted relative sentences.</p>
+      <h2>Managing Datetime Transformations Offline</h2>
+      <p>API exchanges convey time metrics in milliseconds. Convert inputs dynamically to troubleshoot server timestamps and verify localization.</p>
     `
   },
   {
@@ -2049,7 +1833,7 @@ export const TOOLS: ToolMetadata[] = [
     categoryId: 'css-ui-tools',
     icon: 'preview',
     tags: ['html', 'viewer', 'playground', 'dom-inspector', 'sandbox', 'validation'],
-    relatedTools: ['html-editor', 'html-preview', 'regex-studio'],
+    relatedTools: ['regex-studio'],
     faqs: [
       {
         question: 'How is the HTML rendered securely?',
@@ -2075,78 +1859,6 @@ export const TOOLS: ToolMetadata[] = [
       </ul>
     `
   },
-  {
-    id: 'html-editor',
-    slug: 'html-editor',
-    name: 'HTML Pro-Code Editor, Beautifier & Transpiler',
-    shortDescription: 'Develop polished templates using a robust editing system with automatic tag closing, formatting (pretty print or minification), entity encoders, and output conversions (JSX, Markdown, Angular).',
-    metaTitle: 'HTML Pro Editor & Formatter - JSX & Markdown Transpiler - devsight',
-    metaDescription: 'Format markup with custom indentation grids or compact minification. Convert code instantly to React JSX, Angular Standalone templates, or plain Markdown structures.',
-    categoryId: 'css-ui-tools',
-    icon: 'code',
-    tags: ['html', 'editor', 'formatter', 'beautifier', 'jsx-transpiler', 'markdown'],
-    relatedTools: ['html-viewer', 'html-preview', 'typescript-workspace'],
-    faqs: [
-      {
-        question: 'How do the code formatting levels work?',
-        answer: 'The Beautifier processes your code string into structured indentation columns (2, 4, or space rules) while sorting tag stacks cleanly. The Minifier strips trailing whitespaces, structural line comments, and redundant spaces to minimize production bandwidth sizes.'
-      },
-      {
-        question: 'What conversions are supported in the workspace?',
-        answer: `We support: 1. HTML to JSX (converts 'class' to 'className', closes empty nodes, standardizes inline style brackets); 2. HTML to Angular Template (reconditions parameters to standard bindings); 3. HTML to Markdown (converts typography layers, bolding, lists into readable Markdown text).`
-      },
-      {
-        question: 'Are there keyboard shortcuts?',
-        answer: `Yes. Use popular editor bindings such as Ctrl+S for formatting, Ctrl+Z/Y for active undo/redo parameters, and Alt+F for rapid replace queries.`
-      }
-    ],
-    detailedGuide: `
-      <h2>Developer Toolbox: Pro-Code Formatting & Transpilation</h2>
-      <p>Accelerate file processing by leveraging our parsing algorithms. This offline utility replaces separate beautifying sites with high-density transpiler options.</p>
-      <h3>Conversion Framework</h3>
-      <ol>
-        <li><strong>JSX Converter:</strong> Essential for copying markup definitions into React or Next.js components without manual property corrections.</li>
-        <li><strong>Angular Engine:</strong> Maps elements to conform nicely with clean Standalone angular compiler requirements.</li>
-        <li><strong>Entities Encoder:</strong> Escape special character brackets safely (e.g., &amp;lt;, &amp;gt;) to include XML/HTML examples directly in website logs.</li>
-      </ol>
-    `
-  },
-  {
-    id: 'html-preview',
-    slug: 'html-preview',
-    name: 'Device Responsive Viewport & Meta Cards Previewer',
-    shortDescription: 'Simulate template behavior across diverse display profiles including Desktop, Tablet, and Mobile. Inspect raw header meta tags, Open Graph declarations, and search engine layouts.',
-    metaTitle: 'Device Responsive HTML Preview - SEO Metadata Simulator - devsight',
-    metaDescription: 'Simulate rendering on mobile, tablet, and widescreen layouts. Audit Open Graph social tags, inspect meta parameters, and check structured JSON-LD schemas.',
-    categoryId: 'css-ui-tools',
-    icon: 'devices',
-    tags: ['html', 'preview', 'responsive-devices', 'seo-simulator', 'open-graph', 'metadata'],
-    relatedTools: ['html-viewer', 'html-editor'],
-    faqs: [
-      {
-        question: 'Can I test different responsive breakpoints?',
-        answer: 'Absolutely. Choose between realistic pre-configured viewports: Widescreen Desktop (1280px), Medium Tablet (768px), or Mobile Phone (375px) with responsive frame animations to confirm fluid scaling.'
-      },
-      {
-        question: 'How is the SEO snippet simulated?',
-        answer: 'Our parser crawls the head properties on your HTML to extract title, description, robots declarations, canonical links, and schema tags. It then draws an accurate preview of how search engines like Google render your snippet on mobile/desktop dashboards.'
-      },
-      {
-        question: 'Does the Open Graph card preview reflect social shares?',
-        answer: `Yes. It extracts standard 'og:title', 'og:description', 'og:image' (or corresponding 'twitter:card' assets) to simulate real-world layout shares on Facebook, X (Twitter), or LinkedIn channels.`
-      }
-    ],
-    detailedGuide: `
-      <h2>Layout Calibration Guide: Mobile First SEO Optimization</h2>
-      <p>A web design is only as strong as its search indexing metadata. This simulator parses header strings directly in memory to optimize search appearance before deployment.</p>
-      <h3>Evaluation Procedures</h3>
-      <ul>
-        <li><strong>Viewport Responsiveness:</strong> Test fluid resizing on smaller screens to detect overflow bugs, margin collisions, or misaligned button coordinates.</li>
-        <li><strong>Social Card Verification:</strong> Confirm that when links of your site are shared, the descriptive sentences and brand images match exactly what was intended.</li>
-        <li><strong>JSON-LD Structured Data:</strong> Extract and validate schema markup elements to check product descriptions, FAQ structures, or breadcrumb parameters.</li>
-      </ul>
-    `
-  }
 ];
 
 export const STATIC_PAGES: Record<string, StaticPageContent> = {

@@ -56,27 +56,27 @@ export interface ShadowLayer {
                 <div class="grid grid-cols-2 gap-x-4 gap-y-2">
                   <div class="space-y-1">
                     <div class="flex justify-between text-[10px] font-bold text-zinc-400"><span>OFFSET X</span><span>{{ layer.x }}px</span></div>
-                    <input type="range" min="-50" max="50" [value]="layer.x" (input)="onLayerSlider($event, $index, 'x')" class="w-full accent-zinc-500 cursor-pointer h-1 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+                    <input type="range" min="-50" max="50" [value]="layer.x" (input)="onLayerSlider($event, $index, 'x')" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
                   </div>
 
                   <div class="space-y-1">
                     <div class="flex justify-between text-[10px] font-bold text-zinc-400"><span>OFFSET Y</span><span>{{ layer.y }}px</span></div>
-                    <input type="range" min="-50" max="50" [value]="layer.y" (input)="onLayerSlider($event, $index, 'y')" class="w-full accent-zinc-500 cursor-pointer h-1 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+                    <input type="range" min="-50" max="50" [value]="layer.y" (input)="onLayerSlider($event, $index, 'y')" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
                   </div>
 
                   <div class="space-y-1">
                     <div class="flex justify-between text-[10px] font-bold text-zinc-400"><span>BLUR</span><span>{{ layer.blur }}px</span></div>
-                    <input type="range" min="0" max="80" [value]="layer.blur" (input)="onLayerSlider($event, $index, 'blur')" class="w-full accent-zinc-500 cursor-pointer h-1 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+                    <input type="range" min="0" max="80" [value]="layer.blur" (input)="onLayerSlider($event, $index, 'blur')" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
                   </div>
 
                   <div class="space-y-1">
                     <div class="flex justify-between text-[10px] font-bold text-zinc-400"><span>SPREAD</span><span>{{ layer.spread }}px</span></div>
-                    <input type="range" min="-20" max="40" [value]="layer.spread" (input)="onLayerSlider($event, $index, 'spread')" class="w-full accent-zinc-500 cursor-pointer h-1 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+                    <input type="range" min="-20" max="40" [value]="layer.spread" (input)="onLayerSlider($event, $index, 'spread')" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
                   </div>
 
                   <div class="space-y-1">
                     <div class="flex justify-between text-[10px] font-bold text-zinc-400"><span>OPACITY</span><span>{{ Math.round(layer.opacity * 100) }}%</span></div>
-                    <input type="range" min="0" max="100" [value]="Math.round(layer.opacity * 100)" (input)="onLayerSlider($event, $index, 'opacity')" class="w-full accent-zinc-500 cursor-pointer h-1 rounded-lg bg-zinc-200 dark:bg-zinc-805" />
+                    <input type="range" min="0" max="100" [value]="Math.round(layer.opacity * 100)" (input)="onLayerSlider($event, $index, 'opacity')" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
                   </div>
 
                   <div class="space-y-1">

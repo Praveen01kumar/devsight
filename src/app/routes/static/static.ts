@@ -64,9 +64,9 @@ import { SeoService } from '../../core/services/seo';
   `
 })
 export class StaticPageComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private seoService = inject(SeoService);
-  private destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly seoService = inject(SeoService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public pageData = signal<typeof STATIC_PAGES['about'] | null>(null);
 

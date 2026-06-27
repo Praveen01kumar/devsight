@@ -54,7 +54,7 @@ import { MatIconModule } from '@angular/material/icon';
           <!-- Corner Radius Slider -->
           <div class="space-y-1 font-mono text-xs pt-1">
             <div class="flex justify-between text-zinc-400 font-bold"><span>THEME RADIUS CORNERS</span><span>{{ radius() }}px</span></div>
-            <input type="range" min="0" max="24" [value]="radius()" (input)="radius.set(getParsedSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="24" [value]="radius()" (input)="radius.set(getParsedSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
         </div>
 

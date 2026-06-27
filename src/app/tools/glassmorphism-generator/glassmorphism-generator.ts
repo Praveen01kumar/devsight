@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
               <span>BACKDROP BLUR</span>
               <span>{{ blur() }}px</span>
             </div>
-            <input type="range" min="0" max="40" [value]="blur()" (input)="blur.set(getParsedSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="40" [value]="blur()" (input)="blur.set(getParsedSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Glass opacity controls -->
@@ -30,7 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
               <span>GLASS OPACITY</span>
               <span>{{ opacity() }}%</span>
             </div>
-            <input type="range" min="0" max="100" [value]="opacity()" (input)="opacity.set(getParsedSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="100" [value]="opacity()" (input)="opacity.set(getParsedSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Border Opacity -->
@@ -39,7 +39,7 @@ import { MatIconModule } from '@angular/material/icon';
               <span>BORDER TRANSPARENCY</span>
               <span>{{ borderOpacity() }}%</span>
             </div>
-            <input type="range" min="0" max="100" [value]="borderOpacity()" (input)="borderOpacity.set(getParsedSliderVal($event))" class="w-full h-1.5 rounded-lg accent-emerald-500 cursor-pointer" />
+            <input type="range" min="0" max="100" [value]="borderOpacity()" (input)="borderOpacity.set(getParsedSliderVal($event))" class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
           </div>
 
           <!-- Color palette picker -->

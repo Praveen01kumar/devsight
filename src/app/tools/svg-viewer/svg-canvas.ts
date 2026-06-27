@@ -205,9 +205,9 @@ import { ViewerController } from './services/viewer-controller';
   `]
 })
 export class SvgCanvas {
-  private selection = inject(SelectionController);
-  private viewer = inject(ViewerController);
-  private sanitizer = inject(DomSanitizer);
+  private readonly selection = inject(SelectionController);
+  private readonly viewer = inject(ViewerController);
+  private readonly sanitizer = inject(DomSanitizer);
 
   svgHtml = input<string>('');
   safeSvgHtml = computed(() => this.sanitizer.bypassSecurityTrustHtml(this.svgHtml()));

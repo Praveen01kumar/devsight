@@ -1088,17 +1088,7 @@ export class Base64EncoderComponent implements OnInit {
   private applyRouteMode(m: string): void {
     if (m === 'base64-toolkit') {
       this.activeTab.set('text');
-    } else if (m === 'base64-encoder') {
-      this.activeTab.set('text');
-      this.textMode.set('encode');
-    } else if (m === 'base64-decoder') {
-      this.activeTab.set('text');
-      this.textMode.set('decode');
-    } else if (m === 'base64-validator') {
-      this.activeTab.set('validator');
-    } else if (m === 'image-to-base64') {
-      this.activeTab.set('file');
-    } else if (m === 'data-uri-generator') {
+    }else if (m === 'data-uri-generator') {
       this.activeTab.set('templates');
     }
   }

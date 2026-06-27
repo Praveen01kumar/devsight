@@ -1,0 +1,652 @@
+<div class="max-w-[1600px] mx-auto space-y-6">
+  <!-- Header Section -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center m-0 mb-2" id="app-header">
+    <!-- Global Controls / Theme / Status -->
+    <div class="flex flex-wrap items-center gap-3 self-stretch sm:self-auto justify-end">
+      <!-- DuckDB Engine Status -->
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-xs">
+        @if (duckDb.isInitializing()) {
+        <span class="flex h-2 w-2 relative">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+        </span>
+        <span class="text-zinc-400">Initializing Engine...</span>
+        } @else if (duckDb.isInitialized()) {
+        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+        <span class="text-zinc-300">DuckDB Local Ready</span>
+        } @else if (duckDb.error()) {
+        <span class="h-2 w-2 rounded-full bg-rose-500"></span>
+        <span class="text-rose-400">Engine Failed</span>
+        } @else {
+        <span class="h-2 w-2 rounded-full bg-zinc-600"></span>
+        <span class="text-zinc-400">Idle</span>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Workspace Layout Grid -->
+  <main class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+
+    <!-- LEFT COLUMN: File ingestion, Tables explorer, Schema viewer -->
+    <section class="lg:col-span-1 space-y-6">
+
+      <!-- Upload & Demo Ingestion Card -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4 transition-all duration-300"
+        [ngClass]="isDragging() ? 'border-emerald-500/50 bg-emerald-500/5 ring-4 ring-emerald-500/10' : ''"
+        (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onFileDropped($event)"
+        id="upload-card">
+
+        <div class="flex items-center justify-between pb-1">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+            <mat-icon class="text-emerald-400 text-sm scale-90">publish</mat-icon>
+            Dataset Ingestion
+          </h2>
+          <span
+            class="text-[10px] bg-zinc-850/60 border border-zinc-800 text-zinc-400 px-2 py-0.5 rounded uppercase font-mono">Local-First</span>
+        </div>
+
+        <!-- Drag and Drop Zone -->
+        <div
+          class="border border-dashed border-zinc-800 rounded-xl p-6 text-center space-y-3 bg-zinc-950 hover:border-zinc-700 transition-colors">
+          <mat-icon class="text-zinc-500 text-3xl">upload_file</mat-icon>
+          <div class="space-y-1">
+            <p class="text-xs text-zinc-300 font-medium">Drag & drop files here</p>
+            <p class="text-[10px] text-zinc-500">Parquet, CSV, TSV, JSON, Arrow, Feather, Avro, ORC</p>
+          </div>
+
+          <!-- Standard Input Click -->
+          <div>
+            <label
+              class="cursor-pointer inline-flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg border border-zinc-700 font-medium transition-colors">
+              <mat-icon class="text-xs">folder_open</mat-icon>
+              Choose Files
+              <input type="file" multiple (change)="onFilesSelected($event)" class="hidden"
+                accept=".parquet,.pq,.csv,.tsv,.json,.jsonl,.ndjson,.arrow,.feather,.avro,.orc" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Built-in Demo Datasets Launcher -->
+        <div class="space-y-2 pt-2">
+          <p class="text-[10px] uppercase font-semibold text-zinc-500 tracking-wider">Demo Datasets (Generated Instant)
+          </p>
+          <div class="grid grid-cols-2 gap-2">
+            <button (click)="loadDemoDataset('sales')"
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              <mat-icon class="text-xs scale-90 text-emerald-400">shopping_bag</mat-icon>
+              Sales (1k)
+            </button>
+            <button (click)="loadDemoDataset('users')"
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              <mat-icon class="text-xs scale-90 text-sky-400">group</mat-icon>
+              Users (1k)
+            </button>
+            <button (click)="loadDemoDataset('events')"
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              <mat-icon class="text-xs scale-90 text-purple-400">bolt</mat-icon>
+              Events (1.5k)
+            </button>
+            <button (click)="loadDemoDataset('flights')"
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              <mat-icon class="text-xs scale-90 text-amber-400">flight_takeoff</mat-icon>
+              Flights (1.2k)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loaded Tables List (Dataset Explorer) -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4" id="explorer-card">
+        <div class="flex items-center justify-between pb-1">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+            <mat-icon class="text-emerald-400 text-sm scale-90">table_chart</mat-icon>
+            Dataset Explorer ({{ tableCount() }})
+          </h2>
+        </div>
+
+        @if (tableCount() === 0) {
+        <div class="p-6 border border-zinc-800 bg-zinc-950/50 rounded-xl text-center space-y-2">
+          <p class="text-xs text-zinc-500">No tables loaded in local schema.</p>
+          <p class="text-[10px] text-zinc-600">Select or drop a file to begin.</p>
+        </div>
+        } @else {
+        <div class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+          @for (tbl of duckDb.tables(); track tbl.name) {
+          <button type="button" (click)="selectAndExplorerTable(tbl.name)"
+            class="w-full text-left font-normal group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer outline-none focus:ring-1 focus:ring-emerald-500/30"
+            [ngClass]="selectedTableName() === tbl.name ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-zinc-950 hover:bg-zinc-900 border-zinc-800/80'">
+            <div class="space-y-1">
+              <p class="text-xs font-semibold"
+                [ngClass]="selectedTableName() === tbl.name ? 'text-emerald-400' : 'text-zinc-200'">
+                {{ tbl.name }}
+              </p>
+              <p class="text-[10px] text-zinc-500 font-mono">
+                {{ tbl.rows.toLocaleString() }} rows • {{ tbl.columns }} cols
+              </p>
+            </div>
+            <div class="flex items-center gap-1">
+              <!-- Preview shortcut -->
+              <span
+                class="text-[10px] bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                Select
+              </span>
+              <!-- Drop action -->
+              <button (click)="dropTable(tbl.name, $event)"
+                class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-rose-400 rounded transition-colors"
+                title="Drop Table">
+                <mat-icon class="text-xs scale-90">delete</mat-icon>
+              </button>
+            </div>
+          </button>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Schema Explorer Panel -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4" id="schema-card">
+        <div class="flex items-center justify-between pb-1">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+            <mat-icon class="text-emerald-400 text-sm scale-90">list_alt</mat-icon>
+            Schema Explorer
+          </h2>
+          @if (selectedTableName()) {
+          <button (click)="copySchemaAsSql()"
+            class="text-[10px] text-zinc-400 hover:text-white flex items-center gap-0.5" title="Copy CREATE TABLE SQL">
+            <mat-icon class="text-xs scale-90">content_copy</mat-icon>
+            Copy SQL
+          </button>
+          }
+        </div>
+
+        @if (!selectedTableName()) {
+        <p class="text-xs text-zinc-500 text-center py-4">No table selected</p>
+        } @else {
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
+            <span class="text-xs font-semibold text-zinc-300 font-mono">"{{ selectedTableName() }}"</span>
+            <span class="text-[10px] text-zinc-500 uppercase font-mono">{{ selectedTableSchema().length }}
+              Columns</span>
+          </div>
+
+          @if (isSchemaLoading()) {
+          <div class="space-y-2 py-4">
+            <div class="h-4 bg-zinc-800 rounded animate-pulse w-full"></div>
+            <div class="h-4 bg-zinc-800 rounded animate-pulse w-4/5"></div>
+            <div class="h-4 bg-zinc-800 rounded animate-pulse w-3/4"></div>
+          </div>
+          } @else {
+          <div class="space-y-1.5 max-h-[350px] overflow-y-auto pr-1">
+            @for (col of selectedTableSchema(); track col.name) {
+            <div
+              class="group/col p-2 bg-zinc-950/70 hover:bg-zinc-950 border border-zinc-800/50 rounded-lg flex flex-col gap-1 transition-colors text-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-zinc-300 font-mono">{{ col.name }}</span>
+                <span
+                  class="text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.2 rounded border border-zinc-800 font-mono">
+                  {{ col.type }}
+                </span>
+              </div>
+
+              <!-- Summary Statistics on Hover / Detailed -->
+              @if (col.min !== undefined && col.min !== null) {
+              <div
+                class="mt-1 pt-1 border-t border-zinc-800/50 grid grid-cols-2 gap-x-2 gap-y-0.5 text-[9px] text-zinc-500 font-mono">
+                <div>Min: <span class="text-zinc-400">{{ col.min }}</span></div>
+                <div>Max: <span class="text-zinc-400">{{ col.max }}</span></div>
+                <div class="col-span-2">Nulls: <span class="text-zinc-400">{{ col.nullCount }}</span></div>
+              </div>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: Editor Workspace, Grid, Logs, Export -->
+    <section class="lg:col-span-3 space-y-6">
+
+      <!-- SQL EDITOR SYSTEM -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4" id="editor-card">
+
+        <!-- Query Tabs Headers + snippet templates -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-zinc-800 pb-2">
+          <!-- Tabs -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            @for (tab of queryTabs(); track tab.id) {
+            <button type="button" (click)="selectTab(tab.id)"
+              class="group flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg border cursor-pointer transition-all outline-none focus:ring-1 focus:ring-emerald-500/30"
+              [ngClass]="activeTabId() === tab.id ? 'bg-zinc-950 border-zinc-800 text-white font-semibold' : 'bg-transparent border-transparent text-zinc-400 hover:text-zinc-300'">
+              <mat-icon class="text-xs scale-90"
+                [ngClass]="activeTabId() === tab.id ? 'text-emerald-400' : 'text-zinc-600'">code</mat-icon>
+              <span>{{ tab.name }}</span>
+              <button (click)="closeTab(tab.id, $event)"
+                class="p-0.5 rounded-full hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                title="Close tab">
+                <mat-icon class="text-[10px] scale-75">close</mat-icon>
+              </button>
+            </button>
+            }
+            <button (click)="addTab()"
+              class="p-1.5 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg transition-colors"
+              title="Add tab">
+              <mat-icon class="text-xs">add</mat-icon>
+            </button>
+          </div>
+
+          <!-- Pre-built Snippet Templates dropdown -->
+          <div class="flex items-center gap-2 self-stretch sm:self-auto justify-end">
+            <mat-icon class="text-zinc-500 scale-90">library_books</mat-icon>
+            <select #snippetSelect
+              (change)="loadExampleQuery(sqlExamples[snippetSelect.selectedIndex - 1]); snippetSelect.selectedIndex = 0"
+              class="bg-zinc-950 border border-zinc-800 rounded-lg text-xs text-zinc-300 px-2.5 py-1.5 max-w-[200px] outline-none focus:border-zinc-700 font-medium">
+              <option value="">-- SQL Examples --</option>
+              @for (ex of sqlExamples; track ex.title) {
+              <option>{{ ex.title }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- Monaco Editor Div Host -->
+        <div class="relative">
+          <div #editorContainer
+            class="h-[300px] bg-zinc-950 border border-zinc-850 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500/50">
+          </div>
+        </div>
+
+        <!-- Editor Actions Bar -->
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-3">
+            <!-- Formatting -->
+            <button (click)="formatQuery()"
+              class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold rounded-lg border border-zinc-750 flex items-center gap-1.5 transition-colors"
+              title="Format SQL statement">
+              <mat-icon class="text-xs scale-90">format_align_left</mat-icon>
+              Beautify SQL
+            </button>
+
+            <!-- Hotkey tooltip -->
+            <span class="text-[10px] text-zinc-500 font-mono hidden sm:inline">
+              Press <kbd class="px-1 py-0.5 bg-zinc-850 border border-zinc-800 rounded text-zinc-400">Ctrl + Enter</kbd>
+              to run
+            </span>
+          </div>
+
+          <!-- Run Trigger Button -->
+          <button (click)="runActiveQuery()" [disabled]="isQueryRunning() || !duckDb.isInitialized()"
+            class="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 disabled:bg-zinc-800 text-zinc-950 disabled:text-zinc-500 font-semibold text-xs rounded-lg flex items-center gap-1.5 transition-all shadow-md shadow-emerald-500/10 cursor-pointer disabled:cursor-not-allowed">
+            @if (isQueryRunning()) {
+            <svg class="animate-spin h-3.5 w-3.5 text-zinc-950" viewBox="0 0 24 24" fill="none">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+            <span>Executing...</span>
+            } @else {
+            <mat-icon class="text-sm scale-110">play_arrow</mat-icon>
+            <span>Run Query</span>
+            }
+          </button>
+        </div>
+      </div>
+
+      <!-- EXECUTION RESULT & INTERACTIVE DATAGRID -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4" id="results-card">
+
+        <!-- Results Header Info -->
+        <div
+          class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2 border-b border-zinc-800">
+          <div class="space-y-1">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+              <mat-icon class="text-emerald-400 text-sm scale-90">table_view</mat-icon>
+              Query Output
+            </h2>
+            @if (activeResult()) {
+            <p class="text-[11px] text-zinc-500 font-mono">
+              Returned <span class="text-zinc-300 font-semibold">{{ activeResult()?.rowsCount?.toLocaleString()
+                }}</span> rows •
+              Took <span class="text-zinc-300 font-semibold">{{ activeResult()?.duration?.toFixed(1) }} ms</span>
+            </p>
+            } @else {
+            <p class="text-[11px] text-zinc-500">Run a SELECT or describe query to inspect records.</p>
+            }
+          </div>
+
+          <!-- Export query outcome tools -->
+          @if (activeResult()) {
+          <div class="flex flex-wrap items-center gap-2 self-stretch sm:self-auto justify-end">
+            <span class="text-xs text-zinc-500 font-medium mr-1">Download:</span>
+            <button (click)="exportResults('parquet')"
+              class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono">
+              <mat-icon class="text-[10px] scale-75 text-emerald-400">download</mat-icon>
+              Parquet
+            </button>
+            <button (click)="exportResults('csv')"
+              class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono">
+              <mat-icon class="text-[10px] scale-75 text-sky-400">download</mat-icon>
+              CSV
+            </button>
+            <button (click)="exportResults('json')"
+              class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono">
+              <mat-icon class="text-[10px] scale-75 text-purple-400">download</mat-icon>
+              JSON
+            </button>
+          </div>
+          }
+        </div>
+
+        <!-- Loading State Skeleton -->
+        @if (isQueryRunning()) {
+        <div class="space-y-3 py-6" id="loading-skeleton">
+          <div class="h-6 bg-zinc-800/60 rounded animate-pulse w-1/4"></div>
+          <div class="space-y-2">
+            <div class="h-10 bg-zinc-800/40 rounded animate-pulse w-full"></div>
+            <div class="h-10 bg-zinc-800/40 rounded animate-pulse w-full"></div>
+            <div class="h-10 bg-zinc-800/40 rounded animate-pulse w-full"></div>
+            <div class="h-10 bg-zinc-800/40 rounded animate-pulse w-full"></div>
+          </div>
+        </div>
+        } @else if (queryError()) {
+        <!-- Eye-Safe Error Message -->
+        <div class="p-5 border border-rose-500/20 bg-rose-500/5 text-rose-300 rounded-xl space-y-2" id="error-alert">
+          <div class="flex items-center gap-2 text-rose-400 font-semibold text-xs">
+            <mat-icon class="scale-90">error_outline</mat-icon>
+            <span>Query Error</span>
+          </div>
+          <p class="text-xs font-mono break-all whitespace-pre-wrap leading-relaxed">
+            {{ queryError() }}
+          </p>
+        </div>
+        } @else if (activeResult()) {
+        <!-- Full Interactive Datagrid Controls -->
+        <div class="space-y-4">
+
+          <!-- Quick filter and columns configuration toolbar -->
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-zinc-950 p-3 rounded-xl border border-zinc-850">
+            <!-- Search filter -->
+            <div class="relative w-full sm:w-72">
+              <mat-icon class="absolute left-2.5 top-2 text-zinc-500 text-sm scale-95">search</mat-icon>
+              <input type="text" [formControl]="quickSearchControl" placeholder="Quick search rows..."
+                class="w-full bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-white pl-8 pr-3 py-1.5 focus:outline-none focus:border-zinc-700" />
+            </div>
+
+            <!-- Grid column filter, count metrics, cell copy triggers -->
+            <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
+
+              <!-- Copy full grid as CSV -->
+              <button (click)="copyTableAsCsv()"
+                class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white text-[11px] font-medium rounded-lg transition-colors flex items-center gap-1">
+                <mat-icon class="text-xs scale-90">assignment</mat-icon>
+                Copy Table CSV
+              </button>
+
+              <!-- Column Visibility dropdown toggler -->
+              <div class="relative group/columns">
+                <button
+                  class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white text-[11px] font-medium rounded-lg transition-colors flex items-center gap-1">
+                  <mat-icon class="text-xs scale-90">visibility</mat-icon>
+                  Columns
+                </button>
+                <!-- Floating popover options on hover / click -->
+                <div
+                  class="absolute right-0 top-full mt-1.5 bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 space-y-1.5 hidden group-hover/columns:block focus-within:block z-20 min-w-[180px] shadow-xl">
+                  <p class="text-[9px] uppercase font-bold text-zinc-500 pb-1 border-b border-zinc-850">Toggle Column
+                  </p>
+                  <div class="space-y-1 max-h-[180px] overflow-y-auto pr-1">
+                    @for (col of activeResult()?.columns; track col) {
+                    <label
+                      class="flex items-center gap-2 text-[11px] text-zinc-300 hover:text-white cursor-pointer select-none">
+                      <input type="checkbox" [checked]="!hiddenColumns().has(col)"
+                        (change)="toggleColumnVisibility(col)"
+                        class="rounded border-zinc-700 bg-zinc-950 text-emerald-500 focus:ring-0 focus:ring-offset-0 scale-90" />
+                      <span class="font-mono truncate">{{ col }}</span>
+                    </label>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pagination page sizes selector -->
+              <div class="flex items-center gap-1.5 text-xs text-zinc-400 font-medium">
+                <span class="text-[11px] text-zinc-500 font-mono">Show:</span>
+                <select #sizeSelector (change)="onPageSizeChange(sizeSelector.value)"
+                  class="bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-[11px] text-white outline-none">
+                  <option value="10">10</option>
+                  <option value="25" selected>25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="500">500</option>
+                  <option value="1000">1000</option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- NATIVE HTML VIRTUAL-PAGINATED DATAGRID -->
+          <div class="border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950">
+            <div class="overflow-x-auto overflow-y-auto max-h-[450px]">
+              <table class="w-full text-left border-collapse table-auto font-mono text-xs">
+
+                <!-- Table Headers -->
+                <thead>
+                  <tr
+                    class="bg-zinc-900 border-b border-zinc-800 text-zinc-400 select-none uppercase text-[10px] tracking-wider">
+                    <th class="p-3 border-r border-zinc-850/60 font-semibold w-12 text-center text-zinc-500">#</th>
+
+                    @for (col of activeResult()?.columns; track col) {
+                    @if (!hiddenColumns().has(col)) {
+                    <th (click)="sort(col)"
+                      class="p-3 border-r border-zinc-850/60 font-semibold cursor-pointer hover:bg-zinc-850 hover:text-white transition-colors relative pr-6 truncate min-w-[120px]">
+                      <span>{{ col }}</span>
+                      <!-- Sort Icons -->
+                      <div class="absolute right-2 top-3">
+                        @if (sortColumn() === col) {
+                        <mat-icon class="text-xs text-emerald-400">{{ sortDirection() === 'asc' ? 'arrow_upward' :
+                          'arrow_downward' }}</mat-icon>
+                        } @else {
+                        <mat-icon
+                          class="text-[10px] text-zinc-600 scale-75 group-hover:text-zinc-500">unfold_more</mat-icon>
+                        }
+                      </div>
+                    </th>
+                    }
+                    }
+
+                    <th class="p-3 text-center text-zinc-500 font-semibold w-20">Row Actions</th>
+                  </tr>
+                </thead>
+
+                <!-- Table Rows -->
+                <tbody class="divide-y divide-zinc-850/50">
+                  @if (paginatedRows().length === 0) {
+                  <tr>
+                    <td [attr.colspan]="(activeResult()?.columns?.length || 0) + 2"
+                      class="p-8 text-center text-zinc-500 italic text-xs">
+                      No records found matching current filters.
+                    </td>
+                  </tr>
+                  } @else {
+                  @for (row of paginatedRows(); track $index) {
+                  <tr class="hover:bg-zinc-900/60 group/row transition-colors">
+                    <!-- Index -->
+                    <td class="p-3 text-center text-zinc-500 bg-zinc-900/30 border-r border-zinc-850/40">
+                      {{ (currentPage() * pageSize()) + $index + 1 }}
+                    </td>
+
+                    <!-- Cells data -->
+                    @for (col of activeResult()?.columns; track col) {
+                    @if (!hiddenColumns().has(col)) {
+                    <td (click)="selectCell($index, col)"
+                      class="p-3 border-r border-zinc-850/40 relative truncate max-w-[240px]"
+                      [ngClass]="selectedCell()?.rowIndex === $index && selectedCell()?.columnName === col ? 'ring-1 ring-inset ring-emerald-500 bg-emerald-500/10' : ''"
+                      [title]="row[col]">
+                      <span>{{ row[col] === null ? 'NULL' : row[col] }}</span>
+
+                      <!-- Quick hover cell copy helper -->
+                      @if (selectedCell()?.rowIndex === $index && selectedCell()?.columnName === col) {
+                      <button (click)="copySelectedCellValue(row[col]); $event.stopPropagation()"
+                        class="absolute right-1 top-1.5 p-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded shadow-lg transition-all scale-90 border border-zinc-700"
+                        title="Copy cell value">
+                        <mat-icon class="text-[10px] scale-90">content_copy</mat-icon>
+                      </button>
+                      }
+                    </td>
+                    }
+                    }
+
+                    <!-- Row level Action panel -->
+                    <td class="p-2 text-center">
+                      <button (click)="copyRowAsJson(row)"
+                        class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded transition-colors text-[10px]"
+                        title="Copy row as JSON">
+                        <mat-icon class="text-xs scale-90">data_object</mat-icon>
+                      </button>
+                    </td>
+                  </tr>
+                  }
+                  }
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+
+          <!-- Datagrid Footer / Pagination pagination details -->
+          <div
+            class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-zinc-950 p-4 rounded-xl border border-zinc-850 text-xs text-zinc-400 select-none">
+            <p class="font-mono">
+              Showing <span class="text-white font-semibold">{{ (currentPage() * pageSize() + 1) }}</span> to
+              <span class="text-white font-semibold">{{ Math.min((currentPage() * pageSize() + pageSize()),
+                processedRows().length) }}</span>
+              of <span class="text-white font-semibold">{{ processedRows().length.toLocaleString() }}</span> records
+              @if (processedRows().length !== activeResult()?.rowsCount) {
+              <span class="text-zinc-500 font-mono">(filtered from {{ activeResult()?.rowsCount?.toLocaleString()
+                }})</span>
+              }
+            </p>
+
+            <!-- Navigation buttons -->
+            <div class="flex items-center gap-2">
+              <button [disabled]="currentPage() === 0" (click)="goToFirstPage()"
+                class="p-2 bg-zinc-900 border border-zinc-800 disabled:bg-zinc-950 disabled:border-zinc-900 disabled:text-zinc-600 hover:bg-zinc-850 text-zinc-300 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed">
+                <mat-icon class="text-xs scale-90">first_page</mat-icon>
+              </button>
+              <button [disabled]="currentPage() === 0" (click)="prevPage()"
+                class="p-2 bg-zinc-900 border border-zinc-800 disabled:bg-zinc-950 disabled:border-zinc-900 disabled:text-zinc-600 hover:bg-zinc-850 text-zinc-300 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed">
+                <mat-icon class="text-xs scale-90">chevron_left</mat-icon>
+              </button>
+
+              <span class="px-3 font-semibold font-mono text-zinc-300">
+                Page {{ currentPage() + 1 }} of {{ totalPages() || 1 }}
+              </span>
+
+              <button [disabled]="currentPage() >= (totalPages() - 1)" (click)="nextPage()"
+                class="p-2 bg-zinc-900 border border-zinc-800 disabled:bg-zinc-950 disabled:border-zinc-900 disabled:text-zinc-600 hover:bg-zinc-850 text-zinc-300 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed">
+                <mat-icon class="text-xs scale-90">chevron_right</mat-icon>
+              </button>
+              <button [disabled]="currentPage() >= (totalPages() - 1)" (click)="goToLastPage()"
+                class="p-2 bg-zinc-900 border border-zinc-800 disabled:bg-zinc-950 disabled:border-zinc-900 disabled:text-zinc-600 hover:bg-zinc-850 text-zinc-300 rounded-lg transition-colors cursor-pointer disabled:cursor-not-allowed">
+                <mat-icon class="text-xs scale-90">last_page</mat-icon>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        } @else {
+        <div class="py-12 text-center space-y-2 text-zinc-500">
+          <mat-icon class="text-zinc-600 text-4xl">dns</mat-icon>
+          <p class="text-sm">Database Workspace is empty</p>
+          <p class="text-[11px] text-zinc-600 max-w-sm mx-auto">
+            No active SQL result sets to display. Write a query and hit **Run Query** or select a sample snippet to
+            fetch and inspect records.
+          </p>
+        </div>
+        }
+      </div>
+
+      <!-- QUERY HISTORY LOG TIMELINE -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4" id="history-card">
+        <div class="flex items-center justify-between pb-1">
+          <h2 class="text-xs font-bold uppercase tracking-widest text-zinc-400 flex items-center gap-2">
+            <mat-icon class="text-emerald-400 text-sm scale-90">history</mat-icon>
+            Query History
+          </h2>
+          @if (duckDb.queryHistory().length > 0) {
+          <button (click)="duckDb.clearHistory()"
+            class="text-[10px] text-zinc-400 hover:text-rose-400 flex items-center gap-0.5 font-medium">
+            <mat-icon class="text-xs scale-90">delete_sweep</mat-icon>
+            Clear History
+          </button>
+          }
+        </div>
+
+        @if (duckDb.queryHistory().length === 0) {
+        <p class="text-xs text-zinc-500 text-center py-4">No query execution history persisted.</p>
+        } @else {
+        <div class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+          @for (item of duckDb.queryHistory(); track item.id) {
+          <div
+            class="group/hist flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-xl bg-zinc-950 border border-zinc-850 hover:border-zinc-750 transition-all gap-2">
+            <div class="space-y-1 w-full sm:w-2/3">
+              <!-- Query command snippet -->
+              <p class="text-xs font-mono truncate text-zinc-300 font-semibold bg-zinc-900 p-1.5 rounded"
+                [title]="item.query">
+                {{ item.query }}
+              </p>
+              <p class="text-[9px] text-zinc-500 font-mono">
+                {{ item.timestamp | date:'shortTime' }} • Took {{ item.duration.toFixed(1) }}ms • {{
+                item.rowsCount.toLocaleString() }} rows returned
+              </p>
+            </div>
+            <div class="flex items-center gap-1.5 self-end sm:self-auto">
+              <!-- Restore action -->
+              <button (click)="restoreSavedQuery(item)"
+                class="px-2 py-1 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-800 text-[10px] font-semibold rounded transition-colors flex items-center gap-0.5">
+                <mat-icon class="text-[10px] scale-90 text-emerald-400">restore</mat-icon>
+                Restore
+              </button>
+              <!-- Favorite status -->
+              <button (click)="duckDb.toggleFavoriteHistoryItem(item.id)"
+                class="p-1 hover:bg-zinc-800 rounded transition-colors"
+                [ngClass]="item.isFavorite ? 'text-amber-400 hover:text-amber-500' : 'text-zinc-500 hover:text-zinc-300'"
+                [title]="item.isFavorite ? 'Remove Favorite' : 'Mark Favorite'">
+                <mat-icon class="text-xs scale-110">star</mat-icon>
+              </button>
+              <!-- Delete item -->
+              <button (click)="duckDb.deleteHistoryItem(item.id)"
+                class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-rose-400 rounded transition-colors"
+                title="Delete log entry">
+                <mat-icon class="text-xs scale-110">delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Floating Toast Notification popup -->
+  @if (toastMessage()) {
+  <div
+    class="fixed bottom-6 right-6 bg-zinc-900 border border-emerald-500/30 text-emerald-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-2.5 z-50 text-xs font-medium animate-bounce max-w-sm"
+    role="alert">
+    <mat-icon class="text-emerald-400 scale-110">check_circle_outline</mat-icon>
+    <span>{{ toastMessage() }}</span>
+  </div>
+  }
+
+</div>

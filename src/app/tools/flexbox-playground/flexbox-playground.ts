@@ -67,7 +67,7 @@ import { MatIconModule } from '@angular/material/icon';
               <span class="text-emerald-400">{{ gapSize() }}px</span>
             </div>
             <input type="range" min="0" max="48" step="8" [value]="gapSize()" (input)="onGapChange($event)"
-              class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+              class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500"
             />
           </div>
 
