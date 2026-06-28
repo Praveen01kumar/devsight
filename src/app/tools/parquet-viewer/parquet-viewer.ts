@@ -1,17 +1,5 @@
-import { 
-  ChangeDetectionStrategy, 
-  Component, 
-  ElementRef, 
-  OnInit, 
-  AfterViewInit, 
-  OnDestroy, 
-  ViewChild, 
-  signal, 
-  computed, 
-  effect, 
-  inject 
-} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, AfterViewInit, OnDestroy, ViewChild, signal, computed, effect, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import loader from '@monaco-editor/loader';
@@ -81,7 +69,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
     { id: '1', name: 'Query 1', sql: 'SELECT * FROM sales LIMIT 10;' }
   ]);
   activeTabId = signal<string>('1');
-  
+
   // Selection/Focus states
   selectedTableName = signal<string>('sales');
   selectedTableSchema = signal<ColumnInfo[]>([]);
@@ -207,15 +195,20 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
+  private readonly platformId = inject(PLATFORM_ID);
+  isBrowser = isPlatformBrowser(this.platformId);
+
   ngAfterViewInit(): void {
-    // Load Monaco Editor dynamically from CDN
-    loader.init().then((monacoInstance) => {
-      this.monaco = monacoInstance as unknown as Monaco;
-      this.createEditor();
-      this.registerSqlCompletions();
-    }).catch((err) => {
-      console.error('Failed to load Monaco editor:', err);
-    });
+    if (this.isBrowser) {
+      // Load Monaco Editor dynamically from CDN
+      loader.init().then((monacoInstance) => {
+        this.monaco = monacoInstance as unknown as Monaco;
+        this.createEditor();
+        this.registerSqlCompletions();
+      }).catch((err) => {
+        console.error('Failed to load Monaco editor:', err);
+      });
+    }
   }
 
   ngOnDestroy(): void {
@@ -286,8 +279,8 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
 
         // 1. Core SQL Keywords
         const keywords = [
-          'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT', 'JOIN', 
-          'LEFT JOIN', 'INNER JOIN', 'ON', 'HAVING', 'COUNT', 'SUM', 'AVG', 
+          'SELECT', 'FROM', 'WHERE', 'GROUP BY', 'ORDER BY', 'LIMIT', 'JOIN',
+          'LEFT JOIN', 'INNER JOIN', 'ON', 'HAVING', 'COUNT', 'SUM', 'AVG',
           'MIN', 'MAX', 'AS', 'WITH', 'RECURSIVE', 'PIVOT', 'UNPIVOT', 'DESCRIBE',
           'AND', 'OR', 'NOT', 'UNION', 'VALUES', 'DISTINCT', 'OVER', 'PARTITION BY'
         ];
@@ -355,7 +348,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
         if (!word) return null;
 
         const str = word.word.toLowerCase();
-        
+
         // Match standard tables
         const tbl = this.duckDb.tables().find((t) => t.name.toLowerCase() === str);
         if (tbl) {
@@ -393,7 +386,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // --- QUERY MANAGEMENT & TAB SYSTEM ---
   addTab(): void {
-    const nextNum = Math.max(...this.queryTabs().map((t) => parseInt(t.id, 10) || 1)) + 1;
+    const nextNum = Math.max(...this.queryTabs().map((t) => Number.parseInt(t.id, 10) || 1)) + 1;
     const newTabId = String(nextNum);
     const newTab: QueryTab = {
       id: newTabId,
@@ -517,7 +510,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
         importedCount++;
         this.selectedTableName.set(table.name);
         await this.loadSchemaForTable(table.name);
-        
+
         // Auto run initial fetch
         if (this.editor) {
           const sql = `SELECT * FROM "${table.name}" LIMIT 50;`;
@@ -542,7 +535,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
       const table = await this.duckDb.loadDemo(type);
       this.selectedTableName.set(table.name);
       await this.loadSchemaForTable(table.name);
-      
+
       if (this.editor) {
         this.editor.setValue(`SELECT * FROM ${table.name} LIMIT 25;`);
         await this.runActiveQuery();
@@ -583,7 +576,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
       await this.duckDb.removeTable(name);
       delete this.tableColumnsCache[name.toLowerCase()];
       this.showToast(`Table "${name}" dropped`);
-      
+
       // Select another table if available
       const remaining = this.duckDb.tables();
       if (remaining.length > 0) {
@@ -669,7 +662,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
       .map((c) => `  "${c.name}" ${c.type}${c.nullable ? '' : ' NOT NULL'}`)
       .join(',\n');
     const sql = `CREATE TABLE ${this.selectedTableName()} (\n${columnsSql}\n);`;
-    
+
     const success = await copyTextToClipboard(sql);
     if (success) {
       this.showToast('Schema CREATE TABLE statement copied');
@@ -687,7 +680,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
     try {
       this.showToast(`Formatting and exporting Parquet/CSV...`);
       const { buffer } = await this.duckDb.exportToBuffer(sql, format);
-      
+
       const mimeTypes = {
         csv: 'text/csv',
         json: 'application/json',
@@ -732,7 +725,7 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   onPageSizeChange(size: string): void {
-    this.pageSize.set(parseInt(size, 10));
+    this.pageSize.set(Number.parseInt(size, 10));
     this.currentPage.set(0);
   }
 
@@ -778,6 +771,6 @@ export class ParquetViewerComponent implements OnInit, AfterViewInit, OnDestroy 
 
   // Help Template find safe parsing
   parseInt(val: string): number {
-    return parseInt(val, 10);
+    return Number.parseInt(val, 10);
   }
 }

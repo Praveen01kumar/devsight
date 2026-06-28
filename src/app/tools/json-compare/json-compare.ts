@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, signal, computed, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal, computed, effect, PLATFORM_ID, inject, AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import loader from '@monaco-editor/loader';
 import * as monaco from 'monaco-editor';
-import { AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 
 // Interfaces for Diff Structures
 export interface DiffTreeNode {
@@ -711,8 +710,8 @@ export interface JsonPatchOp {
   `
 })
 export class JsonCompareComponent implements AfterViewInit, OnDestroy {
-  @ViewChild('monacoEditorLeft') private monacoEditorLeftRef!: ElementRef<HTMLDivElement>;
-  @ViewChild('monacoEditorRight') private monacoEditorRightRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('monacoEditorLeft') private readonly monacoEditorLeftRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('monacoEditorRight') private readonly monacoEditorRightRef!: ElementRef<HTMLDivElement>;
   private monacoEditorLeft!: monaco.editor.IStandaloneCodeEditor;
   private monacoEditorRight!: monaco.editor.IStandaloneCodeEditor;
   // Input states
@@ -771,41 +770,45 @@ export class JsonCompareComponent implements AfterViewInit, OnDestroy {
     });
 
   }
+  private readonly platformId = inject(PLATFORM_ID);
+  isBrowser = isPlatformBrowser(this.platformId);
 
   async ngAfterViewInit(): Promise<void> {
-    const monacoInstance = await loader.init();
-    this.monacoEditorLeft = monacoInstance.editor.create(
-      this.monacoEditorLeftRef.nativeElement,
-      {
-        value: this.leftText(),
-        language: 'json',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false
-      }
-    );
+    if (this.isBrowser) {
+      const monacoInstance = await loader.init();
+      this.monacoEditorLeft = monacoInstance.editor.create(
+        this.monacoEditorLeftRef.nativeElement,
+        {
+          value: this.leftText(),
+          language: 'json',
+          theme: 'dark',
+          automaticLayout: true,
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false
+        }
+      );
 
-    this.monacoEditorRight = monacoInstance.editor.create(
-      this.monacoEditorRightRef.nativeElement,
-      {
-        value: this.rightText(),
-        language: 'json',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        folding: true,
-        showFoldingControls: 'always',
-        minimap: {
-          enabled: false
-        },
-        scrollBeyondLastLine: false
-      }
-    );
+      this.monacoEditorRight = monacoInstance.editor.create(
+        this.monacoEditorRightRef.nativeElement,
+        {
+          value: this.rightText(),
+          language: 'json',
+         theme: 'dark',
+          automaticLayout: true,
+          folding: true,
+          showFoldingControls: 'always',
+          minimap: {
+            enabled: false
+          },
+          scrollBeyondLastLine: false
+        }
+      );
 
-    setTimeout(() => {
-      this.monacoEditorLeft.layout();
-      this.monacoEditorRight.layout();
-    });
+      setTimeout(() => {
+        this.monacoEditorLeft.layout();
+        this.monacoEditorRight.layout();
+      });
+    }
   }
   ngOnDestroy(): void {
     this.monacoEditorLeft?.dispose();

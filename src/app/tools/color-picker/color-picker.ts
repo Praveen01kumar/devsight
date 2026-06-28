@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
-import { hexToRgb, rgbToHex, rgbToHsl, hslToRgb, rgbToHsv, hsvToRgb, rgbToOklch, oklchToRgb, matchTailwindColor } from '../color-utils';
+import { hexToRgb, matchTailwindColor, rgbToHsl, rgbToHsv, rgbToOklch } from '../color-utils';
 
 @Component({
   selector: 'app-color-picker',
@@ -258,7 +258,7 @@ export class ColorPickerComponent {
 
   public onAlphaSliderInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.alpha.set(parseInt(input.value, 10));
+    this.alpha.set(Number.parseInt(input.value, 10));
   }
 
   public setHexColor(val: string): void {

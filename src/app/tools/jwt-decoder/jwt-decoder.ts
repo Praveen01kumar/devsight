@@ -200,14 +200,14 @@ export class JwtDecoderComponent {
     const p = this.payloadObj();
     if (!p || !p.exp) return null;
     const nowEpoch = Math.floor(Date.now() / 1000);
-    return nowEpoch > parseInt(p.exp, 10);
+    return nowEpoch > Number.parseInt(p.exp, 10);
   });
 
   public iatString = computed(() => {
     const p = this.payloadObj();
     if (!p || !p.iat) return '';
     try {
-      return new Date(parseInt(p.iat, 10) * 1000).toString();
+      return new Date(Number.parseInt(p.iat, 10) * 1000).toString();
     } catch {
       return '';
     }
@@ -217,7 +217,7 @@ export class JwtDecoderComponent {
     const p = this.payloadObj();
     if (!p || !p.exp) return '';
     try {
-      return new Date(parseInt(p.exp, 10) * 1000).toString();
+      return new Date(Number.parseInt(p.exp, 10) * 1000).toString();
     } catch {
       return '';
     }

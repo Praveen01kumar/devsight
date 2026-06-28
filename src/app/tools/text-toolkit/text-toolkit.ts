@@ -1485,7 +1485,7 @@ export class TextToolkitComponent {
       const parts = input.split(/\\s+/);
       try {
         const decoded = parts
-          .map(bin => String.fromCharCode(parseInt(bin, 2)))
+          .map(bin => String.fromCharCode(Number.parseInt(bin, 2)))
           .join('');
         this.processedOutput.set(decoded);
       } catch {
@@ -1507,7 +1507,7 @@ export class TextToolkitComponent {
       const parts = input.split(/\\s+/);
       try {
         const decoded = parts
-          .map(h => String.fromCharCode(parseInt(h, 16)))
+          .map(h => String.fromCharCode(Number.parseInt(h, 16)))
           .join('');
         this.processedOutput.set(decoded);
       } catch {

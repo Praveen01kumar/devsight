@@ -79,16 +79,6 @@ interface BatchRow {
             <mat-icon class="scale-75">html</mat-icon> DEV SNIPPETS
           </button>
 
-          <button (click)="setActiveTab('jwt')"
-            [class.border-emerald-500]="activeTab() === 'jwt'"
-            [class.text-emerald-600]="activeTab() === 'jwt'"
-            [class.dark:text-emerald-400]="activeTab() === 'jwt'"
-            class="px-4 py-2.5 text-xs font-mono font-bold border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition flex items-center gap-1.5 cursor-pointer"
-            id="tab-jwt"
-          >
-            <mat-icon class="scale-75">gavel</mat-icon> JWT DECODER
-          </button>
-
           <button (click)="setActiveTab('batch')"
             [class.border-emerald-500]="activeTab() === 'batch'"
             [class.text-emerald-600]="activeTab() === 'batch'"
@@ -670,7 +660,7 @@ interface BatchRow {
                   </div>
                 </div>
               </div>
-            @} @else {
+            } @else {
               <!-- Empty state validator -->
               <div class="text-center p-8 bg-zinc-50 dark:bg-zinc-950/25 border border-zinc-200 dark:border-zinc-850 rounded-2xl select-none">
                 <mat-icon class="text-zinc-400 text-3xl">scanner</mat-icon>
@@ -770,7 +760,7 @@ interface BatchRow {
                   <pre class="bg-zinc-50 dark:bg-zinc-950 p-3 rounded-xl border border-zinc-200 dark:border-zinc-850 text-[10px] font-mono break-all text-zinc-800 dark:text-zinc-300 select-all leading-normal max-h-[140px] overflow-y-auto"><code>{{ angularBindingCode() }}</code></pre>
                 </div>
               </div>
-            @} @else {
+            } @else {
               <!-- Empty state templates -->
               <div class="text-center p-12 bg-zinc-50 dark:bg-zinc-950/30 border border-zinc-200 dark:border-zinc-850 rounded-2xl select-none">
                 <mat-icon class="text-zinc-400 text-3xl">code_off</mat-icon>
@@ -780,75 +770,6 @@ interface BatchRow {
           </div>
         </div>
       }
-
-      <!-- ==============================================
-           TAB 5: JWT DECODER & TOKEN INSPECTOR
-           ============================================== -->
-      @if (activeTab() === 'jwt') {
-        <div class="space-y-6">
-          <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 text-left space-y-6 shadow-sm">
-            <div class="border-b border-zinc-200 dark:border-zinc-800 pb-3">
-              <h3 class="text-[13px] font-bold font-mono text-zinc-500 uppercase tracking-wider block">JWT Claim Inspections Workbench</h3>
-              <p class="text-xs text-zinc-650 dark:text-zinc-400 mt-0.5 font-sans leading-relaxed">JSON Web Tokens encode payloads inside URL-safe Base64 layers. Insert an OAuth cookie token to decode parameters on header metadata and security signatures.</p>
-            </div>
-
-            <!-- Input token input box -->
-            <div class="space-y-2">
-              <span class="text-[10px] font-mono font-bold text-zinc-500 uppercase tracking-widest block select-none">Auth token stream:</span>
-              <textarea
-                #jwtInput
-                [value]="jwtText()"
-                (input)="jwtText.set(jwtInput.value)"
-                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
-                class="w-full h-24 p-3 text-xs font-mono bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-transparent select-text"
-              ></textarea>
-            </div>
-
-            @if (jwtText()) {
-              @if (jwtReport().parseSuccess) {
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 leading-relaxed select-text">
-                  <!-- Header claims card -->
-                  <div class="p-5 border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-zinc-50 dark:bg-zinc-950/25 space-y-4">
-                    <div class="flex items-center justify-between border-b border-zinc-150 dark:border-zinc-850 pb-2">
-                      <span class="text-xs font-bold text-zinc-500 font-mono">HEADER METRICS (PART 1)</span>
-                    </div>
-                    <pre class="text-rose-600 dark:text-rose-400 font-mono text-xs overflow-x-auto whitespace-pre-wrap select-all bg-white dark:bg-zinc-950 p-3 border border-zinc-200 dark:border-zinc-850 rounded-xl leading-relaxed"><code>{{ jwtReport().headerJson }}</code></pre>
-                  </div>
-
-                  <!-- Payload claims card -->
-                  <div class="p-5 border border-zinc-200 dark:border-zinc-800 rounded-2xl bg-zinc-50 dark:bg-zinc-950/25 space-y-4">
-                    <div class="flex items-center justify-between border-b border-zinc-150 dark:border-zinc-850 pb-2">
-                      <span class="text-xs font-bold text-zinc-500 font-mono">CLAIMS & DECLARED PAYLOAD (PART 2)</span>
-                    </div>
-                    <pre class="text-blue-600 dark:text-blue-400 font-mono text-xs overflow-x-auto whitespace-pre-wrap select-all bg-white dark:bg-zinc-950 p-3 border border-zinc-200 dark:border-zinc-850 rounded-xl leading-relaxed"><code>{{ jwtReport().payloadJson }}</code></pre>
-
-                    <!-- Token Expirations indicators -->
-                    @if (jwtReport().expTimes) {
-                      <div class="p-3.5 bg-amber-50 dark:bg-amber-950/20 border border-amber-150 dark:border-amber-900/35 rounded-xl font-mono text-[11px] text-left space-y-1">
-                        <p class="font-bold text-amber-800 dark:text-amber-400">EXPIRATION SECURITY OVERVIEW:</p>
-                        <p class="text-zinc-600 dark:text-zinc-400 mt-1">Declared Expiry: <span class="text-zinc-800 dark:text-zinc-300 font-bold">{{ jwtReport().expTimes }}</span></p>
-                        <p class="text-zinc-600 dark:text-zinc-400">Claims Token Status: <span class="text-emerald-600 dark:text-emerald-400 font-bold">DECRYPTED SUCCESSFULLY</span></p>
-                      </div>
-                    }
-                  </div>
-                </div>
-              } @else {
-                <div class="p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 rounded-xl text-rose-700 dark:text-rose-450 font-mono text-xs text-left">
-                  <p class="font-bold">INVALID TOKEN COORDINATE FORMAT</p>
-                  <p class="text-[11px] mt-1">JWT represents three parts delimited by dots '.'. Ensure your pasted elements map to authorization standards.</p>
-                </div>
-              }
-            } @else {
-              <!-- Empty state decoder -->
-              <div class="text-center p-8 bg-zinc-50 dark:bg-zinc-950/25 border border-zinc-200 dark:border-zinc-850 rounded-2xl select-none">
-                <mat-icon class="text-zinc-400 text-3xl">lock</mat-icon>
-                <p class="text-xs text-zinc-500 font-mono mt-1">Token string coordinates are empty. Provide keys to inspect claims lists.</p>
-              </div>
-            }
-          </div>
-        </div>
-      }
-
       <!-- ==============================================
            TAB 6: BATCH BULK ENGINE
            ============================================== -->
@@ -972,7 +893,7 @@ export class Base64EncoderComponent implements OnInit {
   public _mode = signal<string>('base64-toolkit');
 
   // Shared active panel
-  public activeTab = signal<'text' | 'file' | 'validator' | 'templates' | 'jwt' | 'batch'>('text');
+  public activeTab = signal<'text' | 'file' | 'validator' | 'templates' | 'batch'>('text');
 
   // Interactive Text fields
   public inputText = signal<string>('');
@@ -997,9 +918,6 @@ export class Base64EncoderComponent implements OnInit {
   // Validator variables
   public valText = signal<string>('');
 
-  // JWT components
-  public jwtText = signal<string>('');
-
   // Batch conversions
   public batchMode = signal<'encode' | 'decode'>('encode');
   public batchFormat = signal<'standard' | 'url'>('standard');
@@ -1014,7 +932,7 @@ export class Base64EncoderComponent implements OnInit {
   // Track sensitive credentials
   public isSensitiveDetected = computed(() => {
     const lower = this.inputText().toLowerCase();
-    const flags = ['api_key', 'private_key', 'client_secret', 'password', 'passwd', 'auth_token', 'jwt_secret'];
+    const flags = ['api_key', 'private_key', 'client_secret', 'password', 'passwd', 'auth_token'];
     return flags.some(term => lower.includes(term));
   });
 
@@ -1095,17 +1013,14 @@ export class Base64EncoderComponent implements OnInit {
 
   // Apply quick smart checks
   public applySmartDetector(action: string): void {
-    if (action === 'jwt') {
-      this.jwtText.set(this.inputText());
-      this.activeTab.set('jwt');
-    } else if (action === 'switch_to_decode') {
+    if (action === 'switch_to_decode') {
       this.textMode.set('decode');
     } else if (action === 'switch_to_encode') {
       this.textMode.set('encode');
     }
   }
 
-  public setActiveTab(tab: 'text' | 'file' | 'validator' | 'templates' | 'jwt' | 'batch'): void {
+  public setActiveTab(tab: 'text' | 'file' | 'validator' | 'templates' | 'batch'): void {
     this.activeTab.set(tab);
     if (tab === 'templates' && this.inputText() && !this.templateContent()) {
       this.templateContent.set(this.inputText());
@@ -1205,14 +1120,14 @@ export class Base64EncoderComponent implements OnInit {
         if (this.textFormat() === 'hex') {
           const cleanHex = raw.replace(/[^0-9A-Fa-f]/g, '');
           const matchHex = cleanHex.match(/.{1,2}/g);
-          bytes = new Uint8Array(matchHex?.map(byte => parseInt(byte, 16)) || []);
+          bytes = new Uint8Array(matchHex?.map(byte => Number.parseInt(byte, 16)) || []);
         } else if (this.textFormat() === 'binary') {
           const cleanBin = raw.replace(/[^01]/g, '');
           const byteCount = Math.ceil(cleanBin.length / 8);
           bytes = new Uint8Array(byteCount);
           let bIdx = 0;
           for (let i = 0; i < byteCount; i++) {
-            bytes[bIdx++] = parseInt(cleanBin.substring(i * 8, (i + 1) * 8), 2);
+            bytes[bIdx++] = Number.parseInt(cleanBin.substring(i * 8, (i + 1) * 8), 2);
           }
         } else {
           // Plain Text Encoding with configurable properties
@@ -1593,47 +1508,6 @@ export class Base64EncoderComponent implements OnInit {
     }
     return 'image/png'; // Default fallback image container
   }
-
-  // ===================================
-  // Tab 5 JWT Token decoders
-  // ===================================
-  public jwtReport = computed(() => {
-    const token = this.jwtText().trim();
-    if (!token) return { parseSuccess: false, headerJson: '', payloadJson: '', expTimes: '' };
-
-    const parts = token.split('.');
-    if (parts.length !== 3) {
-      return { parseSuccess: false, headerJson: '', payloadJson: '', expTimes: '' };
-    }
-
-    try {
-      // Decode helper
-      const decodePart = (str: string) => {
-        let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
-        while (b64.length % 4) b64 += '=';
-        const binStr = atob(b64);
-        return new TextDecoder('utf-8').decode(new Uint8Array(binStr.length).map((_, i) => binStr.charCodeAt(i)));
-      };
-
-      const header = JSON.parse(decodePart(parts[0]));
-      const payload = JSON.parse(decodePart(parts[1]));
-
-      let expTimes = '';
-      if (payload.exp) {
-        const d = new Date(payload.exp * 1000);
-        expTimes = d.toUTCString();
-      }
-
-      return {
-        parseSuccess: true,
-        headerJson: JSON.stringify(header, null, 2),
-        payloadJson: JSON.stringify(payload, null, 2),
-        expTimes
-      };
-    } catch {
-      return { parseSuccess: false, headerJson: '', payloadJson: '', expTimes: '' };
-    }
-  });
 
   // ===================================
   // Tab 6 Batch bulk operations

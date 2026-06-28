@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { SelectionController } from './services/selection-controller';
-import { ExportController } from './services/export-controller';
+import { ExportController, SelectionController } from './controller';
 
 @Component({
   selector: 'app-svg-inspector',
@@ -388,12 +387,7 @@ export class SvgInspector {
   selectedBBox = this.selection.selectedBBox;
   showToast = signal<boolean>(false);
 
-  private readonly standardKeys = new Set([
-    'id', 'className', 'fill', 'stroke', 'opacity', 
-    'transform', 'width', 'height', 'x', 'y', 
-    'viewBox', 'xmlns', 'cx', 'cy', 'r', 'rx', 'ry', 
-    'x1', 'y1', 'x2', 'y2', 'd', 'points', 'stroke-width'
-  ]);
+  private readonly standardKeys = new Set(['id', 'className', 'fill', 'stroke', 'opacity', 'transform', 'width', 'height', 'x', 'y', 'viewBox', 'xmlns', 'cx', 'cy', 'r', 'rx', 'ry', 'x1', 'y1', 'x2', 'y2', 'd', 'points', 'stroke-width']);
 
   getAttrValue(key: string): string {
     const node = this.selectedNode();
@@ -404,7 +398,7 @@ export class SvgInspector {
   isHexOrNamedColor(val: string): boolean {
     if (!val || val === 'none') return false;
     if (val.startsWith('url(')) return false;
-    return true; 
+    return true;
   }
 
   getHexColorOnly(val: string): string {

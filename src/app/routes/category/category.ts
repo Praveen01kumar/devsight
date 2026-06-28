@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed, OnInit, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { CATEGORIES, TOOLS } from '../../constants/constant';
 import { ToolboxService } from '../../core/services/toolbox';

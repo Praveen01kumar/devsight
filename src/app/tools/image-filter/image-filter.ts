@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, effect, signal, computed, inject } from '@angular/core';
-import { DOCUMENT, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Color, ColorSolver, rgbToLab, SolverResult } from './color-solver';
 
@@ -361,7 +361,7 @@ export class ImageFilterComponent {
   }
 
   onRgbInput(channel: 'r' | 'g' | 'b', value: string) {
-    let num = parseInt(value, 10);
+    let num = Number.parseInt(value, 10);
     if (isNaN(num)) num = 0;
     num = Math.max(0, Math.min(255, num));
 

@@ -56,7 +56,7 @@ export class Color {
       cleanHex = cleanHex.split('').map(char => char + char).join('');
     }
     if (cleanHex.length !== 6) return null;
-    const num = parseInt(cleanHex, 16);
+    const num = Number.parseInt(cleanHex, 16);
     if (isNaN(num)) return null;
     return new Color((num >> 16) & 255, (num >> 8) & 255, num & 255);
   }

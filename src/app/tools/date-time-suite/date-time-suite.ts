@@ -68,7 +68,7 @@ interface OccurenceRow {
 
         <div class="p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl flex flex-col justify-between shadow-sm font-mono text-center relative overflow-hidden select-none">
           <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 font-bold block pb-1 border-b border-zinc-150 dark:border-zinc-850">LIVE EPOCH</span>
-          <div class="text-xl md:text-2xl font-bold text-sky-500 dark:text-sky-455 tracking-wider py-1.5 select-all">
+          <div class="text-xl md:text-2xl font-bold text-emerald-500 dark:text-sky-455 tracking-wider py-1.5 select-all">
             {{ tickingEpoch() }}
           </div>
           <div class="flex items-center justify-center gap-2 text-[10px]">
@@ -83,7 +83,7 @@ interface OccurenceRow {
               (click)="copyEpochTicker()" 
               class="px-2.5 py-1 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 rounded-lg text-zinc-650 hover:text-zinc-900 dark:text-zinc-450 dark:hover:text-white transition flex items-center gap-1 font-bold cursor-pointer dark:text-zinc-400"
             >
-              <mat-icon class="scale-50 max-h-4 text-sky-500">{{ tickerCopied() ? 'check' : 'content_copy' }}</mat-icon>
+              <mat-icon class="scale-50 max-h-4 text-emerald-500">{{ tickerCopied() ? 'check' : 'content_copy' }}</mat-icon>
               <span>{{ tickerCopied() ? 'COPIED' : 'COPY' }}</span>
             </button>
           </div>
@@ -255,7 +255,7 @@ interface OccurenceRow {
                       <mat-icon class="scale-50 max-h-4 text-emerald-500">content_copy</mat-icon> COPY CHRONO SUMMARY
                     </button>
                     <button (click)="copyDiffText('units')" class="px-3 py-1.5 border border-zinc-150 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 rounded-lg text-[10px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer dark:text-zinc-400">
-                      <mat-icon class="scale-50 max-h-4 text-sky-500">content_copy</mat-icon> COPY ALL UNITS LIST
+                      <mat-icon class="scale-50 max-h-4 text-emerald-500">content_copy</mat-icon> COPY ALL UNITS LIST
                     </button>
                   </div>
                 }
@@ -306,7 +306,7 @@ interface OccurenceRow {
                     <div class="text-zinc-500 flex items-center gap-1"><mat-icon class="scale-50 max-h-4">info</mat-icon> Non-leap Year baby.</div>
                   }
                   <div class="text-zinc-500 font-medium mt-1 flex items-center gap-1">
-                    <mat-icon class="scale-50 max-h-4 text-sky-500">calendar_today</mat-icon>
+                    <mat-icon class="scale-50 max-h-4 text-emerald-500">calendar_today</mat-icon>
                     <span>Day of Arrival: <strong>{{ dobWeekday() }}</strong></span>
                   </div>
                 </div>
@@ -1046,7 +1046,7 @@ export class DateTimeSuite implements OnInit, OnDestroy {
 
   // Pure helper triggers
   public toInt(v: string): number {
-    return parseInt(v, 10) || 0;
+    return Number.parseInt(v, 10) || 0;
   }
 
   private calculateCalendarIndices(d: Date): void {

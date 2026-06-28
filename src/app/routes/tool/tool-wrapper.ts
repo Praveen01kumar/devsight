@@ -33,22 +33,11 @@ import { SeoToolkitComponent } from '../../tools/seo-toolkit/seo-toolkit';
 
 // New Color & CSS Tools Imports
 import { ColorPickerComponent } from '../../tools/color-picker/color-picker';
-import { ContrastCheckerComponent } from '../../tools/contrast-checker/contrast-checker';
-import { GradientGeneratorComponent } from '../../tools/gradient-generator/gradient-generator';
-import { BoxShadowGeneratorComponent } from '../../tools/box-shadow-generator/box-shadow-generator';
-import { TextShadowGeneratorComponent } from '../../tools/text-shadow-generator/text-shadow-generator';
-import { GlassmorphismGeneratorComponent } from '../../tools/glassmorphism-generator/glassmorphism-generator';
-import { NeumorphismGeneratorComponent } from '../../tools/neumorphism-generator/neumorphism-generator';
-import { PaletteGeneratorComponent } from '../../tools/palette-generator/palette-generator';
-import { ShadeGeneratorComponent } from '../../tools/shade-generator/shade-generator';
-import { AccessibilitySimulatorComponent } from '../../tools/accessibility-simulator/accessibility-simulator';
-import { ThemeBuilderComponent } from '../../tools/theme-builder/theme-builder';
-import { ImageColorExtractorComponent } from '../../tools/image-color-extractor/image-color-extractor';
-import { CssFilterGeneratorComponent } from '../../tools/css-filter-generator/css-filter-generator';
-import { BorderRadiusGeneratorComponent } from '../../tools/border-radius-generator/border-radius-generator';
-import { CubicBezierGeneratorComponent } from '../../tools/cubic-bezier-generator/cubic-bezier-generator';
-import { DesignTokenStudioComponent } from '../../tools/design-token-studio/design-token-studio';
-import { DevUtilitiesComponent } from '../../tools/dev-utilities/dev-utilities';
+import { ContrastCheckerComponent, PaletteGeneratorComponent, ShadeGeneratorComponent } from '../../tools/contrast-checker/contrast-checker';
+import { BoxShadowGeneratorComponent, GradientGeneratorComponent, TextShadowGeneratorComponent, GlassmorphismGeneratorComponent, NeumorphismGeneratorComponent } from '../../tools/gradient-generator/gradient-generator';
+import { AccessibilitySimulatorComponent, ThemeBuilderComponent } from '../../tools/accessibility-simulator/accessibility-simulator';
+import { CssFilterGeneratorComponent, ImageColorExtractorComponent } from '../../tools/image-color-extractor/image-color-extractor';
+import { BorderRadiusGeneratorComponent, CubicBezierGeneratorComponent, DesignTokenStudioComponent, DevUtilitiesComponent } from '../../tools/border-radius-generator/border-radius-generator';
 import { UiPreviewStudioComponent } from '../../tools/ui-preview-studio/ui-preview-studio';
 import { ParquetViewerComponent } from '../../tools/parquet-viewer/parquet-viewer';
 import { FakeDataGeneratorComponent } from '../../tools/fake-data-generator/fake-data-generator.component';

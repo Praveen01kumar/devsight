@@ -1392,7 +1392,7 @@ export class PasswordGeneratorComponent {
       for (const line of lines) {
         const [lineSuffix, countStr] = line.trim().split(':');
         if (lineSuffix === suffix) {
-          foundCount = parseInt(countStr, 10);
+          foundCount = Number.parseInt(countStr, 10);
           break;
         }
       }
@@ -1634,17 +1634,17 @@ export class PasswordGeneratorComponent {
 
   public onLengthChange(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
-    this.length.set(parseInt(val, 10));
+    this.length.set(Number.parseInt(val, 10));
   }
 
   public onBulkQuantityChange(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
-    this.bulkQuantity.set(parseInt(val, 10));
+    this.bulkQuantity.set(Number.parseInt(val, 10));
   }
 
   public onPassphraseWordCountChange(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
-    this.passphraseWordCount.set(parseInt(val, 10));
+    this.passphraseWordCount.set(Number.parseInt(val, 10));
   }
 
   public regenerate(): void {

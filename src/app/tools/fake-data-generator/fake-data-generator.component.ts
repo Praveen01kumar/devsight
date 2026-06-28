@@ -253,7 +253,6 @@ import loader from '@monaco-editor/loader';
 
             <!-- Virtual Render Preview Space -->
             <div class="flex-1 bg-zinc-950 dark:bg-zinc-950 bg-white border border-zinc-800 dark:border-zinc-800 border-zinc-300 rounded-2xl relative overflow-hidden flex flex-col">
-              
               <!-- Monaco text mode container -->
               <div [class.hidden]="selectedPreviewMode() === 'Table' || selectedPreviewMode() === 'Tree' || selectedPreviewMode() === 'Statistics'" class="flex-1 w-full h-full min-h-[300px]">
                 <div #editorContainer class="w-full h-full absolute inset-0"></div>
@@ -603,22 +602,6 @@ import loader from '@monaco-editor/loader';
         </div>
 
       </div>
-  `,
-  styles: `
-    .scrollbar-thin::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-    .scrollbar-thin::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-      background: #27272a;
-      border-radius: 4px;
-    }
-    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-      background: #3f3f46;
-    }
   `
 })
 export class FakeDataGeneratorComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -745,7 +728,7 @@ export class FakeDataGeneratorComponent implements OnInit, AfterViewInit, OnDest
   ngOnInit() {
     // Attach reactive subscriptions for fields properties updates
     this.recordsControl.valueChanges.subscribe(val => {
-      if (val) this.service.recordsToGenerate.set(parseInt(val));
+      if (val) this.service.recordsToGenerate.set(Number.parseInt(val));
     });
 
     // Field form property subscriptions

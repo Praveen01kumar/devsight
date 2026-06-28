@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, signal, computed, Input, Output, EventEmitter, forwardRef, OnChanges, input, effect } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AfterViewInit, ElementRef, ViewChild, OnDestroy, ChangeDetectionStrategy, Component, signal, computed, Input, Output, EventEmitter, forwardRef, OnChanges, input, effect, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import loader from '@monaco-editor/loader';
 import * as monaco from 'monaco-editor';
-import { AfterViewInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 
 // Interface definitions
 export interface DiffLine {
@@ -26,47 +25,6 @@ export interface TreeChangePayload {
   newKey?: string;
   value?: unknown;
 }
-
-const SCHEMA_PRESETS: Record<string, Record<string, unknown>> = {
-  'basic-profile': {
-    type: 'object',
-    required: ['id', 'name', 'email'],
-    properties: {
-      id: { type: 'number', minimum: 1 },
-      name: { type: 'string', minLength: 2 },
-      email: { type: 'string', pattern: '^[^@]+@[^@]+\\.[^@]+$' },
-      isAdmin: { type: 'boolean' },
-      roles: { type: 'array', items: { type: 'string' } }
-    }
-  },
-  'package-json': {
-    type: 'object',
-    required: ['name', 'version'],
-    properties: {
-      name: { type: 'string', pattern: '^[a-z0-9-_]+$' },
-      version: { type: 'string', pattern: '^\\d+\\.\\d+\\.\\d+$' },
-      private: { type: 'boolean' },
-      dependencies: { type: 'object' },
-      devDependencies: { type: 'object' }
-    }
-  },
-  'config-options': {
-    type: 'object',
-    required: ['environment', 'port', 'features'],
-    properties: {
-      environment: { type: 'string' },
-      port: { type: 'number', minimum: 80, maximum: 65535 },
-      features: {
-        type: 'object',
-        required: ['darkMode', 'logging'],
-        properties: {
-          darkMode: { type: 'boolean' },
-          logging: { type: 'boolean' }
-        }
-      }
-    }
-  }
-};
 
 @Component({
   selector: 'app-json-editor',
@@ -386,55 +344,60 @@ export class JsonEditorComponent implements AfterViewInit, OnDestroy {
     this.syncMonacoSignal(() => this.rawText(), () => this.splitEditor);
   }
 
+  private readonly platformId = inject(PLATFORM_ID);
+  isBrowser = isPlatformBrowser(this.platformId);
+
   async ngAfterViewInit(): Promise<void> {
-    const monacoInstance = await loader.init();
-    this.editor = monacoInstance.editor.create(
-      this.monacoEditorRef.nativeElement,
-      {
-        value: this.rawText(),
-        language: 'json',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        folding: true,
-        showFoldingControls: 'always',
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false
-      }
-    );
+    if (this.isBrowser) {
+      const monacoInstance = await loader.init();
+      this.editor = monacoInstance.editor.create(
+        this.monacoEditorRef.nativeElement,
+        {
+          value: this.rawText(),
+          language: 'json',
+          theme: 'dark',
+          automaticLayout: true,
+          folding: true,
+          showFoldingControls: 'always',
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false
+        }
+      );
 
-    this.splitEditor = monacoInstance.editor.create(
-      this.splitMonacoEditorRef.nativeElement,
-      {
-        value: this.rawText(),
-        language: 'json',
-        theme: 'vs-dark',
-        automaticLayout: true,
-        folding: true,
-        showFoldingControls: 'always',
-        minimap: {
-          enabled: false
-        },
-        scrollBeyondLastLine: false
-      }
-    );
+      this.splitEditor = monacoInstance.editor.create(
+        this.splitMonacoEditorRef.nativeElement,
+        {
+          value: this.rawText(),
+          language: 'json',
+          theme: 'dark',
+          automaticLayout: true,
+          folding: true,
+          showFoldingControls: 'always',
+          minimap: {
+            enabled: false
+          },
+          scrollBeyondLastLine: false
+        }
+      );
 
-    this.splitEditor.onDidChangeModelContent(() => {
-      const value = this.splitEditor.getValue();
-      if (value !== this.rawText()) {
-        this.onRawTextChange(value);
-      }
-    });
+      this.splitEditor.onDidChangeModelContent(() => {
+        const value = this.splitEditor.getValue();
+        if (value !== this.rawText()) {
+          this.onRawTextChange(value);
+        }
+      });
 
-    this.editor.onDidChangeModelContent(() => {
-      const value = this.editor.getValue();
-      if (value !== this.rawText()) {
-        this.onRawTextChange(value);
-      }
-    });
+      this.editor.onDidChangeModelContent(() => {
+        const value = this.editor.getValue();
+        if (value !== this.rawText()) {
+          this.onRawTextChange(value);
+        }
+      });
 
-    setTimeout(() => {
-      this.editor.layout();
-    });
+      setTimeout(() => {
+        this.editor.layout();
+      });
+    }
   }
 
   private updateRawText(value: string, syncEditor = true): void {

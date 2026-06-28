@@ -304,7 +304,7 @@ export class JSONMetadataParser {
                 type: 'warning'
               });
             }
-            result += String.fromCharCode(parseInt(hex, 16));
+            result += String.fromCharCode(Number.parseInt(hex, 16));
             break;
           }
           default:

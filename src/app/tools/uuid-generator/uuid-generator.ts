@@ -126,7 +126,7 @@ export class UuidGeneratorComponent {
 
   public onCountChange(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
-    let n = parseInt(val, 10);
+    let n = Number.parseInt(val, 10);
     if (isNaN(n) || n < 1) n = 1;
     if (n > 105) n = 105;
     this.count.set(n);

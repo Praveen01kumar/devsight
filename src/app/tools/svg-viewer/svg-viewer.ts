@@ -1,26 +1,11 @@
 import { ChangeDetectionStrategy, Component, HostListener, ViewChild, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-
-// Subcomponents imports
-import { SvgToolbar } from './svg-toolbar';
-import { SvgCanvas } from './svg-canvas';
-import { SvgTree } from './svg-tree';
-import { SvgSearch } from './svg-search';
+import { Minimap, SvgCanvas } from './svg-canvas';
 import { SvgInspector } from './svg-inspector';
-import { SvgStatistics } from './svg-statistics';
-import { SvgPalette } from './svg-palette';
-import { SvgSource } from './svg-source';
-import { Minimap } from './minimap';
-
-// Services/Controllers imports
-
-// Models
+import { SvgPalette, SvgSearch, SvgSource, SvgStatistics, SvgToolbar, SvgTree } from './svg-palette';
 import { SvgElementNode, SvgStatistics as StatsModel, SvgColorInfo, LoadedSvgItem } from '../../data/svg.model';
-import { ParserController } from './services/parser-controller';
-import { SelectionController } from './services/selection-controller';
-import { ViewerController } from './services/viewer-controller';
-import { AnalysisController } from './services/analysis-controller';
+import { AnalysisController, ParserController, SelectionController, ViewerController } from './controller';
 import { DEMO_SVGS } from '../../data/demo-templates';
 
 
@@ -103,10 +88,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
 
                 @if (rootNode()) {
                   <div class="py-2">
-                    <app-svg-tree 
-                      [node]="rootNode()!" 
-                      [selectedId]="selectedId()"
-                      [expandedIds]="expandedIds()"
+                    <app-svg-tree [node]="rootNode()!" [selectedId]="selectedId()" [expandedIds]="expandedIds()"
                       (toggleExpandEvent)="toggleNodeExpand($event)"
                       (nodeSelected)="selectNodeFromTree($event)">
                     </app-svg-tree>
@@ -124,8 +106,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
               <div class="flex-1 flex flex-col min-h-0 bg-white dark:bg-zinc-900 overflow-hidden">
                 <div class="p-3 border-b border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
                   <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">My SVG Workspace</span>
-                  <button 
-                    id="add-sidebar-svg-btn"
+                  <button id="add-sidebar-svg-btn"
                     (click)="sidebarFileInput.click()"
                     class="cursor-pointer px-2.5 py-1 text-[10px] font-semibold bg-sky-500/5 dark:bg-sky-500/10 hover:bg-sky-600/5 active:bg-sky-700 text-white rounded-lg flex items-center space-x-1 transition-colors">
                     <mat-icon class="text-xs w-3 h-3">add</mat-icon>
@@ -151,8 +132,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
                         class="p-2 border border-zinc-200 dark:border-zinc-200 dark:border-zinc-800 hover:bg-zinc-800/40 cursor-pointer flex items-center justify-between group rounded transition-all"
                         (click)="switchSvg(svg.id)">
                         <div class="flex items-center space-x-2 truncate min-w-0 pr-1">
-                          <mat-icon
-                            [class.text-sky-500]="svg.id === activeSvgId()"
+                          <mat-icon [class.text-emerald-500]="svg.id === activeSvgId()"
                             [class.text-slate-400]="svg.id !== activeSvgId()"
                             class="text-base h-4 w-4">
                             insert_drive_file
@@ -283,24 +263,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
   `,
   host: {
     '(window:svg-file-load-payload)': 'onFileLoadedViaToolbar($event)'
-  },
-  styles: [`
-    /* Scrollbar Styling customized */
-    ::ng-deep .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::ng-deep .custom-scrollbar::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::ng-deep .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 99px;
-    }
-    ::ng-deep .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(255, 255, 255, 0.2);
-    }
-  `]
+  }
 })
 export class SvgViewer {
   private readonly parser = inject(ParserController);
@@ -719,7 +682,7 @@ export class SvgViewer {
       const svgElement = doc.querySelector('svg');
       if (!svgElement) return;
 
-      const targetIndex = parseInt(viewerId.replace('v-', ''), 10);
+      const targetIndex = Number.parseInt(viewerId.replace('v-', ''), 10);
       let elementCounter = 0;
 
       const findNode = (el: Element): Element | null => {

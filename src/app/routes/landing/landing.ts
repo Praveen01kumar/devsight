@@ -254,18 +254,16 @@ export class LandingPageComponent implements OnInit {
   public searchQuery = signal<string>('');
 
   // Slices specific high profile matching items
-  public popularTools = TOOLS.filter(t => 
-    t.id === 'json-editor' || t.id === 'jwt-decoder' || t.id === 'password-generator'
-  );
+  public popularTools = TOOLS.filter(t => t.id === 'json-editor' || t.id === 'jwt-decoder' || t.id === 'password-generator');
 
   ngOnInit(): void {
     // Setup home SEO credentials
     this.seoService.updateMetadata({
-      title: "devsight - 100% Free Offline Developer Utilities Dashboard",
+      title: 'Devsight - 100% Free Offline Developer Utilities Dashboard',
       description: SITE_CONFIG.description,
-      slug: "/",
+      slug: '/',
       breadcrumbs: [
-        { name: "Home", url: "/" }
+        { name: 'Home', url: '/' }
       ]
     });
   }
@@ -274,7 +272,6 @@ export class LandingPageComponent implements OnInit {
   public filteredTools = computed(() => {
     const rawQuery = this.searchQuery().trim().toLowerCase();
     if (!rawQuery) return [];
-    
     return TOOLS.filter((tool) => {
       const matchName = tool.name.toLowerCase().includes(rawQuery);
       const matchDesc = tool.shortDescription.toLowerCase().includes(rawQuery);

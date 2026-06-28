@@ -14,7 +14,7 @@ export function hexToRgb(hex: string): RGB {
   if (c.length !== 6) {
     return { r: 0, g: 0, b: 0 };
   }
-  const num = parseInt(c, 16);
+  const num = Number.parseInt(c, 16);
   return {
     r: (num >> 16) & 255,
     g: (num >> 8) & 255,
@@ -197,9 +197,9 @@ export function oklchToRgb(oklch: OKLCH): RGB {
   const m_cone = Math.max(0, m_cube * m_cube * m_cube);
   const s_cone = Math.max(0, s_cube * s_cube * s_cube);
 
-  let r_lin = l_cone * +4.0767416621 + m_cone * -3.3077115913 + s_cone * +0.2309699292;
-  let g_lin = l_cone * -1.2684380046 + m_cone * +2.6097574011 + s_cone * -0.3413193965;
-  let b_lin = l_cone * -0.0041960863 + m_cone * -0.7034186149 + s_cone * +1.7076147010;
+  const r_lin = l_cone * +4.0767416621 + m_cone * -3.3077115913 + s_cone * +0.2309699292;
+  const g_lin = l_cone * -1.2684380046 + m_cone * +2.6097574011 + s_cone * -0.3413193965;
+  const b_lin = l_cone * -0.0041960863 + m_cone * -0.7034186149 + s_cone * +1.7076147010;
 
   const srgb = (c: number) => c > 0.0031308 ? 1.055 * Math.pow(c, 1 / 2.4) - 0.055 : 12.92 * c;
   const r = Math.max(0, Math.min(255, Math.round(srgb(r_lin) * 100) * 2.55));
@@ -236,11 +236,6 @@ export function getContrastRatio(colorA: RGB, colorB: RGB): number {
 export function getApcaContrast(textRgb: RGB, bgRgb: RGB): number {
   const txtY = getRelativeLuminance(textRgb);
   const bgY = getRelativeLuminance(bgRgb);
-  
-  // Weights (approximated APCA constants)
-  const textScale = 0.58;
-  const bgScale = 0.42;
-  
   let contrast = 0;
   if (bgY > txtY) {
     // Light background
@@ -261,9 +256,9 @@ export function getApcaContrast(textRgb: RGB, bgRgb: RGB): number {
 
 export function simulateColorBlindness(rgb: RGB, type: 'protanopia' | 'deuteranopia' | 'tritanopia' | 'achromatopsia'): RGB {
   // Standard LDS/RGB transformation matrices
-  let r = rgb.r / 255;
-  let g = rgb.g / 255;
-  let b = rgb.b / 255;
+  const r = rgb.r / 255;
+  const g = rgb.g / 255;
+  const b = rgb.b / 255;
 
   let sr = r, sg = g, sb = b;
 

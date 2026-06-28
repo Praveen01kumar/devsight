@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, computed, effect, AfterViewInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, signal, computed, AfterViewInit, PLATFORM_ID, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import { CompressionJob, CompressionPreset, CompressionSettings, compressImageFile, formatBytes, generateThumbnailWithPica, getImageDimensions, getOptimizedQuality, compressToTargetSize } from './compression.utils';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,9 +90,13 @@ export class ImageCompressoerComponent implements AfterViewInit {
             totalCount: jobs.length
         };
     });
+    private readonly platformId = inject(PLATFORM_ID);
+    isBrowser = isPlatformBrowser(this.platformId);
 
     ngAfterViewInit() {
-        this.setupResizeObserver();
+        if (this.isBrowser) {
+            this.setupResizeObserver();
+        }
     }
 
     setupResizeObserver() {
@@ -134,7 +139,7 @@ export class ImageCompressoerComponent implements AfterViewInit {
     }
 
     updateSingleQuality(event: Event) {
-        const val = parseInt((event.target as HTMLInputElement).value);
+        const val = Number.parseInt((event.target as HTMLInputElement).value);
         this.singleSettings.update(s => ({ ...s, quality: val }));
         const job = this.singleJob();
         if (job?.status === 'Completed') {
@@ -184,39 +189,39 @@ export class ImageCompressoerComponent implements AfterViewInit {
             };
         });
     }
- updateTargetSize(event: Event) {
-    const value = Number(
-        (event.target as HTMLInputElement).value
-    );
+    updateTargetSize(event: Event) {
+        const value = Number(
+            (event.target as HTMLInputElement).value
+        );
 
-    const job = this.singleJob();
+        const job = this.singleJob();
 
-    if (job) {
-        const originalKB = Math.ceil(job.originalSize / 1024);
+        if (job) {
+            const originalKB = Math.ceil(job.originalSize / 1024);
 
-        if (value >= originalKB) {
-            this.validationError.set(
-                `Target size cannot exceed ${originalKB - 1} KB`
-            );
+            if (value >= originalKB) {
+                this.validationError.set(
+                    `Target size cannot exceed ${originalKB - 1} KB`
+                );
 
-            this.singleSettings.update(s => ({
-                ...s,
-                targetSizeKB: originalKB - 1
-            }));
+                this.singleSettings.update(s => ({
+                    ...s,
+                    targetSizeKB: originalKB - 1
+                }));
 
-            return;
+                return;
+            }
         }
+
+        this.validationError.set(null);
+
+        this.singleSettings.update(s => ({
+            ...s,
+            targetSizeKB: value
+        }));
+
+        this.markSingleForRecompression();
     }
-
-    this.validationError.set(null);
-
-    this.singleSettings.update(s => ({
-        ...s,
-        targetSizeKB: value
-    }));
-
-    this.markSingleForRecompression();
-}
     private validateTargetSize(): boolean {
         const job = this.singleJob();
 
@@ -250,7 +255,7 @@ export class ImageCompressoerComponent implements AfterViewInit {
     }
 
     updateBulkQuality(event: Event) {
-        const val = parseInt((event.target as HTMLInputElement).value);
+        const val = Number.parseInt((event.target as HTMLInputElement).value);
         this.bulkSettings.update(s => ({ ...s, quality: val }));
     }
 
@@ -341,9 +346,9 @@ export class ImageCompressoerComponent implements AfterViewInit {
         const job = this.singleJob();
         if (!job) return;
 
-    if (!this.validateTargetSize()) {
-        return;
-    }
+        if (!this.validateTargetSize()) {
+            return;
+        }
         this.isCompressingSingle.set(true);
         this.validationError.set(null);
 
@@ -506,11 +511,11 @@ export class ImageCompressoerComponent implements AfterViewInit {
     async compressBulk() {
         if (this.bulkJobs().length === 0 || this.bulkQueueStatus() === 'processing') return;
         if (
-    this.singleSettings().useTargetSize &&
-    !this.validateTargetSize()
-) {
-    return;
-}
+            this.singleSettings().useTargetSize &&
+            !this.validateTargetSize()
+        ) {
+            return;
+        }
 
         this.bulkQueueStatus.set('processing');
         this.validationError.set(null);
@@ -661,7 +666,7 @@ export class ImageCompressoerComponent implements AfterViewInit {
     }
 
     onSliderChange(event: Event) {
-        const val = parseInt((event.target as HTMLInputElement).value);
+        const val = Number.parseInt((event.target as HTMLInputElement).value);
         this.sliderPosition.set(val);
     }
 }

@@ -59,15 +59,6 @@ export const SITE_CONFIG: SiteConfig = {
 
 export const CATEGORIES: CategoryMetadata[] = [
   {
-    id: 'text-utilities',
-    slug: 'text-utilities',
-    name: 'Text & Document Utilities',
-    description: 'Format, convert, clean, analyze, compare, and compile text, markdown, and code logs 100% locally.',
-    icon: 'text_fields',
-    metaTitle: 'Text Processing Toolbox - Online Formatting, Case, Diff, & Markdowns',
-    metaDescription: 'All-in-one suite of text developer and content tools: Case Converter, Text Beautifier, Line Manipulator, HTML Escape, Markdown editor & Diff checkers. Fully client-side privacy.'
-  },
-  {
     id: 'json-tools',
     slug: 'json-tools',
     name: 'JSON Utilities',
@@ -77,31 +68,22 @@ export const CATEGORIES: CategoryMetadata[] = [
     metaDescription: 'All-in-one suite of JSON developer tools: Formatter, Minifier, Validator, YAML converter and interactive Trees. Highly secure, client-side execution.'
   },
   {
-    id: 'angular-tools',
-    slug: 'angular-tools',
-    name: 'Angular Utilities',
-    description: 'Speed up your frontend workflow by generating standardized, type-safe Angular components, signals base models, and services.',
-    icon: 'layers',
-    metaTitle: 'Angular Developer Code Generators - Standalone Components - devsight',
-    metaDescription: 'Boost productivity with Angular 21 component and service template generators. Output standalone TypeScript classes in seconds.'
+    id: 'mock-data-tools',
+    slug: 'mock-data-tools',
+    name: 'Mock Data Tools',
+    description: 'Generate realistic fake data for testing, development, databases, APIs, and frontend applications.',
+    icon: 'dataset',
+    metaTitle: 'Mock Data Generator - JSON, SQL, CSV & Test Data | DevSight',
+    metaDescription: 'Generate realistic fake names, addresses, emails, phone numbers, JSON, SQL, CSV, UUIDs, and other mock data for testing and development.'
   },
   {
-    id: 'security-tools',
-    slug: 'security-tools',
-    name: 'Security & Cryptography',
-    description: 'Generate highly secure, personalized passwords, system UUIDs, decode JSON Web Tokens (JWT) safely, and encode/decode Base64.',
-    icon: 'security',
-    metaTitle: 'Security & Identity Tools - Password & Token Decoders - devsight',
-    metaDescription: 'Secure local developer tools. Multi-format UUID generator, secure password generator with strength metric, JWT decoder, and Base64 parser.'
-  },
-  {
-    id: 'css-ui-tools',
-    slug: 'css-ui-tools',
-    name: 'CSS & Visual UI',
-    description: 'Fine-tune design parameters like margins, box-shadows, borders, gradient sets, or test layout flexboxes visually.',
-    icon: 'palette',
-    metaTitle: 'CSS & Tailwind Interactive Visual Sandboxes - devsight',
-    metaDescription: 'Visual CSS layouts and Tailwind generator portals. Flexbox playground and layout configurators with interactive responsive viewports.'
+    id: 'image-tools',
+    slug: 'image-tools',
+    name: 'Image Tools',
+    description: 'Convert, compress, optimize, edit, and process images directly in your browser with fast, privacy-focused tools.',
+    icon: 'image',
+    metaTitle: 'Image Tools - Convert, Compress & Optimize Images | DevSight',
+    metaDescription: 'Free online image tools for converting, compressing, optimizing, resizing, filtering, and processing JPG, PNG, WebP, AVIF, SVG, and more.'
   },
   {
     id: 'date-time-tools',
@@ -109,8 +91,62 @@ export const CATEGORIES: CategoryMetadata[] = [
     name: 'Date, Time, & Scheduling',
     description: 'Convert Unix Epoch timestamps to readable date formats and configure time zones accurately.',
     icon: 'schedule',
-    metaTitle: 'Date, Time and Unix Epoch converter utils - devsight',
+    metaTitle: 'Date, Time and Unix Epoch converter utils - Devsight',
     metaDescription: 'Dynamic Unix Timestamp converter and local system timezone visualizers. Convert epochs instantly and manage scheduling strings.'
+  },
+  {
+    id: 'data-file-tools',
+    slug: 'data-file-tools',
+    name: 'Data File Tools',
+    description: 'View, inspect, analyze, and validate structured data files such as Parquet, HTML, SVG, XML, CSV, and other developer file formats.',
+    icon: 'table_view',
+    metaTitle: 'Data File Tools - Parquet, HTML, SVG & File Viewers | DevSight',
+    metaDescription: 'Free online data file tools to view, inspect, analyze, and validate Parquet, HTML, SVG, XML, CSV, and other structured files directly in your browser.'
+  },
+  {
+    id: 'design-tools',
+    slug: 'design-tools',
+    name: 'Design & SVG Tools',
+    description: 'Inspect, edit, analyze, optimize, and convert vector graphics, SVG assets, icons, color palettes, and design resources.',
+    icon: 'palette',
+    metaTitle: 'Design & SVG Tools - SVG Editors, Inspectors & Graphics Utilities - Devsight',
+    metaDescription: 'Professional browser-based SVG viewers, editors, analyzers, color palette extractors, icon utilities, and vector graphic tools.'
+  },
+  {
+    id: 'security-tools',
+    slug: 'security-tools',
+    name: 'Security & Cryptography',
+    description: 'Generate highly secure, personalized passwords, system UUIDs, decode JSON Web Tokens (JWT) safely, and encode/decode Base64.',
+    icon: 'security',
+    metaTitle: 'Security & Identity Tools - Password & Token Decoders - Devsight',
+    metaDescription: 'Secure local developer tools. Multi-format UUID generator, secure password generator with strength metric, JWT decoder, and Base64 parser.'
+  },
+  {
+    id: 'measurement-tools',
+    slug: 'measurement-tools',
+    name: 'Unit Converters',
+    description: 'Convert units across engineering, scientific, technical, electrical, data, fuel economy, and everyday measurement systems with precision.',
+    icon: 'swap_horiz',
+    metaTitle: 'Measurement & Unit Conversion Tools - Length, Weight, Temperature & More - Devsight',
+    metaDescription: 'Comprehensive unit conversion tools covering length, area, volume, mass, temperature, pressure, energy, power, electrical units, data storage, fuel economy, engineering measurements, and more.'
+  },
+  {
+    id: 'css-ui-tools',
+    slug: 'css-ui-tools',
+    name: 'CSS & Visual UI',
+    description: 'Fine-tune design parameters like margins, box-shadows, borders, gradient sets, or test layout flexboxes visually.',
+    icon: 'palette',
+    metaTitle: 'CSS & Tailwind Interactive Visual Sandboxes - Devsight',
+    metaDescription: 'Visual CSS layouts and Tailwind generator portals. Flexbox playground and layout configurators with interactive responsive viewports.'
+  },
+  {
+    id: 'angular-tools',
+    slug: 'angular-tools',
+    name: 'Angular Utilities',
+    description: 'Speed up your frontend workflow by generating standardized, type-safe Angular components, signals base models, and services.',
+    icon: 'layers',
+    metaTitle: 'Angular Developer Code Generators - Standalone Components - Devsight',
+    metaDescription: 'Boost productivity with Angular 21 component and service template generators. Output standalone TypeScript classes in seconds.'
   },
   {
     id: 'typescript-tools',
@@ -118,8 +154,17 @@ export const CATEGORIES: CategoryMetadata[] = [
     name: 'TypeScript Workspace',
     description: 'Configure types, generate models or interfaces, perform static complexity analyses, and convert JavaScript declarations.',
     icon: 'psychology',
-    metaTitle: 'TypeScript Interactive Workspace & Type Generators - devsight',
+    metaTitle: 'TypeScript Interactive Workspace & Type Generators - Devsight',
     metaDescription: 'An offline-first, type-safe development environment for converting JSON, generating Zod schemas, building interfaces, and testing utilities.'
+  },
+  {
+    id: 'text-utilities',
+    slug: 'text-utilities',
+    name: 'Text & Document Utilities',
+    description: 'Format, convert, clean, analyze, compare, and compile text, markdown, and code logs 100% locally.',
+    icon: 'text_fields',
+    metaTitle: 'Text Processing Toolbox - Online Formatting, Case, Diff, & Markdowns',
+    metaDescription: 'All-in-one suite of text developer and content tools: Case Converter, Text Beautifier, Line Manipulator, HTML Escape, Markdown editor & Diff checkers. Fully client-side privacy.'
   },
   {
     id: 'rxjs-tools',
@@ -127,7 +172,7 @@ export const CATEGORIES: CategoryMetadata[] = [
     name: 'RxJS Stream Center',
     description: 'Map reactive flows, trace subscriptions, visualize observers using timelines & marble charts, and construct pipe operators.',
     icon: 'insights',
-    metaTitle: 'RxJS Pipeline Builder & Marble Visualizer Toolbelt - devsight',
+    metaTitle: 'RxJS Pipeline Builder & Marble Visualizer Toolbelt - Devsight',
     metaDescription: 'Explore and trace RxJS reactive structures. Build pipeline operators, visualize marble timelines, troubleshoot stream memory leaks, and generate codes.'
   },
   {
@@ -136,7 +181,7 @@ export const CATEGORIES: CategoryMetadata[] = [
     name: 'Regex Studio',
     description: 'Compose, test, and debug Regular Expressions with step-by-step token analyzers and standard pattern libraries.',
     icon: 'history_edu',
-    metaTitle: 'Regex Studio - Interactive Tokenizer and Visual Composer - devsight',
+    metaTitle: 'Regex Studio - Interactive Tokenizer and Visual Composer - Devsight',
     metaDescription: 'Test regex against sample lines, trace detailed token explanations, extract subfields, check safe performance bounds, and generate custom pattern code.'
   },
   {
@@ -147,874 +192,11 @@ export const CATEGORIES: CategoryMetadata[] = [
     icon: 'trending_up',
     metaTitle: 'Enterprise SEO Toolkit - Free Meta, OG, Schema, Sitemaps & robots.txt Tools',
     metaDescription: 'All-in-one suite of professional SEO developer and content tools: Meta Tag Generator, Open Graph previews, Schema JSON-LD generators, sitemap index builders & robots.txt validators. Fully offline-first and client-side.'
-  },
-  {
-    id: 'measurement-tools',
-    slug: 'measurement-tools',
-    name: 'Measurement & Engineering',
-    description: 'Convert units across engineering, scientific, technical, electrical, data, fuel economy, and everyday measurement systems with precision.',
-    icon: 'swap_horiz',
-    metaTitle: 'Measurement & Unit Conversion Tools - Length, Weight, Temperature & More - devsight',
-    metaDescription: 'Comprehensive unit conversion tools covering length, area, volume, mass, temperature, pressure, energy, power, electrical units, data storage, fuel economy, engineering measurements, and more.'
-  },
-  {
-    id: 'design-tools',
-    slug: 'design-tools',
-    name: 'Design & SVG Tools',
-    description: 'Inspect, edit, analyze, optimize, and convert vector graphics, SVG assets, icons, color palettes, and design resources.',
-    icon: 'palette',
-    metaTitle: 'Design & SVG Tools - SVG Editors, Inspectors & Graphics Utilities - devsight',
-    metaDescription: 'Professional browser-based SVG viewers, editors, analyzers, color palette extractors, icon utilities, and vector graphic tools.'
   }
+
 ];
 
 export const TOOLS: ToolMetadata[] = [
-  {
-    id: 'json-editor',
-    slug: 'json-editor',
-    name: 'Advanced JSON Editor & Tree Viewer',
-    shortDescription:
-      'Edit, format, validate, and visualize JSON using text, tree, and table views with real-time schema validation and formatting tools.',
-    metaTitle:
-      'Advanced JSON Editor, Tree Viewer & Validator Online | devsight',
-    metaDescription:
-      'Edit JSON online with an interactive tree editor, table view, code editor, schema validation, formatting, search and replace, and transformation tools.',
-    categoryId: 'json-tools',
-    icon: 'edit_note',
-    tags: [      'json',      'editor',      'tree',      'tree-view',      'formatter',      'validator',      'schema',      'table-view'    ],
-    relatedTools: ['json-merge', 'json-difference'],
-    faqs: [
-      {
-        question: 'How can I edit JSON using the Tree View?',
-        answer:
-          'The Tree View displays every object and array as expandable nodes. You can edit keys and values inline, add or remove properties, change value types, duplicate nodes, and reorganize nested structures without manually editing brackets or commas.'
-      },
-      {
-        question: 'Does the editor validate JSON automatically?',
-        answer:
-          'Yes. The editor validates JSON syntax in real time and supports JSON Schema validation to identify structural issues and provide detailed validation messages.'
-      },
-      {
-        question: 'What editing features are available?',
-        answer:
-          'The editor includes formatting, minification, key sorting, search and replace, tree editing, table view for arrays, syntax highlighting, and data transformation utilities.'
-      }
-    ],
-    detailedGuide: `
-    <h2>JSON Editor User Guide</h2>
-    <p>Edit, validate, and format JSON efficiently using multiple workspace views designed for both simple and complex documents.</p>
-    <h3>Workspace Modes</h3>
-    <ul>
-      <li><strong>Text Editor:</strong> Edit JSON with syntax highlighting, formatting, line numbers, error detection, and code folding.</li>
-      <li><strong>Tree View:</strong> Expand nested objects, edit properties inline, add or remove nodes, duplicate values, and change data types visually.</li>
-      <li><strong>Table View:</strong> Display JSON arrays of objects as editable tables for quick data modification.</li>
-    </ul>
-    <h3>Available Tools</h3>
-    <ul>
-      <li>Beautify and Minify JSON</li>
-      <li>Sort Object Keys</li>
-      <li>Search and Replace</li>
-      <li>JSON Schema Validation</li>
-      <li>JSON Transformations</li>
-      <li>Copy and Download JSON</li>
-    </ul>
-    <h3>Who Is It For?</h3>
-    <p>The editor is ideal for developers, API testing, configuration editing, debugging payloads, and managing large nested JSON documents directly in the browser.</p>
-  `
-  }, {
-    id: 'json-difference',
-    slug: 'json-difference',
-    name: 'Advanced JSON Difference Checker',
-    shortDescription:
-      'Compare two JSON documents side-by-side, highlight added, removed, and modified values, ignore key order or whitespace, and generate detailed difference reports.',
-    metaTitle:
-      'Advanced JSON Difference Checker Online - Side-by-Side JSON Diff | devsight',
-    metaDescription:
-      'Compare JSON files online with semantic diff detection. Highlight additions, deletions, and modifications, ignore key order or whitespace, and export detailed JSON difference reports.',
-    categoryId: 'json-tools',
-    icon: 'compare',
-    tags: [      'json',      'difference',      'compare',      'diff',      'json diff',      'schema',      'validator'    ],
-    relatedTools: ['json-merge', 'json-editor'],
-    faqs: [
-      {
-        question: 'How does the JSON Difference Checker work?',
-        answer:
-          'The tool parses both JSON documents into structured objects before comparing them. Instead of performing a simple text comparison, it detects additions, removals, modifications, and moved properties while minimizing false positives caused by formatting differences.'
-      },
-      {
-        question: 'Can I ignore key order or whitespace during comparison?',
-        answer:
-          'Yes. You can ignore key ordering, whitespace, and optionally property name casing so that only meaningful structural differences are highlighted.'
-      },
-      {
-        question: 'Can I export the comparison results?',
-        answer:
-          'Yes. After comparison, you can export the highlighted differences or generate a detailed report for documentation, reviews, debugging, or auditing purposes.'
-      }
-    ],
-    detailedGuide: `
-    <h2>JSON Difference Checker User Guide</h2>
-    <p>Compare two JSON documents to quickly identify structural and value differences. The comparison is performed semantically, making it more accurate than traditional text-based diff tools.</p>
-
-    <h3>How to Compare JSON</h3>
-    <ol>
-      <li><strong>Paste Original JSON:</strong> Load the first JSON document into the left editor.</li>
-      <li><strong>Paste Updated JSON:</strong> Load the second JSON document into the right editor.</li>
-      <li><strong>Select Comparison Options:</strong> Ignore key order, whitespace, or property name case as needed.</li>
-      <li><strong>Run Comparison:</strong> View additions, deletions, modifications, and unchanged nodes in an interactive diff viewer.</li>
-      <li><strong>Export Results:</strong> Download or copy the comparison report for debugging, code review, or documentation.</li>
-    </ol>
-
-    <h3>Comparison Features</h3>
-    <ul>
-      <li><strong>Semantic JSON Comparison:</strong> Compare JSON structures instead of raw text.</li>
-      <li><strong>Side-by-Side Diff View:</strong> Easily inspect differences between two documents.</li>
-      <li><strong>Unified Diff View:</strong> Review all changes in a single continuous view.</li>
-      <li><strong>Difference Summary:</strong> Quickly see the number of added, removed, and modified nodes.</li>
-      <li><strong>Flexible Comparison:</strong> Ignore formatting differences such as whitespace, key order, and optional case sensitivity.</li>
-    </ul>
-  `
-  }, {
-    id: 'json-merge',
-    slug: 'json-merge',
-    name: 'Advanced JSON Merge Tool',
-    shortDescription:
-      'Merge two JSON documents with interactive conflict resolution, semantic comparison, RFC 6902 patch generation, and merged JSON export.',
-    metaTitle:
-      'Advanced JSON Merge Tool Online | Merge & Resolve JSON Conflicts | devsight',
-    metaDescription:
-      'Merge JSON files online with semantic comparison, interactive conflict resolution, automatic merging, RFC 6902 JSON Patch generation, and merged output export.',
-    categoryId: 'json-tools',
-    icon: 'merge',
-    tags: [      'json',      'merge',      'compare',      'conflict',      'json patch',      'rfc6902',      'diff'    ],
-    relatedTools: ['json-difference', 'json-editor'],
-    faqs: [
-      {
-        question: 'How does JSON Merge work?',
-        answer:
-          'The tool compares two JSON documents, automatically merges non-conflicting changes, and highlights conflicts that require manual review before generating the final merged JSON.'
-      },
-      {
-        question: 'Can I resolve merge conflicts manually?',
-        answer:
-          'Yes. Each conflicting value can be reviewed individually, allowing you to choose the value from either JSON document before generating the merged result.'
-      },
-      {
-        question: 'Does the tool generate JSON Patch files?',
-        answer:
-          'Yes. You can generate RFC 6902 JSON Patch operations representing the changes between the original and merged documents for use in APIs and automation workflows.'
-      }
-    ],
-    detailedGuide: `
-    <h2>JSON Merge Tool User Guide</h2>
-    <p>Merge two JSON documents intelligently by combining matching structures, resolving conflicts, and exporting a clean merged result.</p>
-    <h3>How to Merge JSON</h3>
-    <ol>
-      <li><strong>Load Source JSON:</strong> Paste the original JSON into the left editor.</li>
-      <li><strong>Load Target JSON:</strong> Paste the updated JSON into the right editor.</li>
-      <li><strong>Compare Structures:</strong> The tool automatically detects additions, deletions, and conflicting values.</li>
-      <li><strong>Resolve Conflicts:</strong> Review highlighted conflicts and choose which value should appear in the final document.</li>
-      <li><strong>Generate Output:</strong> Export the merged JSON or generate an RFC 6902 JSON Patch.</li>
-    </ol>
-    <h3>Features</h3>
-    <ul>
-      <li>Semantic JSON Merge</li>
-      <li>Automatic Merge for Non-conflicting Changes</li>
-      <li>Interactive Conflict Resolution</li>
-      <li>Side-by-Side Comparison</li>
-      <li>RFC 6902 JSON Patch Generation</li>
-      <li>Export Merged JSON</li>
-    </ul>
-    <h3>Common Use Cases</h3>
-    <p>Perfect for configuration management, API payload updates, collaborative development, version control workflows, and combining multiple JSON datasets.</p>
-  `
-  },
-  {
-    id: 'password-generator',
-    slug: 'password-generator',
-    name: 'Secure Password Generator & Strength Meter',
-    shortDescription: 'Create robust, unpredictable passwords featuring customized length parameters, special layouts, and local complexity assessment indices.',
-    metaTitle: 'Secure Password Generator - Custom Passphrase Configurator - devsight',
-    metaDescription: 'Generate cryptic passwords locally. Configure letters, numerals, special characters, and length. View entropy metrics instantly.',
-    categoryId: 'security-tools',
-    icon: 'lock',
-    tags: ['password', 'credentials', 'entropy', 'generator', 'security', 'crypto'],
-    relatedTools: ['uuid-generator', 'jwt-decoder'],
-    faqs: [
-      {
-        question: 'How is the random secret generated?',
-        answer: 'Our engine uses standard Web Cryptography API guarantees (window.crypto.getRandomValues), providing cryptographically secure pseudo-random number inputs.'
-      },
-      {
-        question: 'What makes a password strong?',
-        answer: 'A combination of length (typically 12+ characters), lowercase, uppercase, numerals, and non-alphabetic symbols forces immense search space constraints, mitigating brute-force risk.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Generate High-Entropy Passwords Online</h2>
-      <p>Protect system access and API clients by generating unique tokens. Avoid reuse which risks credential stuffing vulnerability leaks.</p>
-      <h3>Configuration Guidelines</h3>
-      <ul>
-        <li><strong>Length:</strong> Standard platforms require 12 or 16 characters for administrative profiles.</li>
-        <li><strong>Character Selection:</strong> Blend numeric characters, custom bracket systems, and symbols together.</li>
-        <li><strong>Copying Safeguard:</strong> All processing remains offline inside sandbox memory, protecting items from leak risks.</li>
-      </ul>
-    `
-  },
-  {
-    id: 'uuid-generator',
-    slug: 'uuid-generator',
-    name: 'Cryptographic UUID & GUID Generator',
-    shortDescription: 'Batch produce standard UUID v4 or v1 compliance identities with copy automation and uppercase parameters.',
-    metaTitle: 'Standard UUID Generator - Free Online GUID Builder - devsight',
-    metaDescription: 'Generate random UUIDs (version 4) or time-based UUIDs (version 1) in single or batch modes. Fully compliant with RFC 4122 specifications.',
-    categoryId: 'security-tools',
-    icon: 'fingerprint',
-    tags: ['uuid', 'guid', 'rfc4122', 'key-generator', 'unique', 'random'],
-    relatedTools: ['password-generator'],
-    faqs: [
-      {
-        question: 'What is an RFC 4122 UUID?',
-        answer: 'A Universally Unique Identifier, comprising 128 bits represented in structured 32-character hexadecimal blocks separated by hyphens (8-4-4-4-12 shape).'
-      },
-      {
-        question: 'Can I generate thousands of GUID keys instantly?',
-        answer: 'Yes, our component runs extremely fast, compiling lists of over 100 identifier variants instantly without causing thread-blocking lag.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Optimizing Database Primary Keys with RFC 4122 Identifiers</h2>
-      <p>UUID generation solves transaction indexing synchronization problems in decentralized database models. Rather than incrementing IDs under bottleneck server controls, clients construct UUIDs independently.</p>
-      <h3>Applying v4 UUID Keys</h3>
-      <p>Since UUID v4 is driven entirely by pseudo-random entropy, probability collisions are astronomically low. Simply configure the generator to produce the volume you require, set uppercase formats as preferred, and copy.</p>
-    `
-  },
-  {
-    id: 'jwt-decoder',
-    slug: 'jwt-decoder',
-    name: 'JWT Decoder & Token Inspector',
-    shortDescription: 'Extract encoded JWT header, payload attributes, expiration statuses, and validation metadata safely without data transmission.',
-    metaTitle: 'Secure JWT Token Decoder - JSON Web Token Payload Inspector - devsight',
-    metaDescription: 'Decode JWTs locally in real-time. Inspect headers, claims, expiration status, and algorithm signatures with strict developer privacy.',
-    categoryId: 'security-tools',
-    icon: 'gavel',
-    tags: ['jwt', 'jsonwebtoken', 'oauth', 'decode', 'payload', 'claims'],
-    relatedTools: ['password-generator'],
-    faqs: [
-      {
-        question: 'Does devsight store token keys?',
-        answer: 'Never. All validation and base64url slicing execute client-side. We do not register records, query history, or share logs, making it entirely secure for live session keys.'
-      },
-      {
-        question: 'What is a JWT composed of?',
-        answer: 'A standard JSON Web Token consists of three distinct segments separated by periods: Header (specifying hashing algorithm), Payload (session details and claims), and Signature (verifying creator identity).'
-      }
-    ],
-    detailedGuide: `
-      <h2>Analyze OAuth Web Tokens Client-Side</h2>
-      <p>Authenticating client transactions requires configuring JSON Web Tokens containing claim keys like <em>iss</em>, <em>exp</em>, <em>sub</em>, and custom scopes. Use our decoder to isolate parameters.</p>
-      <h3>How to Inspect Jwt</h3>
-      <ol>
-        <li>Direct your authorization token into the entry pane.</li>
-        <li>Inspect decoded sections: devsight decomposes sections, displaying payloads in readable, highlighted syntax.</li>
-        <li>Check validity benchmarks: Our panel flags expiration parameters, comparing <code>exp</code> markers with UTC timestamps.</li>
-      </ol>
-    `
-  },
-  {
-    id: 'base64-toolkit',
-    slug: 'base64-toolkit',
-    name: 'Advanced Base64 Toolkit Suite',
-    shortDescription: 'All-in-one Base64 developer hub. Validate, format, encode, decode, safe-convert URL parameters, parse JSON, images, PDFs, and extract payloads offline.',
-    metaTitle: 'Advanced Base64 Toolkit - All-in-one Encoder & Decoder - devsight',
-    metaDescription: 'An all-in-one secure developer toolbox for Base64 processing. Convert text, images and binary data with smart auto-detection, validation, and layout tools.',
-    categoryId: 'security-tools',
-    icon: 'construction',
-    tags: ['base64', 'toolkit', 'binary', 'url-safe', 'atob', 'btoa'],
-    relatedTools: [],
-    faqs: [
-      {
-        question: 'Is there raw data leakage or server uploads in the Base64 Toolkit?',
-        answer: 'No. The entire suite operates entirely client-side. All processing, calculations, and rendering occur strictly in your local browser sandbox, ensuring absolute data privacy for confidential tokens and credentials.'
-      },
-      {
-        question: 'What formats does the batch converter support?',
-        answer: 'The encoder and file workflow supports PNG, JPG, SVG, WebP, PDF, TXT, JSON, HTML, and audio formats (such as MP3/WAV) up to large payloads without browser freeze.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Comprehensive Guide to the Base64 Toolkit Suite</h2>
-      <p>Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. This toolkit provides all necessary operations to build, validate, analyze, and convert Base64 sequences securely.</p>
-      <h3>Primary Capabilities</h3>
-      <ul>
-        <li><strong>Smart Workspace:</strong> Auto-detects whether your input is cleartext, a standard Base64 string, URL-Safe Base64, raw Hex bytes, or a JSON payload.</li>
-        <li><strong>Advanced Previews:</strong> View output in rich split panels. Dynamic viewers let you test images, play audio streams, scan PDF documents, or inspect highlighted HTML directly.</li>
-        <li><strong>Transformer Controls:</strong> Strip spaces, normalize padding, customize line limits (chunking), and format parsed JSON.</li>
-      </ul>
-    `
-  },
-  {
-    id: 'angular-component-generator',
-    slug: 'angular-component-generator',
-    name: 'Angular 21 component and service generator tool',
-    shortDescription: 'Customize properties like styling, components prefix, standard inputs/outputs, and instantly export beautiful standalone Angular code.',
-    metaTitle: 'Angular Standalone Component & Service Template Maker - devsight',
-    metaDescription: 'Generate clean Angular standalone TypeScript files including computed properties, input signals, lifecycle hooks, and template files instantly.',
-    categoryId: 'angular-tools',
-    icon: 'layers',
-    tags: ['angular', 'component', 'service', 'directive', 'boilerplate', 'standalone'],
-    relatedTools: ['jwt-decoder'],
-    faqs: [
-      {
-        question: 'Does this template render the newer Angular styles?',
-        answer: 'Yes, it creates Angular 21 modules, using signals for inputs (input()), output() triggers, standard constructor-less dependency injections, and modern control flow.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Automate Angular Standalone Declarations</h2>
-      <p>Setting up multiple angular layers requires manual configuration. Simply model fields, event emitters, style options, and copy compiled template segments to compile instantly.</p>
-    `
-  },
-  {
-    id: 'image-type-converter',
-    slug: 'image-type-converter',
-    name: 'Image Type Converter',
-    shortDescription: 'Convert images between JPG, PNG, WEBP, AVIF, TIFF, BMP and other formats directly in your browser.',
-    metaTitle: 'Image Type Converter - JPG, PNG, WEBP, AVIF, TIFF & BMP - devsight',
-    metaDescription: 'Convert images between popular formats including JPG, PNG, WEBP, AVIF, TIFF and BMP. Fast browser-based image conversion with single and bulk processing.',
-    categoryId: 'design-tools',
-    icon: 'swap_horiz',
-    tags: ['image-converter', 'jpg', 'png', 'webp', 'avif', 'tiff', 'bmp', 'image-tools', 'bulk-converter'],
-    relatedTools: ['image-compressor', 'svg-viewer'],
-    faqs: [
-      {
-        question: 'Which image formats are supported?',
-        answer: 'The converter supports JPG, JPEG, PNG, WEBP, AVIF, TIFF, TIF, and BMP formats.'
-      },
-      {
-        question: 'Can I convert multiple images at once?',
-        answer: 'Yes. Bulk conversion allows multiple images to be converted simultaneously.'
-      },
-      {
-        question: 'Are my files uploaded to a server?',
-        answer: 'No. All processing happens directly in your browser.'
-      }
-    ],
-    detailedGuide: `
-    <h2>Image Type Converter</h2>
-
-    <p>
-      Convert images between popular formats directly in your browser.
-      Supports single-file and bulk conversion workflows with fast local processing.
-    </p>
-
-    <h3>Features</h3>
-
-    <ul>
-      <li>Convert JPG, PNG, WEBP, AVIF, TIFF, and BMP.</li>
-      <li>Single image conversion.</li>
-      <li>Bulk image conversion.</li>
-      <li>Image preview before conversion.</li>
-      <li>Browser-based processing.</li>
-      <li>ZIP download for bulk conversions.</li>
-      <li>No file uploads required.</li>
-    </ul>
-  `},
-  {
-    id: 'fake-data-generator',
-    slug: 'fake-data-generator',
-    name: 'fake-data-generator',
-    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
-    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
-    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
-    categoryId: 'design-tools',
-    icon: 'dataset',
-    tags: ['svg', 'fake-data-generator', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
-    relatedTools: ['json-formatter'],
-    faqs: [
-      {
-        question: 'Can I edit SVG files?',
-        answer: 'Yes. Edit SVG attributes and source code with live updates.'
-      },
-      {
-        question: 'Can I inspect SVG structure?',
-        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
-      },
-      {
-        question: 'What information can I view?',
-        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
-      }
-    ],
-    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
-                <p>
-                  Open, inspect, edit, and analyze SVG files directly in your browser.
-                  Explore SVG layers, modify element attributes, edit XML source, and view
-                  useful SVG statistics and color information in real time.
-                </p>
-
-                <h3>Features</h3>
-
-                <ul>
-                  <li>Live SVG rendering.</li>
-                  <li>SVG element tree navigation.</li>
-                  <li>Attribute and property inspection.</li>
-                  <li>Raw SVG source editor.</li>
-                  <li>Color palette extraction.</li>
-                  <li>SVG statistics and analysis.</li>
-                  <li>Multi-file SVG workspace.</li>
-                  <li>Zoom and viewport controls.</li>
-                </ul>`
-  },
-  {
-    id: 'parquet-viewer',
-    slug: 'parquet-viewer',
-    name: 'parquet-viewer',
-    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
-    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
-    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
-    categoryId: 'design-tools',
-    icon: 'analytics',
-    tags: ['svg', 'parquet-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
-    relatedTools: ['json-formatter'],
-    faqs: [
-      {
-        question: 'Can I edit SVG files?',
-        answer: 'Yes. Edit SVG attributes and source code with live updates.'
-      },
-      {
-        question: 'Can I inspect SVG structure?',
-        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
-      },
-      {
-        question: 'What information can I view?',
-        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
-      }
-    ],
-    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
-                <p>
-                  Open, inspect, edit, and analyze SVG files directly in your browser.
-                  Explore SVG layers, modify element attributes, edit XML source, and view
-                  useful SVG statistics and color information in real time.
-                </p>
-
-                <h3>Features</h3>
-
-                <ul>
-                  <li>Live SVG rendering.</li>
-                  <li>SVG element tree navigation.</li>
-                  <li>Attribute and property inspection.</li>
-                  <li>Raw SVG source editor.</li>
-                  <li>Color palette extraction.</li>
-                  <li>SVG statistics and analysis.</li>
-                  <li>Multi-file SVG workspace.</li>
-                  <li>Zoom and viewport controls.</li>
-                </ul>`
-  },
-  {
-    id: 'svg-viewer',
-    slug: 'svg-viewer',
-    name: 'SVG Viewer & Editor',
-    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
-    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - devsight',
-    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
-    categoryId: 'design-tools',
-    icon: 'image_search',
-    tags: ['svg', 'svg-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
-    relatedTools: ['json-formatter'],
-    faqs: [
-      {
-        question: 'Can I edit SVG files?',
-        answer: 'Yes. Edit SVG attributes and source code with live updates.'
-      },
-      {
-        question: 'Can I inspect SVG structure?',
-        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
-      },
-      {
-        question: 'What information can I view?',
-        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
-      }
-    ],
-    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
-                <p>
-                  Open, inspect, edit, and analyze SVG files directly in your browser.
-                  Explore SVG layers, modify element attributes, edit XML source, and view
-                  useful SVG statistics and color information in real time.
-                </p>
-
-                <h3>Features</h3>
-
-                <ul>
-                  <li>Live SVG rendering.</li>
-                  <li>SVG element tree navigation.</li>
-                  <li>Attribute and property inspection.</li>
-                  <li>Raw SVG source editor.</li>
-                  <li>Color palette extraction.</li>
-                  <li>SVG statistics and analysis.</li>
-                  <li>Multi-file SVG workspace.</li>
-                  <li>Zoom and viewport controls.</li>
-                </ul>`
-  },
-  {
-    id: 'image-filter',
-    slug: 'image-filter',
-    name: 'CSS Image & SVG Color Filter Generator',
-    shortDescription: 'Generate CSS filters that transform black icons and SVGs into any target color, with live preview, fine-tuning controls, and batch processing.',
-    metaTitle: 'CSS Image & SVG Filter Generator - Convert Icons to Any Color - devsight',
-    metaDescription: 'Generate accurate CSS filter values for PNG, SVG, and icon assets. Preview color matching, adjust filters manually, compare results, and export production-ready CSS instantly.',
-    categoryId: 'design-tools',
-    icon: 'filter',
-    tags: ['css-filter', 'svg', 'icons', 'color-generator', 'image-tools', 'css', 'frontend', 'design', 'color-matching', 'svg-color'],
-    relatedTools: ['svg-viewer', 'color-picker'],
-    faqs: [
-      {
-        question: 'What does this tool do?',
-        answer: 'It generates CSS filter values that recolor black icons, SVGs, and images to closely match a target color.'
-      },
-      {
-        question: 'Can I upload my own SVG files?',
-        answer: 'Yes. You can upload SVG, PNG, and other image formats for live preview and filter testing.'
-      },
-      {
-        question: 'Can I manually adjust the generated filter?',
-        answer: 'Yes. Fine-tune invert, sepia, saturation, hue rotation, brightness, and contrast values to achieve the desired result.'
-      },
-      {
-        question: 'Does it support batch processing?',
-        answer: 'Yes. Multiple images can be loaded and previewed using the same generated filter settings.'
-      },
-      {
-        question: 'Does it provide SVG color recommendations?',
-        answer: 'Yes. For SVG files, the tool suggests direct fill and stroke color replacements as an alternative to CSS filters.'
-      }
-    ],
-    detailedGuide: `
-    <h2>CSS Filter Color Generator</h2>
-
-    <p>
-      Convert black SVGs, icons, and images into any target color using
-      automatically generated CSS filter values.
-    </p>
-
-    <h3>Features</h3>
-
-    <ul>
-      <li>Generate CSS filters from any HEX or RGB color.</li>
-      <li>Live icon and image preview.</li>
-      <li>Upload SVG, PNG, and other image formats.</li>
-      <li>Manual filter adjustment controls.</li>
-      <li>Color accuracy scoring and comparison.</li>
-      <li>SVG fill and stroke color recommendations.</li>
-      <li>Batch image preview mode.</li>
-      <li>Copy-ready CSS output.</li>
-    </ul>
-
-    <h3>Use Cases</h3>
-
-    <ul>
-      <li>Recolor monochrome SVG icons.</li>
-      <li>Generate CSS filters for design systems.</li>
-      <li>Match brand colors without editing assets.</li>
-      <li>Preview color transformations before deployment.</li>
-      <li>Optimize icon theming for web applications.</li>
-    </ul>
-
-    <p>
-      All calculations and previews run entirely in the browser without
-      uploading files to external servers.
-    </p>
-  `
-  },
-  {
-    id: 'image-compressor',
-    slug: 'image-compressor',
-    name: 'Image Compressor',
-    shortDescription: 'Compress JPG, PNG, WEBP and other image formats while reducing file size and preserving visual quality.',
-    metaTitle: 'Image Compressor - Reduce JPG, PNG & WEBP File Size - devsight',
-    metaDescription: 'Compress images online with adjustable quality settings. Reduce JPG, PNG, WEBP and other image sizes directly in your browser.',
-    categoryId: 'design-tools',
-    icon: 'compress',
-    tags: ['image-compressor', 'compressor', 'jpg', 'png', 'webp', 'optimization', 'image-tools'],
-    relatedTools: ['image-type-converter', 'svg-viewer'],
-    faqs: [
-      {
-        question: 'Which formats can be compressed?',
-        answer: 'JPG, PNG, WEBP and other common image formats can be compressed.'
-      },
-      {
-        question: 'Can I compress multiple images?',
-        answer: 'Yes. Batch compression is supported.'
-      },
-      {
-        question: 'Will image quality be affected?',
-        answer: 'Compression settings allow balancing file size and visual quality.'
-      }
-    ],
-    detailedGuide: `
-    <h2>Image Compressor</h2>
-
-    <p>
-      Reduce image file sizes while maintaining visual quality.
-      Compress images directly in your browser without uploading files.
-    </p>
-
-    <h3>Features</h3>
-
-    <ul>
-      <li>Compress JPG, PNG and WEBP images.</li>
-      <li>Adjustable compression settings.</li>
-      <li>Single and bulk compression.</li>
-      <li>Real-time size comparison.</li>
-      <li>Download optimized images instantly.</li>
-      <li>Client-side processing.</li>
-    </ul>
-  `},
-  {
-    id: 'unit-converter',
-    slug: 'unit-converter',
-    name: 'Universal Unit Converter & Measurement Calculator',
-    shortDescription: 'Convert length, weight, temperature, speed, pressure, energy, data storage, electrical units, fuel economy, and dozens of other measurement categories instantly.',
-    metaTitle: 'Unit Converter - Convert Length, Weight, Temperature & More - devsight',
-    metaDescription: 'Advanced offline unit converter supporting 30+ categories including length, mass, temperature, pressure, energy, data storage, electrical units, cooking measurements, fuel economy, and more.',
-    categoryId: 'measurement-tools',
-    icon: 'swap_horiz',
-    tags: ['unit-converter', 'measurement', 'length', 'temperature', 'weight', 'speed', 'pressure', 'energy', 'data-storage', 'engineering'],
-    relatedTools: ['unix-timestamp'],
-    faqs: [
-      {
-        question: 'How many measurement categories are supported?',
-        answer: 'The converter supports more than 30 categories including length, area, volume, mass, temperature, time, speed, pressure, energy, power, electrical measurements, data storage, fuel economy, cooking measurements, typography units, and more.'
-      },
-      {
-        question: 'Are temperature conversions handled correctly?',
-        answer: 'Yes. Temperature conversions use dedicated formulas for Celsius, Fahrenheit, and Kelvin, ensuring accurate offset-based calculations instead of simple multiplication factors.'
-      },
-      {
-        question: 'How is fuel economy converted?',
-        answer: 'Fuel economy supports reciprocal calculations between km/L, MPG (US), MPG (Imperial), and L/100km, using specialized conversion logic for accurate results.'
-      },
-      {
-        question: 'Can I see the conversion formula?',
-        answer: 'Yes. The tool provides detailed formulas, conversion factors, and step-by-step explanations showing exactly how each result is calculated.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Universal Measurement Conversion Tool</h2>
-
-      <p>
-        Convert values across more than 30 engineering, scientific, technical,
-        and everyday measurement categories. All calculations are performed
-        instantly in your browser with no server processing required.
-      </p>
-
-      <h3>Supported Categories</h3>
-
-      <div>
-        <span>Length</span>
-        <span>Area</span>
-        <span>Volume</span>
-        <span>Mass & Weight</span>
-        <span>Temperature</span>
-        <span>Time</span>
-        <span>Speed</span>
-        <span>Pressure</span>
-        <span>Energy</span>
-        <span>Power</span>
-        <span>Force</span>
-        <span>Frequency</span>
-        <span>Data Storage</span>
-        <span>Data Transfer Rate</span>
-        <span>Fuel Economy</span>
-        <span>Angle</span>
-        <span>Density</span>
-        <span>Electric Current</span>
-        <span>Voltage</span>
-        <span>Resistance</span>
-        <span>Capacitance</span>
-        <span>Inductance</span>
-        <span>Charge</span>
-        <span>Illuminance</span>
-        <span>Luminous Flux</span>
-        <span>Magnetic Field</span>
-        <span>Torque</span>
-        <span>Flow Rate</span>
-        <span>Typography</span>
-        <span>Cooking Measurements</span>
-        <span>Percentages & Ratios</span>
-      </div>
-
-      <h3>Key Features</h3>
-
-      <ul>
-        <li>Instant bidirectional conversions.</li>
-        <li>Custom decimal precision controls.</li>
-        <li>Temperature-specific conversion formulas.</li>
-        <li>Advanced fuel economy calculations.</li>
-        <li>Step-by-step conversion explanations.</li>
-        <li>Engineering and scientific unit support.</li>
-        <li>Offline browser-based calculations.</li>
-        <li>Conversion history tracking.</li>
-      </ul>
-
-      <h3>How It Works</h3>
-
-      <ol>
-        <li>Select a measurement category.</li>
-        <li>Choose the source unit.</li>
-        <li>Choose the destination unit.</li>
-        <li>Enter a value to convert.</li>
-        <li>View the converted result instantly.</li>
-        <li>Review the formula and calculation steps.</li>
-      </ol>
-  `},
-  {
-    id: 'date-difference',
-    slug: 'date-difference',
-    name: 'Date Difference Calculator & Business Day Counter',
-    shortDescription: 'Calculate the exact years, months, weeks, days, hours, and minutes between two dates. Counts business days and working hours accurately.',
-    metaTitle: 'Date Difference Calculator - Count Days & Business Days - devsight',
-    metaDescription: 'An advanced date difference calculator. Extract exact chronological increments (Y/M/D/H/M/S), total units, and skip weekends for business days count.',
-    categoryId: 'date-time-tools',
-    icon: 'date_range',
-    tags: ['date', 'difference', 'days-counter', 'business-days', 'calendar', 'cron'],
-    relatedTools: [],
-    faqs: [
-      {
-        question: 'How does the date difference calculator count business days?',
-        answer: 'It loops chronological days between the start and end dates and excludes Saturdays and Sundays to output standard working days.'
-      },
-      {
-        question: 'Are holidays factored into the business days calculation?',
-        answer: 'Currently, standard national holidays are not skipped automatically as they vary by country. However, you can use the result as a baseline and subtract specific holidays manually.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Calculate Durations & Business Days</h2>
-      <p>This developer-ready tool provides precise calendar analysis. Select starting and ending bounds to instantly obtain chronological gaps, total accumulated hours/seconds, and business days (excluding weekends).</p>
-    `
-  },
-  {
-    id: 'unix-timestamp',
-    slug: 'unix-timestamp',
-    name: 'Unix Epoch Timestamp Converter & Local Time Tracker',
-    shortDescription: 'Parse millisecond and second-level timestamps to ISO-8601, local calendars, and generate current database stamps.',
-    metaTitle: 'Unix Epoch Converter - Convert Timestamps to Human Dates - devsight',
-    metaDescription: 'A high-performance Unix Timestamp converter tool. Translate seconds, milliseconds or nanoseconds into local human calendar datetimes and ISO-8601 format.',
-    categoryId: 'date-time-tools',
-    icon: 'access_time',
-    tags: ['unix', 'timestamp', 'epoch', 'conversion', 'iso-8601', 'datetime'],
-    relatedTools: ['uuid-generator', 'password-generator'],
-    faqs: [
-      {
-        question: 'What is Unix/Epoch Time?',
-        answer: 'It measures the cumulative seconds that have transpired since midnight UTC on January 1, 1970, excluding leap seconds.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Managing Datetime Transformations Offline</h2>
-      <p>API exchanges convey time metrics in milliseconds. Convert inputs dynamically to troubleshoot server timestamps and verify localization.</p>
-    `
-  },
-  {
-    id: 'flexbox-playground',
-    slug: 'flexbox-playground',
-    name: 'Interactive Flexbox CSS & Tailwind Playground',
-    shortDescription: 'Tweak spacing properties, flex alignments, wrap conditions visually and export exact Tailwind utility class lists or raw CSS.',
-    metaTitle: 'Flexbox Layout Playground - Visual Tailwind & CSS Generator - devsight',
-    metaDescription: 'Design, test and export CSS Flexbox coordinate rules. Set rows, alignments, offsets, gap spacings, and inspect responsive boxes visually.',
-    categoryId: 'css-ui-tools',
-    icon: 'crop_free',
-    tags: ['flexbox', 'css-layout', 'tailwind', 'flex-item', 'visualizer', 'design-tool'],
-    relatedTools: ['angular-component-generator'],
-    faqs: [
-      {
-        question: 'Can I copy both Tailwind classes and standard CSS?',
-        answer: 'Yes, both code paradigms are dynamically updated in real-time as you tweak child alignments inside the grid viewport.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Accelerate Layout Building with Live Flexbox Visualizers</h2>
-      <p>Positioning interface cards requires configuring Flex layouts. Our visual playground provides intuitive control of layouts with instant code generation output.</p>
-    `
-  },
-  {
-    id: 'typescript-workspace',
-    slug: 'typescript-workspace',
-    name: 'TypeScript Developer Workspace',
-    shortDescription: 'Generate interfaces, enums, DTOs, Zod schema files, convert JSON or JS, build custom generic utility types, and run circular-dependency/complexity checklists.',
-    metaTitle: 'TypeScript Interactive Code Generators and Analyzers - devsight',
-    metaDescription: 'All-in-one sandbox of TypeScript developer generators and tools. Build interfaces, construct Zod schemas, test Type helpers, optimize structures local and offline.',
-    categoryId: 'typescript-tools',
-    icon: 'psychology',
-    tags: ['typescript', 'interface', 'zod', 'generator', 'converter', 'type-safety', 'utilities'],
-    relatedTools: ['angular-component-generator'],
-    faqs: [
-      {
-        question: 'Does the JSON to TypeScript Interface converter support nested parameters?',
-        answer: 'Yes, our converter recursively parses entire JSON dictionary layers, automatically naming interface subtypes and resolving types like arrays and nulls.'
-      },
-      {
-        question: 'Are the type checks performed locally?',
-        answer: 'Absolutely. Everything runs 100% locally inside your web browser. No logs or codes are sent to third parties, ensuring complete safety for your private APIs and corporate schemas.'
-      }
-    ],
-    detailedGuide: `
-      <h2>The Definitive TypeScript developer Companion</h2>
-      <p>Managing strict TypeScript projects demands boilerplate: from DTO definitions to runtime Zod validations. Use the sandbox tabs to generate, compile, and clean types instantly.</p>
-    `
-  },
-  {
-    id: 'rxjs-visualizer',
-    slug: 'rxjs-visualizer',
-    name: 'RxJS Pipeline & Stream Studio',
-    shortDescription: 'Design, trace and test reactive pipelines. Map asynchronous emissions into interactive marble diagrams, compare subjects, trace subscriptions, and generate boilerplates.',
-    metaTitle: 'RxJS Stream Center - Visual Marble diagrams and Custom Pipe Builders - devsight',
-    metaDescription: 'Visual sandbox for checking stream timelines. Interactive marble models, memory subscription controllers, and custom service builders.',
-    categoryId: 'rxjs-tools',
-    icon: 'insights',
-    tags: ['rxjs', 'reactive', 'observable', 'marble-diagram', 'operators', 'service-generator', 'signals'],
-    relatedTools: ['angular-component-generator', 'unix-timestamp'],
-    faqs: [
-      {
-        question: 'What is an RxJS Marble Diagram?',
-        answer: 'It is a visual representation of events occurring over timeline streams. Balls indicate individual values, vertical bars indicate completion states, and crosses indicate runtime failures.'
-      },
-      {
-        question: 'Does the suite generate Signal Store reactive bindings?',
-        answer: 'Yes, check the Code Generators tab to instantly build Angular-compatible Signal stores combined with RxJS state tracking parameters.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Interactive Reactive Programming Sandbox</h2>
-      <p>Master asynchronous architectures. Change filter or interval offsets on our visual timelines and watch output values ripple down the subscriber list in real-time.</p>
-    `
-  },
-  {
-    id: 'regex-studio',
-    slug: 'regex-studio',
-    name: 'Regex Studio & Visual Composer',
-    shortDescription: 'Build Regular Expressions, capture groups visually, inspect subfields, trace step-by-step token parses, validate multiline inputs, and export code templates.',
-    metaTitle: 'Regex Studio - Multi-Language Generator and Analyzer - devsight',
-    metaDescription: 'Visual regex constructor. Test parameters on real text lines, get instant plain-English parsers, load commonly used pattern cards, and build safely.',
-    categoryId: 'regex-tools',
-    icon: 'history_edu',
-    tags: ['regex', 'regexp', 'multiline', 'composer', 'pattern-library', 'token-analyzer', 'safety-checker'],
-    relatedTools: ['jwt-decoder'],
-    faqs: [
-      {
-        question: 'What language systems are supported by the code exporter?',
-        answer: 'Our exporter creates compliant syntax and flag definitions for JavaScript, TypeScript, Python, Java, and PHP.'
-      },
-      {
-        question: 'How does the Catastrophic Backtracking check keep my search threads safe?',
-        answer: 'It scans patterns for nested quantifiers on overlapping character sets, alerting you to exponential search paths that would lock down server runtimes.'
-      }
-    ],
-    detailedGuide: `
-      <h2>Constructing Fail-Safe Regular Expressions</h2>
-      <p>Regular expressions can be hard to read and test. Use Regex Studio to dissect, compose, and safely package code patterns without security concerns.</p>
-    `
-  },
   {
     id: 'text-formatter',
     slug: 'text-formatter',
@@ -1044,9 +226,9 @@ export const TOOLS: ToolMetadata[] = [
   {
     id: 'text-diff-checker',
     slug: 'text-diff-checker',
-    name: 'Visual Text Diff Checker',
+    name: 'Text Difference Checker',
     shortDescription: 'Check real-time differences and insertions between two text lines or drafts. Side-by-side or inline highlighter algorithm.',
-    metaTitle: 'Visual Text Diff Checker - Compare Text Differences Online',
+    metaTitle: 'Text Difference Checker - Compare Text Differences Online',
     metaDescription: 'Visual side-by-side diff comparison utility. Identify additions and deletions line-by-line with exact color coding securely inside your browser.',
     categoryId: 'text-utilities',
     icon: 'difference',
@@ -1066,7 +248,7 @@ export const TOOLS: ToolMetadata[] = [
   {
     id: 'case-converter',
     slug: 'case-converter',
-    name: 'Smart Casing & Name Converter',
+    name: 'Case Converter (camelCase, PascalCase, snake_case & kebab-case)',
     shortDescription: 'Convert strings on the fly to camelCase, snake_case, PascalCase, kebab-case, COSNSTANT_CASE, filename patterns or variable templates.',
     metaTitle: 'Text Case & Naming Case Converter - Free Online Developer Suite',
     metaDescription: 'Instantly convert text arrays into standard programming casings: kebab-case, sentence case, uppercase, snake_case or clean operating filenames.',
@@ -1200,7 +382,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'html-escape',
     name: 'Secure Code Escaper & Binary/Hex',
     shortDescription: 'Escape and unescape HTML, XML, JSON, SQL or RegExp safely. Encoder/decoder for binary and hex conversions of strings.',
-    metaTitle: 'Secure HTML Escaper & SQL Code Sanitizer - devsight',
+    metaTitle: 'Secure HTML Escaper & SQL Code Sanitizer - Devsight',
     metaDescription: 'Escape special characters into HTML entities, avoid SQL injection issues with escapes, or encode arrays into binary string formats.',
     categoryId: 'text-utilities',
     icon: 'gpp_maybe',
@@ -1240,11 +422,851 @@ export const TOOLS: ToolMetadata[] = [
     `
   },
   {
+    id: 'json-editor',
+    slug: 'json-editor',
+    name: 'JSON Editor, Formatter, Validator & Tree Viewer',
+    shortDescription: 'Edit, format, validate, and visualize JSON using text, tree, and table views with real-time schema validation and formatting tools.',
+    metaTitle: 'Advanced JSON Editor, Tree Viewer & Validator Online | Devsight',
+    metaDescription: 'Edit JSON online with an interactive tree editor, table view, code editor, schema validation, formatting, search and replace, and transformation tools.',
+    categoryId: 'json-tools',
+    icon: 'edit_note',
+    tags: ['json', 'editor', 'tree', 'tree-view', 'formatter', 'validator', 'schema', 'table-view'],
+    relatedTools: ['json-merge', 'json-difference'],
+    faqs: [
+      {
+        question: 'How can I edit JSON using the Tree View?',
+        answer:
+          'The Tree View displays every object and array as expandable nodes. You can edit keys and values inline, add or remove properties, change value types, duplicate nodes, and reorganize nested structures without manually editing brackets or commas.'
+      },
+      {
+        question: 'Does the editor validate JSON automatically?',
+        answer:
+          'Yes. The editor validates JSON syntax in real time and supports JSON Schema validation to identify structural issues and provide detailed validation messages.'
+      },
+      {
+        question: 'What editing features are available?',
+        answer:
+          'The editor includes formatting, minification, key sorting, search and replace, tree editing, table view for arrays, syntax highlighting, and data transformation utilities.'
+      }
+    ],
+    detailedGuide: `
+    <h2>JSON Editor User Guide</h2>
+    <p>Edit, validate, and format JSON efficiently using multiple workspace views designed for both simple and complex documents.</p>
+    <h3>Workspace Modes</h3>
+    <ul>
+      <li><strong>Text Editor:</strong> Edit JSON with syntax highlighting, formatting, line numbers, error detection, and code folding.</li>
+      <li><strong>Tree View:</strong> Expand nested objects, edit properties inline, add or remove nodes, duplicate values, and change data types visually.</li>
+      <li><strong>Table View:</strong> Display JSON arrays of objects as editable tables for quick data modification.</li>
+    </ul>
+    <h3>Available Tools</h3>
+    <ul>
+      <li>Beautify and Minify JSON</li>
+      <li>Sort Object Keys</li>
+      <li>Search and Replace</li>
+      <li>JSON Schema Validation</li>
+      <li>JSON Transformations</li>
+      <li>Copy and Download JSON</li>
+    </ul>
+    <h3>Who Is It For?</h3>
+    <p>The editor is ideal for developers, API testing, configuration editing, debugging payloads, and managing large nested JSON documents directly in the browser.</p>
+  `
+  },
+  {
+    id: 'json-difference',
+    slug: 'json-difference',
+    name: 'Advanced JSON Difference Checker',
+    shortDescription: 'Compare two JSON documents side-by-side, highlight added, removed, and modified values, ignore key order or whitespace, and generate detailed difference reports.',
+    metaTitle: 'Advanced JSON Difference Checker Online - Side-by-Side JSON Diff | Devsight',
+    metaDescription: 'Compare JSON files online with semantic diff detection. Highlight additions, deletions, and modifications, ignore key order or whitespace, and export detailed JSON difference reports.',
+    categoryId: 'json-tools',
+    icon: 'compare',
+    tags: ['json', 'difference', 'compare', 'diff', 'json diff', 'schema', 'validator'],
+    relatedTools: ['json-merge', 'json-editor'],
+    faqs: [
+      {
+        question: 'How does the JSON Difference Checker work?',
+        answer:
+          'The tool parses both JSON documents into structured objects before comparing them. Instead of performing a simple text comparison, it detects additions, removals, modifications, and moved properties while minimizing false positives caused by formatting differences.'
+      },
+      {
+        question: 'Can I ignore key order or whitespace during comparison?',
+        answer:
+          'Yes. You can ignore key ordering, whitespace, and optionally property name casing so that only meaningful structural differences are highlighted.'
+      },
+      {
+        question: 'Can I export the comparison results?',
+        answer:
+          'Yes. After comparison, you can export the highlighted differences or generate a detailed report for documentation, reviews, debugging, or auditing purposes.'
+      }
+    ],
+    detailedGuide: `
+    <h2>JSON Difference Checker User Guide</h2>
+    <p>Compare two JSON documents to quickly identify structural and value differences. The comparison is performed semantically, making it more accurate than traditional text-based diff tools.</p>
+
+    <h3>How to Compare JSON</h3>
+    <ol>
+      <li><strong>Paste Original JSON:</strong> Load the first JSON document into the left editor.</li>
+      <li><strong>Paste Updated JSON:</strong> Load the second JSON document into the right editor.</li>
+      <li><strong>Select Comparison Options:</strong> Ignore key order, whitespace, or property name case as needed.</li>
+      <li><strong>Run Comparison:</strong> View additions, deletions, modifications, and unchanged nodes in an interactive diff viewer.</li>
+      <li><strong>Export Results:</strong> Download or copy the comparison report for debugging, code review, or documentation.</li>
+    </ol>
+
+    <h3>Comparison Features</h3>
+    <ul>
+      <li><strong>Semantic JSON Comparison:</strong> Compare JSON structures instead of raw text.</li>
+      <li><strong>Side-by-Side Diff View:</strong> Easily inspect differences between two documents.</li>
+      <li><strong>Unified Diff View:</strong> Review all changes in a single continuous view.</li>
+      <li><strong>Difference Summary:</strong> Quickly see the number of added, removed, and modified nodes.</li>
+      <li><strong>Flexible Comparison:</strong> Ignore formatting differences such as whitespace, key order, and optional case sensitivity.</li>
+    </ul>
+  `
+  },
+  {
+    id: 'json-merge',
+    slug: 'json-merge',
+    name: 'Advanced JSON Merge Tool',
+    shortDescription: 'Merge two JSON documents with interactive conflict resolution, semantic comparison, RFC 6902 patch generation, and merged JSON export.',
+    metaTitle: 'Advanced JSON Merge Tool Online | Merge & Resolve JSON Conflicts | Devsight',
+    metaDescription: 'Merge JSON files online with semantic comparison, interactive conflict resolution, automatic merging, RFC 6902 JSON Patch generation, and merged output export.',
+    categoryId: 'json-tools',
+    icon: 'merge',
+    tags: ['json', 'merge', 'compare', 'conflict', 'json patch', 'rfc6902', 'diff'],
+    relatedTools: ['json-difference', 'json-editor'],
+    faqs: [
+      {
+        question: 'How does JSON Merge work?',
+        answer:
+          'The tool compares two JSON documents, automatically merges non-conflicting changes, and highlights conflicts that require manual review before generating the final merged JSON.'
+      },
+      {
+        question: 'Can I resolve merge conflicts manually?',
+        answer:
+          'Yes. Each conflicting value can be reviewed individually, allowing you to choose the value from either JSON document before generating the merged result.'
+      },
+      {
+        question: 'Does the tool generate JSON Patch files?',
+        answer:
+          'Yes. You can generate RFC 6902 JSON Patch operations representing the changes between the original and merged documents for use in APIs and automation workflows.'
+      }
+    ],
+    detailedGuide: `
+    <h2>JSON Merge Tool User Guide</h2>
+    <p>Merge two JSON documents intelligently by combining matching structures, resolving conflicts, and exporting a clean merged result.</p>
+    <h3>How to Merge JSON</h3>
+    <ol>
+      <li><strong>Load Source JSON:</strong> Paste the original JSON into the left editor.</li>
+      <li><strong>Load Target JSON:</strong> Paste the updated JSON into the right editor.</li>
+      <li><strong>Compare Structures:</strong> The tool automatically detects additions, deletions, and conflicting values.</li>
+      <li><strong>Resolve Conflicts:</strong> Review highlighted conflicts and choose which value should appear in the final document.</li>
+      <li><strong>Generate Output:</strong> Export the merged JSON or generate an RFC 6902 JSON Patch.</li>
+    </ol>
+    <h3>Features</h3>
+    <ul>
+      <li>Semantic JSON Merge</li>
+      <li>Automatic Merge for Non-conflicting Changes</li>
+      <li>Interactive Conflict Resolution</li>
+      <li>Side-by-Side Comparison</li>
+      <li>RFC 6902 JSON Patch Generation</li>
+      <li>Export Merged JSON</li>
+    </ul>
+    <h3>Common Use Cases</h3>
+    <p>Perfect for configuration management, API payload updates, collaborative development, version control workflows, and combining multiple JSON datasets.</p>
+  `
+  },
+  {
+    id: 'password-generator',
+    slug: 'password-generator',
+    name: 'Secure Password Generator & Strength Meter',
+    shortDescription: 'Create robust, unpredictable passwords featuring customized length parameters, special layouts, and local complexity assessment indices.',
+    metaTitle: 'Secure Password Generator - Custom Passphrase Configurator - Devsight',
+    metaDescription: 'Generate cryptic passwords locally. Configure letters, numerals, special characters, and length. View entropy metrics instantly.',
+    categoryId: 'security-tools',
+    icon: 'lock',
+    tags: ['password', 'credentials', 'entropy', 'generator', 'security', 'crypto'],
+    relatedTools: ['uuid-generator', 'jwt-decoder'],
+    faqs: [
+      {
+        question: 'How is the random secret generated?',
+        answer: 'Our engine uses standard Web Cryptography API guarantees (window.crypto.getRandomValues), providing cryptographically secure pseudo-random number inputs.'
+      },
+      {
+        question: 'What makes a password strong?',
+        answer: 'A combination of length (typically 12+ characters), lowercase, uppercase, numerals, and non-alphabetic symbols forces immense search space constraints, mitigating brute-force risk.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Generate High-Entropy Passwords Online</h2>
+      <p>Protect system access and API clients by generating unique tokens. Avoid reuse which risks credential stuffing vulnerability leaks.</p>
+      <h3>Configuration Guidelines</h3>
+      <ul>
+        <li><strong>Length:</strong> Standard platforms require 12 or 16 characters for administrative profiles.</li>
+        <li><strong>Character Selection:</strong> Blend numeric characters, custom bracket systems, and symbols together.</li>
+        <li><strong>Copying Safeguard:</strong> All processing remains offline inside sandbox memory, protecting items from leak risks.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'jwt-decoder',
+    slug: 'jwt-decoder',
+    name: 'JWT Decoder & Token Inspector',
+    shortDescription: 'Extract encoded JWT header, payload attributes, expiration statuses, and validation metadata safely without data transmission.',
+    metaTitle: 'Secure JWT Token Decoder - JSON Web Token Payload Inspector - Devsight',
+    metaDescription: 'Decode JWTs locally in real-time. Inspect headers, claims, expiration status, and algorithm signatures with strict developer privacy.',
+    categoryId: 'security-tools',
+    icon: 'gavel',
+    tags: ['jwt', 'jsonwebtoken', 'oauth', 'decode', 'payload', 'claims'],
+    relatedTools: ['password-generator'],
+    faqs: [
+      {
+        question: 'Does Devsight store token keys?',
+        answer: 'Never. All validation and base64url slicing execute client-side. We do not register records, query history, or share logs, making it entirely secure for live session keys.'
+      },
+      {
+        question: 'What is a JWT composed of?',
+        answer: 'A standard JSON Web Token consists of three distinct segments separated by periods: Header (specifying hashing algorithm), Payload (session details and claims), and Signature (verifying creator identity).'
+      }
+    ],
+    detailedGuide: `
+      <h2>Analyze OAuth Web Tokens Client-Side</h2>
+      <p>Authenticating client transactions requires configuring JSON Web Tokens containing claim keys like <em>iss</em>, <em>exp</em>, <em>sub</em>, and custom scopes. Use our decoder to isolate parameters.</p>
+      <h3>How to Inspect Jwt</h3>
+      <ol>
+        <li>Direct your authorization token into the entry pane.</li>
+        <li>Inspect decoded sections: Devsight decomposes sections, displaying payloads in readable, highlighted syntax.</li>
+        <li>Check validity benchmarks: Our panel flags expiration parameters, comparing <code>exp</code> markers with UTC timestamps.</li>
+      </ol>
+    `
+  },
+  {
+    id: 'base64-toolkit',
+    slug: 'base64-toolkit',
+    name: 'Advanced Base64 Toolkit Suite',
+    shortDescription: 'All-in-one Base64 developer hub. Validate, format, encode, decode, safe-convert URL parameters, parse JSON, images, PDFs, and extract payloads offline.',
+    metaTitle: 'Advanced Base64 Toolkit - All-in-one Encoder & Decoder - Devsight',
+    metaDescription: 'An all-in-one secure developer toolbox for Base64 processing. Convert text, images and binary data with smart auto-detection, validation, and layout tools.',
+    categoryId: 'security-tools',
+    icon: 'construction',
+    tags: ['base64', 'toolkit', 'binary', 'url-safe', 'atob', 'btoa'],
+    relatedTools: [],
+    faqs: [
+      {
+        question: 'Is there raw data leakage or server uploads in the Base64 Toolkit?',
+        answer: 'No. The entire suite operates entirely client-side. All processing, calculations, and rendering occur strictly in your local browser sandbox, ensuring absolute data privacy for confidential tokens and credentials.'
+      },
+      {
+        question: 'What formats does the batch converter support?',
+        answer: 'The encoder and file workflow supports PNG, JPG, SVG, WebP, PDF, TXT, JSON, HTML, and audio formats (such as MP3/WAV) up to large payloads without browser freeze.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Comprehensive Guide to the Base64 Toolkit Suite</h2>
+      <p>Base64 is a binary-to-text encoding scheme that represents binary data in an ASCII string format. This toolkit provides all necessary operations to build, validate, analyze, and convert Base64 sequences securely.</p>
+      <h3>Primary Capabilities</h3>
+      <ul>
+        <li><strong>Smart Workspace:</strong> Auto-detects whether your input is cleartext, a standard Base64 string, URL-Safe Base64, raw Hex bytes, or a JSON payload.</li>
+        <li><strong>Advanced Previews:</strong> View output in rich split panels. Dynamic viewers let you test images, play audio streams, scan PDF documents, or inspect highlighted HTML directly.</li>
+        <li><strong>Transformer Controls:</strong> Strip spaces, normalize padding, customize line limits (chunking), and format parsed JSON.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'angular-component-generator',
+    slug: 'angular-component-generator',
+    name: 'Angular 21 component and service generator tool',
+    shortDescription: 'Customize properties like styling, components prefix, standard inputs/outputs, and instantly export beautiful standalone Angular code.',
+    metaTitle: 'Angular Standalone Component & Service Template Maker - Devsight',
+    metaDescription: 'Generate clean Angular standalone TypeScript files including computed properties, input signals, lifecycle hooks, and template files instantly.',
+    categoryId: 'angular-tools',
+    icon: 'layers',
+    tags: ['angular', 'component', 'service', 'directive', 'boilerplate', 'standalone'],
+    relatedTools: ['jwt-decoder'],
+    faqs: [
+      {
+        question: 'Does this template render the newer Angular styles?',
+        answer: 'Yes, it creates Angular 21 modules, using signals for inputs (input()), output() triggers, standard constructor-less dependency injections, and modern control flow.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Automate Angular Standalone Declarations</h2>
+      <p>Setting up multiple angular layers requires manual configuration. Simply model fields, event emitters, style options, and copy compiled template segments to compile instantly.</p>
+    `
+  },
+  {
+    id: 'fake-data-generator',
+    slug: 'fake-data-generator',
+    name: 'Fake Data Generator',
+    shortDescription: 'Generate realistic fake data for testing, development, databases, APIs, and demos. Create names, emails, addresses, phone numbers, JSON, SQL, CSV, and more.',
+    metaTitle: 'Fake Data Generator - Mock JSON, SQL, CSV & Test Data | DevSight',
+    metaDescription: 'Free online fake data generator for developers. Generate realistic names, emails, addresses, phone numbers, UUIDs, JSON, SQL, CSV, and other mock data securely in your browser.',
+    categoryId: 'mock-data-tools',
+    icon: 'dataset',
+    tags: ['fake-data', 'mock-data', 'test-data', 'data-generator', 'json-generator', 'sql-generator', 'csv-generator', 'uuid', 'developer-tools', 'api-testing'],
+    relatedTools: ['json-editor', 'uuid-generator'],
+    faqs: [
+      {
+        question: 'What types of fake data can I generate?',
+        answer:
+          'Generate names, email addresses, phone numbers, addresses, usernames, company names, UUIDs, dates, JSON, SQL, CSV, and other realistic test data.'
+      },
+      {
+        question: 'Can I customize the generated data?',
+        answer:
+          'Yes. Configure record count, data fields, formats, locales, and output types to match your testing requirements.'
+      },
+      {
+        question: 'Is the generated data safe to use?',
+        answer:
+          'Yes. The generated data is randomly created and does not contain real personal information.'
+      }
+    ],
+    detailedGuide: `
+    <h2>Fake Data Generator</h2>
+
+    <p>
+      Generate realistic mock data for testing, development, demonstrations, and database seeding.
+      Create thousands of fake records instantly without exposing real user information.
+    </p>
+
+    <h3>Features</h3>
+
+    <ul>
+      <li>Generate names, emails, phone numbers, and addresses.</li>
+      <li>Create usernames, company names, job titles, and URLs.</li>
+      <li>Generate UUIDs, dates, numbers, and custom values.</li>
+      <li>Export data as JSON, CSV, SQL, or Excel-compatible formats.</li>
+      <li>Customize fields, record count, and locale.</li>
+      <li>Generate API-ready mock JSON responses.</li>
+      <li>Create database seed data for development.</li>
+      <li>100% browser-based processing with no data uploads.</li>
+    </ul>
+
+    <h3>Common Use Cases</h3>
+
+    <ul>
+      <li>Seed development and testing databases.</li>
+      <li>Create sample API responses.</li>
+      <li>Populate demo applications.</li>
+      <li>Test forms and validation rules.</li>
+      <li>Generate realistic datasets for frontend development.</li>
+    </ul>`
+  },
+  {
+    id: 'uuid-generator',
+    slug: 'uuid-generator',
+    name: 'UUID & GUID Generator',
+    shortDescription: 'Batch produce standard UUID v4 or v1 compliance identities with copy automation and uppercase parameters.',
+    metaTitle: 'Standard UUID Generator - Free Online GUID Builder - Devsight',
+    metaDescription: 'Generate random UUIDs (version 4) or time-based UUIDs (version 1) in single or batch modes. Fully compliant with RFC 4122 specifications.',
+    categoryId: 'mock-data-tools',
+    icon: 'fingerprint',
+    tags: ['uuid', 'guid', 'rfc4122', 'key-generator', 'unique', 'random'],
+    relatedTools: ['password-generator'],
+    faqs: [
+      {
+        question: 'What is an RFC 4122 UUID?',
+        answer: 'A Universally Unique Identifier, comprising 128 bits represented in structured 32-character hexadecimal blocks separated by hyphens (8-4-4-4-12 shape).'
+      },
+      {
+        question: 'Can I generate thousands of GUID keys instantly?',
+        answer: 'Yes, our component runs extremely fast, compiling lists of over 100 identifier variants instantly without causing thread-blocking lag.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Optimizing Database Primary Keys with RFC 4122 Identifiers</h2>
+      <p>UUID generation solves transaction indexing synchronization problems in decentralized database models. Rather than incrementing IDs under bottleneck server controls, clients construct UUIDs independently.</p>
+      <h3>Applying v4 UUID Keys</h3>
+      <p>Since UUID v4 is driven entirely by pseudo-random entropy, probability collisions are astronomically low. Simply configure the generator to produce the volume you require, set uppercase formats as preferred, and copy.</p>
+    `
+  },
+  {
+    id: 'parquet-viewer',
+    slug: 'parquet-viewer',
+    name: 'Parquet File Viewer & Inspector',
+    shortDescription: 'Open, inspect, search, and analyze Apache Parquet files directly in your browser. View schemas, metadata, columns, and tabular data without uploading files.',
+    metaTitle: 'Parquet File Viewer & Inspector Online | View Apache Parquet Files | DevSight',
+    metaDescription: 'Free online Parquet file viewer. Open Apache Parquet files, inspect schemas, browse rows and columns, analyze metadata, search data, and export results securely in your browser.',
+    categoryId: 'data-file-tools',
+    icon: 'analytics',
+    tags: ['parquet', 'apache-parquet', 'parquet-viewer', 'parquet-inspector', 'schema-viewer', 'column-browser', 'metadata', 'data-analysis', 'table-viewer', 'big-data'],
+    relatedTools: ['json-editor', 'html-viewer', 'csv-viewer'],
+    faqs: [
+      { question: 'What is a Parquet file?', answer: 'Apache Parquet is a columnar storage file format designed for efficient data compression and fast analytical queries in big data and data engineering workflows.' },
+      { question: 'Can I inspect the schema of a Parquet file?', answer: 'Yes. View the complete schema, column types, nested structures, and metadata for every field.' },
+      { question: 'Are my Parquet files uploaded to a server?', answer: 'No. Files are processed entirely within your browser, keeping your data private and secure.' }
+    ],
+    detailedGuide: ` <h2>Parquet File Viewer & Inspector</h2> <p> Open, inspect, and analyze Apache Parquet files directly in your browser. Browse schemas, metadata, columns, and records without installing additional software or uploading your files. </p> <h3>Features</h3> <ul> <li>Open Apache Parquet (.parquet) files.</li> <li>View table data in an interactive grid.</li> <li>Inspect schemas and nested structures.</li> <li>Browse file metadata and column information.</li> <li>Search, filter, and sort records.</li> <li>View data types and null values.</li> <li>Export displayed data to CSV or JSON.</li> <li>100% browser-based processing with no file uploads.</li> </ul> <h3>Common Use Cases</h3> <ul> <li>Inspect data lake files.</li> <li>Validate ETL pipeline outputs.</li> <li>Debug analytics datasets.</li> <li>Review schemas before importing data.</li> <li>Explore large columnar datasets quickly.</li> </ul> `
+  },
+  {
+    id: 'svg-viewer',
+    slug: 'svg-viewer',
+    name: 'SVG Viewer & Editor',
+    shortDescription: 'View, inspect, edit, and analyze SVG files with live rendering, element navigation, source editing, and SVG statistics.',
+    metaTitle: 'SVG Viewer & Editor - Inspect, Edit & Analyze SVG Files - Devsight',
+    metaDescription: 'Open SVG files in your browser, inspect elements, edit source code, explore layers, view properties, extract colors, and analyze SVG structure in real time.',
+    categoryId: 'data-file-tools',
+    icon: 'image_search',
+    tags: ['svg', 'svg-viewer', 'svg-editor', 'vector', 'graphics', 'xml', 'inspector', 'svg-analyzer'],
+    relatedTools: ['json-formatter'],
+    faqs: [
+      {
+        question: 'Can I edit SVG files?',
+        answer: 'Yes. Edit SVG attributes and source code with live updates.'
+      },
+      {
+        question: 'Can I inspect SVG structure?',
+        answer: 'Yes. Browse SVG elements through an expandable layer tree.'
+      },
+      {
+        question: 'What information can I view?',
+        answer: 'View SVG properties, element details, statistics, and extracted color palettes.'
+      }
+    ],
+    detailedGuide: ` <h2>SVG Viewer & Editor</h2>
+                <p>
+                  Open, inspect, edit, and analyze SVG files directly in your browser.
+                  Explore SVG layers, modify element attributes, edit XML source, and view
+                  useful SVG statistics and color information in real time.
+                </p>
+
+                <h3>Features</h3>
+
+                <ul>
+                  <li>Live SVG rendering.</li>
+                  <li>SVG element tree navigation.</li>
+                  <li>Attribute and property inspection.</li>
+                  <li>Raw SVG source editor.</li>
+                  <li>Color palette extraction.</li>
+                  <li>SVG statistics and analysis.</li>
+                  <li>Multi-file SVG workspace.</li>
+                  <li>Zoom and viewport controls.</li>
+                </ul>`
+  },
+  {
+    id: 'html-viewer',
+    slug: 'html-viewer',
+    name: 'Interactive HTML Sandbox Viewer & DOM Inspector',
+    shortDescription: 'A fully safe, isolated sandboxed playground for real-time HTML/CSS/JS rendering. Features dual split side-by-side viewports, element inspection, dynamic nested DOM parsing, and accessibility warnings.',
+    metaTitle: 'HTML Viewer & Sandbox - Isolated DOM Inspector - Devsight',
+    metaDescription: 'Test and render markup sequences inside secure iframe containers. Highlight nested elements in real-time, audit structure for accessibility issues, and toggle scripts dynamically.',
+    categoryId: 'data-file-tools',
+    icon: 'preview',
+    tags: ['html', 'viewer', 'playground', 'dom-inspector', 'sandbox', 'validation'],
+    relatedTools: ['regex-studio'],
+    faqs: [
+      {
+        question: 'How is the HTML rendered securely?',
+        answer: 'We utilize sandboxed iframe variables with strict secure CSP flags (allow-popups-to-escape-sandbox, allow-forms, etc.) which mathematically isolates the execution layer from the main workspace. This protects the reader from cross-site scripting (XSS) risks while running local CSS and script layers.'
+      },
+      {
+        question: 'Can I inspect the active DOM node elements?',
+        answer: 'Yes, our interactive DOM Inspector builds a live virtual tree of your code markup, allowing you to highlight single element coordinates, modify attributes or style class listings on the fly, and trace nesting integrity.'
+      },
+      {
+        question: 'How do the Accessibility warnings operate?',
+        answer: `The viewer analyzes attributes inside your standard components in real-time: it flags images missing 'alt' attributes, form fields lacking corresponding 'label' ties, and tags with bad semantic usage, helping you implement WCAG compliant designs.`
+      }
+    ],
+    detailedGuide: `
+      <h2>Operational Workspace: Real-Time HTML Isolated Canvas</h2>
+      <p>This sandbox provides an immersive workspace for examining layout strings, design structures, or testing script components offline without server overhead.</p>
+      <h3>Core Diagnostic Features</h3>
+      <ul>
+        <li><strong>DOM Inspector:</strong> Map deep nodes within visual drawer panels, highlighting targets, and adjusting attributes or inline style definitions instantly.</li>
+        <li><strong>Script Handshakes:</strong> Toggle JavaScript performance permissions or import popular libraries directly from official public CDNs (Tailwind, FontAwesome, Bootstrap) to accelerate mock layouts.</li>
+        <li><strong>Real-Time Auditing:</strong> Identify unclosed matching tags, nested tags errors, and accessibility missing indicators automatically as you type.</li>
+      </ul>
+    `
+  },
+  {
+    id: 'image-filter',
+    slug: 'image-filter',
+    name: 'CSS Image & SVG Color Filter Generator',
+    shortDescription: 'Generate CSS filters that transform black icons and SVGs into any target color, with live preview, fine-tuning controls, and batch processing.',
+    metaTitle: 'CSS Image & SVG Filter Generator - Convert Icons to Any Color - Devsight',
+    metaDescription: 'Generate accurate CSS filter values for PNG, SVG, and icon assets. Preview color matching, adjust filters manually, compare results, and export production-ready CSS instantly.',
+    categoryId: 'design-tools',
+    icon: 'filter',
+    tags: ['css-filter', 'svg', 'icons', 'color-generator', 'image-tools', 'css', 'frontend', 'design', 'color-matching', 'svg-color'],
+    relatedTools: ['svg-viewer', 'color-picker'],
+    faqs: [
+      {
+        question: 'What does this tool do?',
+        answer: 'It generates CSS filter values that recolor black icons, SVGs, and images to closely match a target color.'
+      },
+      {
+        question: 'Can I upload my own SVG files?',
+        answer: 'Yes. You can upload SVG, PNG, and other image formats for live preview and filter testing.'
+      },
+      {
+        question: 'Can I manually adjust the generated filter?',
+        answer: 'Yes. Fine-tune invert, sepia, saturation, hue rotation, brightness, and contrast values to achieve the desired result.'
+      },
+      {
+        question: 'Does it support batch processing?',
+        answer: 'Yes. Multiple images can be loaded and previewed using the same generated filter settings.'
+      },
+      {
+        question: 'Does it provide SVG color recommendations?',
+        answer: 'Yes. For SVG files, the tool suggests direct fill and stroke color replacements as an alternative to CSS filters.'
+      }
+    ],
+    detailedGuide: `
+    <h2>CSS Filter Color Generator</h2>
+
+    <p>
+      Convert black SVGs, icons, and images into any target color using
+      automatically generated CSS filter values.
+    </p>
+
+    <h3>Features</h3>
+
+    <ul>
+      <li>Generate CSS filters from any HEX or RGB color.</li>
+      <li>Live icon and image preview.</li>
+      <li>Upload SVG, PNG, and other image formats.</li>
+      <li>Manual filter adjustment controls.</li>
+      <li>Color accuracy scoring and comparison.</li>
+      <li>SVG fill and stroke color recommendations.</li>
+      <li>Batch image preview mode.</li>
+      <li>Copy-ready CSS output.</li>
+    </ul>
+
+    <h3>Use Cases</h3>
+
+    <ul>
+      <li>Recolor monochrome SVG icons.</li>
+      <li>Generate CSS filters for design systems.</li>
+      <li>Match brand colors without editing assets.</li>
+      <li>Preview color transformations before deployment.</li>
+      <li>Optimize icon theming for web applications.</li>
+    </ul>
+
+    <p>
+      All calculations and previews run entirely in the browser without
+      uploading files to external servers.
+    </p>
+  `
+  },
+  {
+    id: 'image-type-converter',
+    slug: 'image-type-converter',
+    name: 'Image Type Converter',
+    shortDescription: 'Convert images between JPG, PNG, WEBP, AVIF, TIFF, BMP and other formats directly in your browser.',
+    metaTitle: 'Image Type Converter - JPG, PNG, WEBP, AVIF, TIFF & BMP - Devsight',
+    metaDescription: 'Convert images between popular formats including JPG, PNG, WEBP, AVIF, TIFF and BMP. Fast browser-based image conversion with single and bulk processing.',
+    categoryId: 'image-tools',
+    icon: 'swap_horiz',
+    tags: ['image-converter', 'jpg', 'png', 'webp', 'avif', 'tiff', 'bmp', 'image-tools', 'bulk-converter'],
+    relatedTools: ['image-compressor', 'svg-viewer'],
+    faqs: [
+      {
+        question: 'Which image formats are supported?',
+        answer: 'The converter supports JPG, JPEG, PNG, WEBP, AVIF, TIFF, TIF, and BMP formats.'
+      },
+      {
+        question: 'Can I convert multiple images at once?',
+        answer: 'Yes. Bulk conversion allows multiple images to be converted simultaneously.'
+      },
+      {
+        question: 'Are my files uploaded to a server?',
+        answer: 'No. All processing happens directly in your browser.'
+      }
+    ],
+    detailedGuide: `
+    <h2>Image Type Converter</h2>
+
+    <p>
+      Convert images between popular formats directly in your browser.
+      Supports single-file and bulk conversion workflows with fast local processing.
+    </p>
+
+    <h3>Features</h3>
+
+    <ul>
+      <li>Convert JPG, PNG, WEBP, AVIF, TIFF, and BMP.</li>
+      <li>Single image conversion.</li>
+      <li>Bulk image conversion.</li>
+      <li>Image preview before conversion.</li>
+      <li>Browser-based processing.</li>
+      <li>ZIP download for bulk conversions.</li>
+      <li>No file uploads required.</li>
+    </ul>
+  `},
+  {
+    id: 'image-compressor',
+    slug: 'image-compressor',
+    name: 'Image Compressor',
+    shortDescription: 'Compress JPG, PNG, WEBP and other image formats while reducing file size and preserving visual quality.',
+    metaTitle: 'Image Compressor - Reduce JPG, PNG & WEBP File Size - Devsight',
+    metaDescription: 'Compress images online with adjustable quality settings. Reduce JPG, PNG, WEBP and other image sizes directly in your browser.',
+    categoryId: 'image-tools',
+    icon: 'compress',
+    tags: ['image-compressor', 'compressor', 'jpg', 'png', 'webp', 'optimization', 'image-tools'],
+    relatedTools: ['image-type-converter', 'svg-viewer'],
+    faqs: [
+      {
+        question: 'Which formats can be compressed?',
+        answer: 'JPG, PNG, WEBP and other common image formats can be compressed.'
+      },
+      {
+        question: 'Can I compress multiple images?',
+        answer: 'Yes. Batch compression is supported.'
+      },
+      {
+        question: 'Will image quality be affected?',
+        answer: 'Compression settings allow balancing file size and visual quality.'
+      }
+    ],
+    detailedGuide: `
+    <h2>Image Compressor</h2>
+
+    <p>
+      Reduce image file sizes while maintaining visual quality.
+      Compress images directly in your browser without uploading files.
+    </p>
+
+    <h3>Features</h3>
+
+    <ul>
+      <li>Compress JPG, PNG and WEBP images.</li>
+      <li>Adjustable compression settings.</li>
+      <li>Single and bulk compression.</li>
+      <li>Real-time size comparison.</li>
+      <li>Download optimized images instantly.</li>
+      <li>Client-side processing.</li>
+    </ul>
+  `},
+  {
+    id: 'unit-converter',
+    slug: 'unit-converter',
+    name: 'Unit Converter for Length, Weight, Temperature, Data & More',
+    shortDescription: 'Convert length, weight, temperature, speed, pressure, energy, data storage, electrical units, fuel economy, and dozens of other measurement categories instantly.',
+    metaTitle: 'Unit Converter - Convert Length, Weight, Temperature & More - Devsight',
+    metaDescription: 'Advanced offline unit converter supporting 30+ categories including length, mass, temperature, pressure, energy, data storage, electrical units, cooking measurements, fuel economy, and more.',
+    categoryId: 'measurement-tools',
+    icon: 'swap_horiz',
+    tags: ['unit-converter', 'measurement', 'length', 'temperature', 'weight', 'speed', 'pressure', 'energy', 'data-storage', 'engineering'],
+    relatedTools: ['unix-timestamp'],
+    faqs: [
+      {
+        question: 'How many measurement categories are supported?',
+        answer: 'The converter supports more than 30 categories including length, area, volume, mass, temperature, time, speed, pressure, energy, power, electrical measurements, data storage, fuel economy, cooking measurements, typography units, and more.'
+      },
+      {
+        question: 'Are temperature conversions handled correctly?',
+        answer: 'Yes. Temperature conversions use dedicated formulas for Celsius, Fahrenheit, and Kelvin, ensuring accurate offset-based calculations instead of simple multiplication factors.'
+      },
+      {
+        question: 'How is fuel economy converted?',
+        answer: 'Fuel economy supports reciprocal calculations between km/L, MPG (US), MPG (Imperial), and L/100km, using specialized conversion logic for accurate results.'
+      },
+      {
+        question: 'Can I see the conversion formula?',
+        answer: 'Yes. The tool provides detailed formulas, conversion factors, and step-by-step explanations showing exactly how each result is calculated.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Universal Measurement Conversion Tool</h2>
+
+      <p>
+        Convert values across more than 30 engineering, scientific, technical,
+        and everyday measurement categories. All calculations are performed
+        instantly in your browser with no server processing required.
+      </p>
+
+      <h3>Supported Categories</h3>
+
+      <div>
+        <span>Length</span>
+        <span>Area</span>
+        <span>Volume</span>
+        <span>Mass & Weight</span>
+        <span>Temperature</span>
+        <span>Time</span>
+        <span>Speed</span>
+        <span>Pressure</span>
+        <span>Energy</span>
+        <span>Power</span>
+        <span>Force</span>
+        <span>Frequency</span>
+        <span>Data Storage</span>
+        <span>Data Transfer Rate</span>
+        <span>Fuel Economy</span>
+        <span>Angle</span>
+        <span>Density</span>
+        <span>Electric Current</span>
+        <span>Voltage</span>
+        <span>Resistance</span>
+        <span>Capacitance</span>
+        <span>Inductance</span>
+        <span>Charge</span>
+        <span>Illuminance</span>
+        <span>Luminous Flux</span>
+        <span>Magnetic Field</span>
+        <span>Torque</span>
+        <span>Flow Rate</span>
+        <span>Typography</span>
+        <span>Cooking Measurements</span>
+        <span>Percentages & Ratios</span>
+      </div>
+
+      <h3>Key Features</h3>
+
+      <ul>
+        <li>Instant bidirectional conversions.</li>
+        <li>Custom decimal precision controls.</li>
+        <li>Temperature-specific conversion formulas.</li>
+        <li>Advanced fuel economy calculations.</li>
+        <li>Step-by-step conversion explanations.</li>
+        <li>Engineering and scientific unit support.</li>
+        <li>Offline browser-based calculations.</li>
+        <li>Conversion history tracking.</li>
+      </ul>
+
+      <h3>How It Works</h3>
+
+      <ol>
+        <li>Select a measurement category.</li>
+        <li>Choose the source unit.</li>
+        <li>Choose the destination unit.</li>
+        <li>Enter a value to convert.</li>
+        <li>View the converted result instantly.</li>
+        <li>Review the formula and calculation steps.</li>
+      </ol>
+  `},
+  {
+    id: 'date-difference',
+    slug: 'date-difference',
+    name: 'Date Difference Calculator & Business Day Counter',
+    shortDescription: 'Calculate the exact years, months, weeks, days, hours, and minutes between two dates. Counts business days and working hours accurately.',
+    metaTitle: 'Date Difference Calculator - Count Days & Business Days - Devsight',
+    metaDescription: 'An advanced date difference calculator. Extract exact chronological increments (Y/M/D/H/M/S), total units, and skip weekends for business days count.',
+    categoryId: 'date-time-tools',
+    icon: 'date_range',
+    tags: ['date', 'difference', 'days-counter', 'business-days', 'calendar', 'cron'],
+    relatedTools: [],
+    faqs: [
+      {
+        question: 'How does the date difference calculator count business days?',
+        answer: 'It loops chronological days between the start and end dates and excludes Saturdays and Sundays to output standard working days.'
+      },
+      {
+        question: 'Are holidays factored into the business days calculation?',
+        answer: 'Currently, standard national holidays are not skipped automatically as they vary by country. However, you can use the result as a baseline and subtract specific holidays manually.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Calculate Durations & Business Days</h2>
+      <p>This developer-ready tool provides precise calendar analysis. Select starting and ending bounds to instantly obtain chronological gaps, total accumulated hours/seconds, and business days (excluding weekends).</p>
+    `
+  },
+  {
+    id: 'unix-timestamp',
+    slug: 'unix-timestamp',
+    name: 'Unix Epoch Timestamp Converter & Local Time Tracker',
+    shortDescription: 'Parse millisecond and second-level timestamps to ISO-8601, local calendars, and generate current database stamps.',
+    metaTitle: 'Unix Epoch Converter - Convert Timestamps to Human Dates - Devsight',
+    metaDescription: 'A high-performance Unix Timestamp converter tool. Translate seconds, milliseconds or nanoseconds into local human calendar datetimes and ISO-8601 format.',
+    categoryId: 'date-time-tools',
+    icon: 'access_time',
+    tags: ['unix', 'timestamp', 'epoch', 'conversion', 'iso-8601', 'datetime'],
+    relatedTools: ['uuid-generator', 'password-generator'],
+    faqs: [
+      {
+        question: 'What is Unix/Epoch Time?',
+        answer: 'It measures the cumulative seconds that have transpired since midnight UTC on January 1, 1970, excluding leap seconds.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Managing Datetime Transformations Offline</h2>
+      <p>API exchanges convey time metrics in milliseconds. Convert inputs dynamically to troubleshoot server timestamps and verify localization.</p>
+    `
+  },
+  {
+    id: 'typescript-workspace',
+    slug: 'typescript-workspace',
+    name: 'TypeScript Developer Workspace',
+    shortDescription: 'Generate interfaces, enums, DTOs, Zod schema files, convert JSON or JS, build custom generic utility types, and run circular-dependency/complexity checklists.',
+    metaTitle: 'TypeScript Interactive Code Generators and Analyzers - Devsight',
+    metaDescription: 'All-in-one sandbox of TypeScript developer generators and tools. Build interfaces, construct Zod schemas, test Type helpers, optimize structures local and offline.',
+    categoryId: 'typescript-tools',
+    icon: 'psychology',
+    tags: ['typescript', 'interface', 'zod', 'generator', 'converter', 'type-safety', 'utilities'],
+    relatedTools: ['angular-component-generator'],
+    faqs: [
+      {
+        question: 'Does the JSON to TypeScript Interface converter support nested parameters?',
+        answer: 'Yes, our converter recursively parses entire JSON dictionary layers, automatically naming interface subtypes and resolving types like arrays and nulls.'
+      },
+      {
+        question: 'Are the type checks performed locally?',
+        answer: 'Absolutely. Everything runs 100% locally inside your web browser. No logs or codes are sent to third parties, ensuring complete safety for your private APIs and corporate schemas.'
+      }
+    ],
+    detailedGuide: `
+      <h2>The Definitive TypeScript developer Companion</h2>
+      <p>Managing strict TypeScript projects demands boilerplate: from DTO definitions to runtime Zod validations. Use the sandbox tabs to generate, compile, and clean types instantly.</p>
+    `
+  },
+  {
+    id: 'rxjs-visualizer',
+    slug: 'rxjs-visualizer',
+    name: 'RxJS Pipeline & Stream Studio',
+    shortDescription: 'Design, trace and test reactive pipelines. Map asynchronous emissions into interactive marble diagrams, compare subjects, trace subscriptions, and generate boilerplates.',
+    metaTitle: 'RxJS Stream Center - Visual Marble diagrams and Custom Pipe Builders - Devsight',
+    metaDescription: 'Visual sandbox for checking stream timelines. Interactive marble models, memory subscription controllers, and custom service builders.',
+    categoryId: 'rxjs-tools',
+    icon: 'insights',
+    tags: ['rxjs', 'reactive', 'observable', 'marble-diagram', 'operators', 'service-generator', 'signals'],
+    relatedTools: ['angular-component-generator', 'unix-timestamp'],
+    faqs: [
+      {
+        question: 'What is an RxJS Marble Diagram?',
+        answer: 'It is a visual representation of events occurring over timeline streams. Balls indicate individual values, vertical bars indicate completion states, and crosses indicate runtime failures.'
+      },
+      {
+        question: 'Does the suite generate Signal Store reactive bindings?',
+        answer: 'Yes, check the Code Generators tab to instantly build Angular-compatible Signal stores combined with RxJS state tracking parameters.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Interactive Reactive Programming Sandbox</h2>
+      <p>Master asynchronous architectures. Change filter or interval offsets on our visual timelines and watch output values ripple down the subscriber list in real-time.</p>
+    `
+  },
+  {
+    id: 'regex-studio',
+    slug: 'regex-studio',
+    name: 'Regex Studio & Visual Composer',
+    shortDescription: 'Build Regular Expressions, capture groups visually, inspect subfields, trace step-by-step token parses, validate multiline inputs, and export code templates.',
+    metaTitle: 'Regex Studio - Multi-Language Generator and Analyzer - Devsight',
+    metaDescription: 'Visual regex constructor. Test parameters on real text lines, get instant plain-English parsers, load commonly used pattern cards, and build safely.',
+    categoryId: 'regex-tools',
+    icon: 'history_edu',
+    tags: ['regex', 'regexp', 'multiline', 'composer', 'pattern-library', 'token-analyzer', 'safety-checker'],
+    relatedTools: ['jwt-decoder'],
+    faqs: [
+      {
+        question: 'What language systems are supported by the code exporter?',
+        answer: 'Our exporter creates compliant syntax and flag definitions for JavaScript, TypeScript, Python, Java, and PHP.'
+      },
+      {
+        question: 'How does the Catastrophic Backtracking check keep my search threads safe?',
+        answer: 'It scans patterns for nested quantifiers on overlapping character sets, alerting you to exponential search paths that would lock down server runtimes.'
+      }
+    ],
+    detailedGuide: `
+      <h2>Constructing Fail-Safe Regular Expressions</h2>
+      <p>Regular expressions can be hard to read and test. Use Regex Studio to dissect, compose, and safely package code patterns without security concerns.</p>
+    `
+  },
+  {
     id: 'meta-tag-generator',
     slug: 'meta-tag-generator',
-    name: 'Enterprise Meta Tag Generator',
+    name: 'Meta Tag Generator',
     shortDescription: 'Construct standard header labels, specify search robot guidelines, custom title characters, descriptions, and view live client renders offline.',
-    metaTitle: 'Enterprise Meta Tag Generator - SEO Header Codes Compiler - devsight',
+    metaTitle: 'Meta Tag Generator - SEO Header Codes Compiler - Devsight',
     metaDescription: 'Configure standard document meta tags including titles, descriptions, character set parameters, browser theme colors, and search crawler index directions.',
     categoryId: 'seo-tools',
     icon: 'assignment',
@@ -1257,7 +1279,7 @@ export const TOOLS: ToolMetadata[] = [
       }
     ],
     detailedGuide: `
-      <h2>Enterprise Meta Tag Generator</h2>
+      <h2>Meta Tag Generator</h2>
       <p>Generate highly compliant HTML document headers with real-time length audits, crawler visibility selectors, browser themes configurations, and instant clipboard copy capabilities.</p>
     `
   },
@@ -1266,7 +1288,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'open-graph-generator',
     name: 'Open Graph & Social Cards Generator',
     shortDescription: 'Composes rich-looking cards suitable for Facebook, Twitter, LinkedIn, Discord, and Slack shares with live preview layouts.',
-    metaTitle: 'Open Graph & Social Profile Snippet Generator - devsight',
+    metaTitle: 'Open Graph & Social Profile Snippet Generator - Devsight',
     metaDescription: 'Generate correct og:title, og:description, twitter:card, og:image attributes to configure custom visual panels across social platforms.',
     categoryId: 'seo-tools',
     icon: 'share',
@@ -1288,7 +1310,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'serp-preview-tool',
     name: 'SERP Preview Tool',
     shortDescription: 'Provides high-fidelity mobile and desktop previews of your site inside Google search results with instant layout sizing indices.',
-    metaTitle: 'SERP Preview Tool - Desktop & Mobile Mockups - devsight',
+    metaTitle: 'SERP Preview Tool - Desktop & Mobile Mockups - Devsight',
     metaDescription: 'Preview how your page titles, URLs, breadcrumbs, descriptions, and rich snippets render inside organic search engine result pages.',
     categoryId: 'seo-tools',
     icon: 'preview',
@@ -1310,7 +1332,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'faq-schema-generator',
     name: 'FAQ Content & Schema Builder',
     shortDescription: 'Add structured Question and Answer blocks to your pages and instantly build valid JSON-LD FAQ Schema representations.',
-    metaTitle: 'FAQ Content & Schema Generator - Live JSON-LD Validator - devsight',
+    metaTitle: 'FAQ Content & Schema Generator - Live JSON-LD Validator - Devsight',
     metaDescription: 'Synthesize high-performing FAQ content paired with correct structured data scripts. Preview schema, validate nesting rules, and export layout blocks.',
     categoryId: 'seo-tools',
     icon: 'contact_support',
@@ -1332,7 +1354,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'schema-generator',
     name: 'Structured Schema JSON-LD Generator',
     shortDescription: 'Advanced creator for rich search entities including Articles, Products, Recipes, Jobs, Events, Organizations, Websites, and People.',
-    metaTitle: 'JSON-LD Structured Data Schema Generator - devsight',
+    metaTitle: 'JSON-LD Structured Data Schema Generator - Devsight',
     metaDescription: 'Generate schema files to satisfy rich search results criteria. Fully compliant with Schema.org specifications across 15+ complex entities.',
     categoryId: 'seo-tools',
     icon: 'mediation',
@@ -1354,7 +1376,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'robots-txt-generator',
     name: 'robots.txt Rules Generator & Tester',
     shortDescription: 'Author search crawler instructions safely. Configure specific path allows/disallows, user-agents, sitemaps, and test crawlers offline.',
-    metaTitle: 'robots.txt Generator & Crawl Rule Tester - devsight',
+    metaTitle: 'robots.txt Generator & Crawl Rule Tester - Devsight',
     metaDescription: 'Create valid robots.txt documents to guide search robot indexing path targets. Verify crawl rules, bypass crawling limits, and list sitemap pointers.',
     categoryId: 'seo-tools',
     icon: 'smart_toy',
@@ -1376,7 +1398,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'sitemap-generator',
     name: 'sitemap.xml Sitemap Builder & Indexer',
     shortDescription: 'Compile high-quality links into standard XML sitemap files, sitemap indexes, or specialized image/video crawlers registries.',
-    metaTitle: 'sitemap.xml Generator - Sitemap Index & specialized lists - devsight',
+    metaTitle: 'sitemap.xml Generator - Sitemap Index & specialized lists - Devsight',
     metaDescription: 'Generates sitemaps complying with sitemaps.org guidelines. Specify change frequency, priority, sitemap size limits, and validate indexes.',
     categoryId: 'seo-tools',
     icon: 'account_tree',
@@ -1398,7 +1420,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'canonical-url-generator',
     name: 'Canonical URL & Checker',
     shortDescription: 'A fully local URL analyzer and canonical identifier generator with redirects rules output configurations (Nginx & .htaccess).',
-    metaTitle: 'Canonical URL Generator & URL Redirect Rule Maker - devsight',
+    metaTitle: 'Canonical URL Generator & URL Redirect Rule Maker - Devsight',
     metaDescription: 'Analyze query parameters, clean duplicate tracking tags, compile canonical tags, audit URL lengths, and generate web server redirect statements.',
     categoryId: 'seo-tools',
     icon: 'link',
@@ -1420,7 +1442,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'hreflang-generator',
     name: 'hreflang Meta Multi-Language Generator',
     shortDescription: `Model multi-language and international audience URL lists and instantly generate correct rel='alternate' hreflang elements.`,
-    metaTitle: 'hreflang Meta Alternate Language Tag Builder - devsight',
+    metaTitle: 'hreflang Meta Alternate Language Tag Builder - Devsight',
     metaDescription: 'Specify country codes and localized targets to structure accurate hreflang tags. Avoid international SEO penalties for localized duplicate copy.',
     categoryId: 'seo-tools',
     icon: 'language',
@@ -1442,7 +1464,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'manifest-generator',
     name: 'manifest.webmanifest PWA Generator',
     shortDescription: 'Configure standard progressive web app structures including name descriptions, visual theme colors, start paths, and icons arrays.',
-    metaTitle: 'PWA Web App Manifest Generator & SEO Helper - devsight',
+    metaTitle: 'PWA Web App Manifest Generator & SEO Helper - Devsight',
     metaDescription: 'Build manifest.webmanifest files alongside Apple Touch Icon tags and browserconfig.xml properties to satisfy high performance audit metrics.',
     categoryId: 'seo-tools',
     icon: 'settings_cell',
@@ -1464,7 +1486,7 @@ export const TOOLS: ToolMetadata[] = [
     slug: 'angular-seo-tools',
     name: 'Angular Meta & SEO Service Builder',
     shortDescription: 'Compile production-ready, type-safe Angular 21 services and schemas builders to automate SEO, TitleStrategy and Meta updates model.',
-    metaTitle: 'Angular SEO Services Boiletplate Builder - devsight',
+    metaTitle: 'Angular SEO Services Boiletplate Builder - Devsight',
     metaDescription: 'Generates reusable Angular classes for programmatic Title, Meta, structured JSON-LD data insertion, and SSR rendering setups.',
     categoryId: 'seo-tools',
     icon: 'code_off',
@@ -1691,42 +1713,26 @@ export const TOOLS: ToolMetadata[] = [
     detailedGuide: '<h2>Enterprise Theme Builder Manual</h2><p>Bootstrap primary assets, check WCAG compliant standards, and export design dictionary structures.</p>'
   },
   {
-    id: 'image-color-extractor',
-    slug: 'image-color-extractor',
-    name: 'Image Dominant Color Extractor',
-    shortDescription: 'Upload images, drag-and-drop file layers, extract dominant color palettes using local HTML canvases, perform accessibility analysis, and construct gradients.',
-    metaTitle: 'Image Color Extractor - Dominant Palettes from Photos',
-    metaDescription: 'Extract dominant color scales from photographs locally inside browser frames. Export color vectors, gradients, and custom design tokens.',
+    id: 'flexbox-playground',
+    slug: 'flexbox-playground',
+    name: 'CSS Flexbox Playground & Tailwind Generator',
+    shortDescription: 'Tweak spacing properties, flex alignments, wrap conditions visually and export exact Tailwind utility class lists or raw CSS.',
+    metaTitle: 'Flexbox Layout Playground - Visual Tailwind & CSS Generator - Devsight',
+    metaDescription: 'Design, test and export CSS Flexbox coordinate rules. Set rows, alignments, offsets, gap spacings, and inspect responsive boxes visually.',
     categoryId: 'css-ui-tools',
-    icon: 'image',
-    tags: ['image-colors', 'color-extractor', 'palette-extraction', 'canvas-colors', 'gradients'],
-    relatedTools: ['color-picker', 'palette-generator', 'gradient-generator'],
+    icon: 'crop_free',
+    tags: ['flexbox', 'css-layout', 'tailwind', 'flex-item', 'visualizer', 'design-tool'],
+    relatedTools: ['angular-component-generator'],
     faqs: [
       {
-        question: 'Does my image upload to a server?',
-        answer: 'No, all extraction triggers inside your browser sandbox using Canvas pixels matching, keeping image structures 100% private.'
+        question: 'Can I copy both Tailwind classes and standard CSS?',
+        answer: 'Yes, both code paradigms are dynamically updated in real-time as you tweak child alignments inside the grid viewport.'
       }
     ],
-    detailedGuide: '<h2>Canvas-Based Image Color Extractor</h2><p>Analyze uploaded imagery to export dominant hex coordinates, build beautiful natural gradients, and audit accessibility scores.</p>'
-  },
-  {
-    id: 'css-filter-generator',
-    slug: 'css-filter-generator',
-    name: 'Live CSS Backdrop Filter Generator',
-    shortDescription: 'Apply fine-tuned graphic overlays onto live templates. Tweak brightness, contrast, saturations, sepia, grayscales, blur filters, and export exact CSS/Tailwind codes.',
-    metaTitle: 'CSS Filter Generator - Backdrop Overlay Filters',
-    metaDescription: 'Add beautiful visual overlays onto graphics inside browser views. Export copy-ready CSS filter and backdrop-filter specifications.',
-    categoryId: 'css-ui-tools',
-    icon: 'filter_vintage',
-    tags: ['css-filters', 'image-filters', 'brightness', 'sepia', 'grayscale', 'backdrop-filter'],
-    relatedTools: ['gradient-generator', 'box-shadow-generator', 'glassmorphism-generator'],
-    faqs: [
-      {
-        question: 'Can I combine multiple filters?',
-        answer: 'Yes. Our tool chains parameters seamlessly: filter: brightness(1.2) contrast(0.9) blur(4px).'
-      }
-    ],
-    detailedGuide: '<h2>Advanced CSS Photo Filters Board</h2><p>Tweak filters visually, inspect render targets, and copy clean CSS scripts on the fly.</p>'
+    detailedGuide: `
+      <h2>Accelerate Layout Building with Live Flexbox Visualizers</h2>
+      <p>Positioning interface cards requires configuring Flex layouts. Our visual playground provides intuitive control of layouts with instant code generation output.</p>
+    `
   },
   {
     id: 'border-radius-generator',
@@ -1824,41 +1830,43 @@ export const TOOLS: ToolMetadata[] = [
     detailedGuide: '<h2>Responsive Interactive UI Preview Studio</h2><p>Calibrate landing designs. Tweak active font families, check alignments, simulate outdoor glare or dark mode toggles, and export pristine, accessible mockup code.</p>'
   },
   {
-    id: 'html-viewer',
-    slug: 'html-viewer',
-    name: 'Interactive HTML Sandbox Viewer & DOM Inspector',
-    shortDescription: 'A fully safe, isolated sandboxed playground for real-time HTML/CSS/JS rendering. Features dual split side-by-side viewports, element inspection, dynamic nested DOM parsing, and accessibility warnings.',
-    metaTitle: 'HTML Viewer & Sandbox - Isolated DOM Inspector - devsight',
-    metaDescription: 'Test and render markup sequences inside secure iframe containers. Highlight nested elements in real-time, audit structure for accessibility issues, and toggle scripts dynamically.',
-    categoryId: 'css-ui-tools',
-    icon: 'preview',
-    tags: ['html', 'viewer', 'playground', 'dom-inspector', 'sandbox', 'validation'],
-    relatedTools: ['regex-studio'],
+    id: 'image-color-extractor',
+    slug: 'image-color-extractor',
+    name: 'Image Dominant Color Extractor',
+    shortDescription: 'Upload images, drag-and-drop file layers, extract dominant color palettes using local HTML canvases, perform accessibility analysis, and construct gradients.',
+    metaTitle: 'Image Color Extractor - Dominant Palettes from Photos',
+    metaDescription: 'Extract dominant color scales from photographs locally inside browser frames. Export color vectors, gradients, and custom design tokens.',
+    categoryId: 'design-tools',
+    icon: 'image',
+    tags: ['image-colors', 'color-extractor', 'palette-extraction', 'canvas-colors', 'gradients'],
+    relatedTools: ['color-picker', 'palette-generator', 'gradient-generator'],
     faqs: [
       {
-        question: 'How is the HTML rendered securely?',
-        answer: 'We utilize sandboxed iframe variables with strict secure CSP flags (allow-popups-to-escape-sandbox, allow-forms, etc.) which mathematically isolates the execution layer from the main workspace. This protects the reader from cross-site scripting (XSS) risks while running local CSS and script layers.'
-      },
-      {
-        question: 'Can I inspect the active DOM node elements?',
-        answer: 'Yes, our interactive DOM Inspector builds a live virtual tree of your code markup, allowing you to highlight single element coordinates, modify attributes or style class listings on the fly, and trace nesting integrity.'
-      },
-      {
-        question: 'How do the Accessibility warnings operate?',
-        answer: `The viewer analyzes attributes inside your standard components in real-time: it flags images missing 'alt' attributes, form fields lacking corresponding 'label' ties, and tags with bad semantic usage, helping you implement WCAG compliant designs.`
+        question: 'Does my image upload to a server?',
+        answer: 'No, all extraction triggers inside your browser sandbox using Canvas pixels matching, keeping image structures 100% private.'
       }
     ],
-    detailedGuide: `
-      <h2>Operational Workspace: Real-Time HTML Isolated Canvas</h2>
-      <p>This sandbox provides an immersive workspace for examining layout strings, design structures, or testing script components offline without server overhead.</p>
-      <h3>Core Diagnostic Features</h3>
-      <ul>
-        <li><strong>DOM Inspector:</strong> Map deep nodes within visual drawer panels, highlighting targets, and adjusting attributes or inline style definitions instantly.</li>
-        <li><strong>Script Handshakes:</strong> Toggle JavaScript performance permissions or import popular libraries directly from official public CDNs (Tailwind, FontAwesome, Bootstrap) to accelerate mock layouts.</li>
-        <li><strong>Real-Time Auditing:</strong> Identify unclosed matching tags, nested tags errors, and accessibility missing indicators automatically as you type.</li>
-      </ul>
-    `
+    detailedGuide: '<h2>Canvas-Based Image Color Extractor</h2><p>Analyze uploaded imagery to export dominant hex coordinates, build beautiful natural gradients, and audit accessibility scores.</p>'
   },
+  {
+    id: 'css-filter-generator',
+    slug: 'css-filter-generator',
+    name: 'Live CSS Backdrop Filter Generator',
+    shortDescription: 'Apply fine-tuned graphic overlays onto live templates. Tweak brightness, contrast, saturations, sepia, grayscales, blur filters, and export exact CSS/Tailwind codes.',
+    metaTitle: 'CSS Filter Generator - Backdrop Overlay Filters',
+    metaDescription: 'Add beautiful visual overlays onto graphics inside browser views. Export copy-ready CSS filter and backdrop-filter specifications.',
+    categoryId: 'design-tools',
+    icon: 'filter_vintage',
+    tags: ['css-filters', 'image-filters', 'brightness', 'sepia', 'grayscale', 'backdrop-filter'],
+    relatedTools: ['gradient-generator', 'box-shadow-generator', 'glassmorphism-generator'],
+    faqs: [
+      {
+        question: 'Can I combine multiple filters?',
+        answer: 'Yes. Our tool chains parameters seamlessly: filter: brightness(1.2) contrast(0.9) blur(4px).'
+      }
+    ],
+    detailedGuide: '<h2>Advanced CSS Photo Filters Board</h2><p>Tweak filters visually, inspect render targets, and copy clean CSS scripts on the fly.</p>'
+  }
 ];
 
 export const STATIC_PAGES: Record<string, StaticPageContent> = {

@@ -198,11 +198,11 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
                     <div id="percentage-companion-card" class="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/35 rounded-2xl p-4 shadow-sm">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
                         <div class="flex items-center space-x-3">
-                        <span class="h-10 w-10 rounded-xl bg-sky-50 dark:bg-sky-950 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                        <span class="h-10 w-10 rounded-xl bg-sky-50 dark:bg-sky-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                             <mat-icon>percent</mat-icon>
                         </span>
                         <div>
-                            <span class="text-xs font-semibold text-sky-600 dark:text-sky-400 tracking-wider uppercase">Interactive Tool</span>
+                            <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase">Interactive Tool</span>
                             <h3 class="text-lg font-bold text-slate-800 dark:text-white">Percentage Multi-Calculator</h3>
                         </div>
                         </div>
@@ -278,9 +278,9 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
 
                             <!-- Result -->
                             <div class="md:col-span-3 flex flex-col space-y-1.5">
-                            <span class="text-xs font-bold text-sky-500 uppercase tracking-wide block">Result</span>
+                            <span class="text-xs font-bold text-emerald-500 uppercase tracking-wide block">Result</span>
                             <div class="bg-sky-50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-900/40 rounded-xl py-2 px-3 text-center">
-                                <span class="text-sm font-bold text-sky-600 dark:text-sky-400 font-mono">
+                                <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono">
                                 {{ computedPctValueResult().toFixed(precisionValue()) }}
                                 </span>
                             </div>
@@ -289,7 +289,7 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
 
                         <!-- Explanation equation badge -->
                         <div class="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-150 dark:border-slate-850 flex items-center space-x-2.5 text-xs text-slate-600 dark:text-slate-400 font-mono leading-relaxed">
-                            <mat-icon class="text-sky-500 text-sm">info</mat-icon>
+                            <mat-icon class="text-emerald-500 text-sm">info</mat-icon>
                             <span>
                             <strong>Equation:</strong> ({{ pctValP() }}% / 100) × {{ pctValX() }} = <strong>{{ computedPctValueResult().toFixed(precisionValue()) }}</strong>
                             </span>
@@ -333,19 +333,19 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
 
                             <!-- Result -->
                             <div class="md:col-span-3 flex flex-col space-y-1.5">
-                            <span class="text-xs font-bold text-sky-500 uppercase tracking-wide block">Percent Result</span>
+                            <span class="text-xs font-bold text-emerald-500 uppercase tracking-wide block">Percent Result</span>
                             <div class="bg-sky-50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-900/40 rounded-xl py-2 px-3 text-center flex items-center justify-center space-x-1">
-                                <span class="text-sm font-bold text-sky-600 dark:text-sky-400 font-mono">
+                                <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-mono">
                                 {{ computedPctRatioResult().toFixed(precisionValue()) }}
                                 </span>
-                                <span class="text-xs font-bold text-sky-500">%</span>
+                                <span class="text-xs font-bold text-emerald-500">%</span>
                             </div>
                             </div>
                         </div>
 
                         <!-- Explanation equation badge -->
                         <div class="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-150 dark:border-slate-850 flex items-center space-x-2.5 text-xs text-slate-600 dark:text-slate-400 font-mono leading-relaxed">
-                            <mat-icon class="text-sky-500 text-sm">info</mat-icon>
+                            <mat-icon class="text-emerald-500 text-sm">info</mat-icon>
                             <span>
                             <strong>Equation:</strong> ({{ pctRatioX() }} / {{ pctRatioY() }}) × 100 = <strong>{{ computedPctRatioResult().toFixed(precisionValue()) }}%</strong>
                             </span>
@@ -419,7 +419,7 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
 
                         <!-- Explanation equation badge -->
                         <div class="bg-slate-50 dark:bg-slate-950 p-3.5 rounded-xl border border-slate-150 dark:border-slate-850 flex items-center space-x-2.5 text-xs text-slate-600 dark:text-slate-400 font-mono leading-relaxed">
-                            <mat-icon class="text-sky-500 text-sm">info</mat-icon>
+                            <mat-icon class="text-emerald-500 text-sm">info</mat-icon>
                             <span>
                             <strong>Equation:</strong> (({{ pctChangeY() }} - {{ pctChangeX() }}) / {{ pctChangeX() }}) × 100 = <strong>{{ computedPctChangeResult() >= 0 ? '+' : '' }}{{ computedPctChangeResult().toFixed(precisionValue()) }}%</strong>
                             </span>
@@ -433,7 +433,7 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
                 @if (currentFormulaSteps(); as fs) {
                     <div id="mathematical-steps-container" class="bg-white dark:bg-zinc-900/35 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm transition-all duration-300">
                     <div class="flex items-center space-x-2.5 mb-4 border-b border-slate-100 dark:border-slate-800 pb-3">
-                        <mat-icon class="text-sky-550 dark:text-sky-400">calculate</mat-icon>
+                        <mat-icon class="text-sky-550 dark:text-emerald-400">calculate</mat-icon>
                         <div>
                         <h2 class="text-sm font-bold uppercase tracking-wider text-slate-400">Calculation Steps & Formulas</h2>
                         <p class="text-xs text-slate-500 dark:text-slate-400">See behind the numbers & mathematical relationships</p>
@@ -578,9 +578,9 @@ export class UnitConverterComponent implements OnInit {
     // Filtered categories based on the layout search query
     filteredCategories = computed(() => this.conversionService.categories);
     // Core conversions values
-    currentFromUnit = computed(() => this.conversionService.allUnits.find((u: any) => u.id === this.fromUnitId()));
+    currentFromUnit = computed(() => this.conversionService.allUnits.find(u => u.id === this.fromUnitId()));
 
-    currentToUnit = computed(() => this.conversionService.allUnits.find((u: any) => u.id === this.toUnitId()));
+    currentToUnit = computed(() => this.conversionService.allUnits.find(u => u.id === this.toUnitId()));
 
     convertedValue = computed(() => {
         const from = this.currentFromUnit();
@@ -750,8 +750,8 @@ export class UnitConverterComponent implements OnInit {
         if (!cat) return;
 
         // Search and extract units representing active item
-        const fromUnitOpt = this.conversionService.allUnits.find((u: any) => u.name === item.fromUnitName && u.categoryId === item.categoryId);
-        const toUnitOpt = this.conversionService.allUnits.find((u: any) => u.name === item.toUnitName && u.categoryId === item.categoryId);
+        const fromUnitOpt = this.conversionService.allUnits.find(u => u.name === item.fromUnitName && u.categoryId === item.categoryId);
+        const toUnitOpt = this.conversionService.allUnits.find(u => u.name === item.toUnitName && u.categoryId === item.categoryId);
 
         if (!fromUnitOpt || !toUnitOpt) {
             this.snackBar.open('Historical unit mappings are no longer available in engine data.', 'Close', { duration: 2000 });

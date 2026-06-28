@@ -121,7 +121,7 @@ export class UnixTimestampComponent implements OnDestroy {
   public parsedDate = computed(() => {
     const raw = this.epochInput().trim();
     if (!raw) return null;
-    let n = parseInt(raw, 10);
+    let n = Number.parseInt(raw, 10);
     if (isNaN(n)) return null;
 
     // Check if input represents seconds or milliseconds count

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, signal, computed, effect, OnDestroy, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal, computed, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
@@ -28,7 +28,7 @@ interface BulkFile {
   imports: [CommonModule, MatIconModule, ReactiveFormsModule],
   templateUrl: './image-type-converter.html'
 })
-export class ImageTypeConverter implements OnInit, OnDestroy {
+export class ImageTypeConverter implements OnDestroy {
   // Navigation & Theme
   currentTab = signal<'single' | 'bulk'>('single');
 
@@ -94,13 +94,6 @@ export class ImageTypeConverter implements OnInit, OnDestroy {
     { value: '256', label: '256 x 256 px' },
     { value: 'all', label: 'Multi-resolution ICO (all sizes)' },
   ];
-
-  constructor() {
-  }
-
-  ngOnInit() {
-
-  }
 
   ngOnDestroy() {
     this.clearAllUrls();
@@ -212,7 +205,7 @@ export class ImageTypeConverter implements OnInit, OnDestroy {
     // ICO Output
     if (formatLower === 'ico') {
       const icoSize = options.icoSize;
-      const sizes = icoSize === 'all' ? [16, 32, 48, 64, 128, 256] : [parseInt(icoSize, 10)];
+      const sizes = icoSize === 'all' ? [16, 32, 48, 64, 128, 256] : [Number.parseInt(icoSize, 10)];
       const pngBuffers: ArrayBuffer[] = [];
 
       for (const size of sizes) {

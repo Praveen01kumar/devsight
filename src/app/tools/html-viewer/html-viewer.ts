@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, signal, computed, effect, input, OnChanges, SimpleChanges, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal, computed, effect, input, OnChanges, SimpleChanges, ElementRef, ViewChild, AfterViewInit, inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
@@ -731,6 +731,8 @@ interface ValidationIssue {
   `]
 })
 export class HtmlViewerComponent implements AfterViewInit, OnChanges {
+  private readonly platformId = inject(PLATFORM_ID);
+  isBrowser = isPlatformBrowser(this.platformId);
   public mode = input<string>('html-viewer');
   // Interactive core source signals
   public htmlCode = signal<string>('');
@@ -848,7 +850,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
 </head>
 <body>
   <div class="card">
-    <h1>devsight Interactive</h1>
+    <h1>Devsight Interactive</h1>
     <p>Welcome to your isolated layout simulator canvas. Start typing standard HTML directly in your workspace panel, explore live responsive viewports, inspect attributes, or translate markup elements instantly.</p>
     <button class="btn" onclick="alert('Sandbox iframe execution validated successfully!')">Explore Workbench</button>
   </div>
@@ -877,7 +879,9 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit(): void {
-    this.refreshIframe();
+    if (this.isBrowser) {
+      this.refreshIframe();
+    }
   }
 
   // Sync scroll listeners
@@ -1495,7 +1499,7 @@ export class HtmlViewerComponent implements AfterViewInit, OnChanges {
       const heads = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
       let lastLevel = 0;
       heads.forEach(h => {
-        const lvl = parseInt(h.tagName.substring(1));
+        const lvl = Number.parseInt(h.tagName.substring(1));
         if (lastLevel > 0 && lvl - lastLevel > 1) {
           list.push({
             type: 'warning',

@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild, inject, signal, input, output, effect, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, ViewChild, inject, signal, input, output, effect, computed, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { SelectionController } from './services/selection-controller';
-import { ViewerController } from './services/viewer-controller';
+import { SelectionController, ViewerController } from './controller';
 
 @Component({
   selector: 'app-svg-canvas',
@@ -42,22 +41,17 @@ import { ViewerController } from './services/viewer-controller';
 
       @if (svgHtml()) {
         <!-- Dynamic Transformation Container -->
-        <div 
-          #innerStage
+        <div #innerStage
           class="absolute top-0 left-0 origin-top-left transition-transform duration-75 select-none"
           [style.transform]="'translate(' + panX() + 'px, ' + panY() + 'px) scale(' + zoom() + ')'"
           style="will-change: transform;">
-          
           <!-- Outer margin frame shadow to emphasize the main SVG boundaries -->
-          <div 
-            class="relative outline-none select-none"
+          <div class="relative outline-none select-none"
             [style.width.px]="canvasWidth()"
             [style.height.px]="canvasHeight()"
             (click)="onCanvasClick($event)">
-            
             <!-- Injected SVG element -->
-            <div 
-              id="rendered-svg-wrapper"
+            <div id="rendered-svg-wrapper"
               [innerHTML]="safeSvgHtml()"
               (mouseover)="onMouseOverNative($event)"
               (mouseout)="onMouseOutNative()">
@@ -82,7 +76,6 @@ import { ViewerController } from './services/viewer-controller';
                 [style.top.px]="selectedBBox()!.y"
                 [style.width.px]="selectedBBox()!.width"
                 [style.height.px]="selectedBBox()!.height">
-                
                 <!-- Sizing badge under the bbox -->
                 <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-0.5 bg-slate-900 border border-slate-700/80 rounded shadow text-[10px] font-mono text-cyan-400 flex items-center space-x-1 scale-90 whitespace-nowrap">
                   <span>{{ getTagName() }}</span>
@@ -108,7 +101,6 @@ import { ViewerController } from './services/viewer-controller';
           class="max-w-md w-full mx-auto p-10 mx-6 rounded-2xl border-4 border-dashed border-slate-800 bg-slate-900/40 text-center flex flex-col items-center justify-center transition-all duration-300 hover:border-sky-500/40 hover:bg-slate-900/65"
           [class.border-slate-800]="theme() === 'dark'"
           [class.border-slate-300]="theme() === 'light'">
-          
           <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-400 flex items-center justify-center mb-5 animate-pulse">
             <mat-icon class="text-3xl">cloud_upload</mat-icon>
           </div>
@@ -119,17 +111,10 @@ import { ViewerController } from './services/viewer-controller';
           <p class="text-xs font-sans text-slate-400 mb-6">
             Supports Standard valid .svg files of up to 50MB
           </p>
-          
           <!-- Hidden Native Input -->
-          <input
-            #fileInput
-            type="file"
-            accept=".svg"
-            class="hidden"
-            (change)="onFileSelected($event)">
+          <input #fileInput type="file" accept=".svg" class="hidden" (change)="onFileSelected($event)">
 
-          <button 
-            id="browse-btn-dropzone"
+          <button id="browse-btn-dropzone"
             (click)="fileInput.click()"
             class="cursor-pointer px-5 py-2.5 bg-sky-500/5 dark:bg-sky-500/10 hover:bg-sky-600/5 active:bg-sky-700 text-white rounded-xl text-xs font-sans font-semibold transition-colors flex items-center space-x-2">
             <mat-icon class="text-base">add</mat-icon>
@@ -140,26 +125,22 @@ import { ViewerController } from './services/viewer-controller';
           <div class="mt-8 pt-6 border-t border-white/5 w-full">
             <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold block mb-3">Or choose a professional vector example</span>
             <div class="grid grid-cols-2 gap-2 max-w-sm mx-auto">
-              <button 
-                (click)="loadDemo('rocket')"
+              <button (click)="loadDemo('rocket')"
                 class="cursor-pointer px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 hover:text-white rounded-lg text-slate-300 text-[11px] font-sans transition-colors flex items-center justify-center space-x-1">
                 <mat-icon class="text-xs text-indigo-400">rocket_launch</mat-icon>
                 <span>Rocket Ship</span>
               </button>
-              <button 
-                (click)="loadDemo('gear')"
+              <button (click)="loadDemo('gear')"
                 class="cursor-pointer px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 hover:text-white rounded-lg text-slate-300 text-[11px] font-sans transition-colors flex items-center justify-center space-x-1">
                 <mat-icon class="text-xs text-amber-400">settings</mat-icon>
                 <span>Gear Cog</span>
               </button>
-              <button 
-                (click)="loadDemo('sunset')"
+              <button (click)="loadDemo('sunset')"
                 class="cursor-pointer px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 hover:text-white rounded-lg text-slate-300 text-[11px] font-sans transition-colors flex items-center justify-center space-x-1">
                 <mat-icon class="text-xs text-rose-400">wb_sunny</mat-icon>
                 <span>Gradient Sunset</span>
               </button>
-              <button 
-                (click)="loadDemo('tree')"
+              <button (click)="loadDemo('tree')"
                 class="cursor-pointer px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 hover:text-white rounded-lg text-slate-300 text-[11px] font-sans transition-colors flex items-center justify-center space-x-1">
                 <mat-icon class="text-xs text-emerald-400">spa</mat-icon>
                 <span>Zen Bio-Leaf</span>
@@ -169,40 +150,7 @@ import { ViewerController } from './services/viewer-controller';
         </div>
       }
     </div>
-  `,
-  styles: [`
-    .transparency-grid {
-      background-size: 20px 20px;
-      background-position: 0 0, 10px 10px;
-      background-image: 
-        linear-gradient(45deg, rgba(128,128,128,0.06) 25%, transparent 25%, transparent 75%, rgba(128,128,128,0.06) 75%, rgba(128,128,128,0.06)), 
-        linear-gradient(45deg, rgba(128,128,128,0.06) 25%, rgba(10,15,30,0.04) 25%, rgba(10,15,30,0.04) 75%, rgba(128,128,128,0.06) 75%, rgba(128,128,128,0.06));
-    }
-    :host-context(.light-mode) .transparency-grid {
-      background-image: 
-        linear-gradient(45deg, rgba(0,0,0,0.03) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.03) 75%, rgba(0,0,0,0.03));
-    }
-    .canvas-checkerboard {
-      background-size: 16px 16px;
-      background-position: 0 0, 8px 8px;
-      background-image: 
-        linear-gradient(45deg, #f1f5f9 25%, transparent 25%, transparent 75%, #f1f5f9 75%, #f1f5f9), 
-        linear-gradient(45deg, #f1f5f9 25%, #ffffff 25%, #ffffff 75%, #f1f5f9 75%, #f1f5f9);
-    }
-    #rendered-svg-wrapper {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #000000; /* Prevent global theme text color from bleeding into SVG elements via currentColor */
-    }
-    #rendered-svg-wrapper svg {
-      width: 100% !important;
-      height: 100% !important;
-      display: block;
-    }
-  `]
+  `
 })
 export class SvgCanvas {
   private readonly selection = inject(SelectionController);
@@ -600,3 +548,204 @@ export class SvgCanvas {
     this.fitViewToViewport();
   }
 }
+
+
+@Component({
+  selector: 'app-minimap',
+  standalone: true,
+  imports: [CommonModule, MatIconModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `<div #minimapContainer
+      id="canvas-minimap-card"
+      class="absolute bottom-4 right-4 w-44 h-28 bg-slate-900/90 border border-white/10 rounded-xl shadow-2xl p-2 flex flex-col select-none overflow-hidden z-40 transition-all duration-300"
+      [class.opacity-100]="isVisible() || isDragging()"
+      [class.opacity-0]="!isVisible() && !isDragging()"
+      [class.pointer-events-none]="!isVisible() && !isDragging()"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+      (mouseleave)="onMouseUp()">
+      <!-- Top Header Title line of minimap -->
+      <div class="flex items-center justify-between text-[9px] uppercase tracking-wider text-slate-500 font-bold font-sans shrink-0 pb-1 mb-1 border-b border-white/5">
+        <span class="flex items-center space-x-1">
+          <mat-icon class="text-xs w-3 h-3">map</mat-icon>
+          <span>Navigator</span>
+        </span>
+        <span class="font-mono">{{ zoomLabel() }}%</span>
+      </div>
+
+      <!-- Live area wrapper -->
+      <div #miniStage
+        class="flex-1 relative bg-slate-950/80 rounded-md overflow-hidden border border-white/5 flex items-center justify-center">
+        <!-- Center outline indicating raw canvas model representation size -->
+        <div class="absolute border border-slate-700 bg-slate-800/40 opacity-70"
+          [style.width.px]="mapWidth()"
+          [style.height.px]="mapHeight()">
+        </div>
+
+        <!-- Draggable semi-flat highlighted viewfinder rectangle reflecting visible frame -->
+        <div class="absolute border-2 border-sky-400 bg-sky-400/10 cursor-move shadow-inner"
+          [style.left.px]="viewfinderX()"
+          [style.top.px]="viewfinderY()"
+          [style.width.px]="viewfinderW()"
+          [style.height.px]="viewfinderH()">
+        </div>
+      </div>
+    </div>
+  `,
+  styles: [`
+    #canvas-minimap-card {
+      backdrop-filter: blur(8px);
+    }
+  `]
+})
+
+export class Minimap implements OnDestroy {
+  private readonly viewer = inject(ViewerController);
+  private readonly selection = inject(SelectionController);
+
+  @ViewChild('minimapContainer') containerRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('miniStage') stageRef!: ElementRef<HTMLDivElement>;
+
+  zoom = this.viewer.zoom;
+  panX = this.viewer.panX;
+  panY = this.viewer.panY;
+  rootNode = this.selection.rootNode;
+
+  isDragging = signal<boolean>(false);
+  isVisible = signal<boolean>(false);
+
+  private hideTimeout: ReturnType<typeof setTimeout> | null = null;
+  private isInitial = true;
+
+  // Constants mapping minimap layout size bounds
+  readonly maxWidth = 160;
+  readonly maxHeight = 85;
+
+  constructor() {
+    // Watch zoom & pan signals to toggle visibility
+    effect(() => {
+      // access signals to register dependency
+      this.zoom();
+      this.panX();
+      this.panY();
+
+      // Skip the very first trigger upon component initialization so it starts hidden
+      if (this.isInitial) {
+        this.isInitial = false;
+        return;
+      }
+
+      this.isVisible.set(true);
+
+      if (this.hideTimeout) {
+        clearTimeout(this.hideTimeout);
+      }
+
+      this.hideTimeout = setTimeout(() => {
+        if (!this.isDragging()) {
+          this.isVisible.set(false);
+        }
+      }, 2000);
+    });
+
+    // Watch dragging to keep visible
+    effect(() => {
+      if (this.isDragging()) {
+        this.isVisible.set(true);
+        if (this.hideTimeout) {
+          clearTimeout(this.hideTimeout);
+          this.hideTimeout = null;
+        }
+      } else {
+        // Drag ended, resume fadeout timer
+        if (this.hideTimeout) {
+          clearTimeout(this.hideTimeout);
+        }
+        this.hideTimeout = setTimeout(() => {
+          this.isVisible.set(false);
+        }, 2000);
+      }
+    });
+  }
+
+  zoomLabel = computed(() => Math.round(this.zoom() * 100));
+
+  // Calculate proportional miniature dimensions of SVG inside minimap
+  mapWidth = computed(() => 100);
+
+  mapHeight = computed(() => 60);
+
+  // Proportional coordinate calculation for viewfinder overlay box representation
+  viewfinderX = computed(() => {
+    const px = this.panX();
+    const zm = this.zoom();
+    // Proportional panning placement calculations
+    const zoomOffset = px / zm;
+    const mapped = 30 - zoomOffset * 0.05;
+    return Math.max(0, Math.min(130, mapped));
+  });
+
+  viewfinderY = computed(() => {
+    const py = this.panY();
+    const zm = this.zoom();
+    const zoomOffset = py / zm;
+    const mapped = 18 - zoomOffset * 0.05;
+    return Math.max(0, Math.min(65, mapped));
+  });
+
+  viewfinderW = computed(() => {
+    const zm = this.zoom();
+    return Math.max(12, Math.min(120, 110 / zm));
+  });
+
+  viewfinderH = computed(() => {
+    const zm = this.zoom();
+    return Math.max(10, Math.min(75, 65 / zm));
+  });
+
+  onMouseDown(event: MouseEvent) {
+    event.preventDefault();
+    this.isDragging.set(true);
+    this.panOnMinimapCoordinates(event);
+  }
+
+  onMouseMove(event: MouseEvent) {
+    if (this.isDragging()) {
+      this.panOnMinimapCoordinates(event);
+    }
+  }
+
+  onMouseUp() {
+    this.isDragging.set(false);
+  }
+
+  private panOnMinimapCoordinates(event: MouseEvent) {
+    const stage = this.stageRef?.nativeElement;
+    if (!stage) return;
+
+    const rect = stage.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const clickY = event.clientY - rect.top;
+
+    const normX = clickX / rect.width;
+    const normY = clickY / rect.height;
+
+    const targetPanX = (0.5 - normX) * 1200 * this.zoom();
+    const targetPanY = (0.5 - normY) * 900 * this.zoom();
+
+    this.viewer.setPan(targetPanX, targetPanY);
+    // Trigger outline coordinates overlay mapping recheck
+    const selId = this.selection.selectedId();
+    if (selId) {
+      this.selection.updateBBox(selId);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+    }
+  }
+}
+

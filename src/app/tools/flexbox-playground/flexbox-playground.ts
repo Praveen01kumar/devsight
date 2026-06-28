@@ -211,7 +211,7 @@ export class FlexboxPlaygroundComponent {
 
   public onGapChange(event: Event): void {
     const val = (event.target as HTMLInputElement).value;
-    this.gapSize.set(parseInt(val, 10));
+    this.gapSize.set(Number.parseInt(val, 10));
   }
 
   public addCard(): void {
