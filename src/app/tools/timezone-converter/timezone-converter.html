@@ -1,0 +1,276 @@
+<div id="app-main-layout"
+  class="w-full flex-grow flex flex-col bg-white dark:bg-zinc-900/35 selection:bg-[#009966]/20 selection:text-[#009966]">
+  <!-- Top Brand Header -->
+  <div id="app-main-header" class="flex flex-col md:flex-row md:items-center justify-end gap-6 mb-2">
+    <!-- Live / Manual Segmented Controller -->
+    <div id="mode-selector"
+      class="bg-slate-100 p-1 rounded-2xl flex items-center gap-1 self-start md:self-auto border border-slate-200/50">
+      <button (click)="isLiveMode() ? null : toggleLiveMode()" type="button"
+        [ngClass]="isLiveMode() ? 'bg-white text-[#009966] shadow-sm font-bold' : 'text-slate-500 hover:text-slate-800 font-semibold'"
+        class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs transition-all duration-200 cursor-pointer">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        Live Clock
+      </button>
+      <button (click)="!isLiveMode() ? null : toggleLiveMode()" type="button"
+        [ngClass]="!isLiveMode() ? 'bg-white text-[#009966] shadow-sm font-bold' : 'text-slate-500 hover:text-slate-800 font-semibold'"
+        class="flex items-center gap-2 px-4 py-2 rounded-xl text-xs transition-all duration-200 cursor-pointer">
+        <span class="material-icons text-xs">edit_calendar</span>
+        Meeting Planner
+      </button>
+    </div>
+  </div>
+  <!-- Side-by-Side Detailed Clocks (Bento Split) -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 relative">
+
+    <!-- SECTION 1: PRIMARY TIMEZONE (BASE) -->
+    <section id="base-timezone-details-card" class="flex flex-col gap-4">
+      <div
+        class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 flex flex-col gap-6 relative">
+
+        <!-- Card Header Decor -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200/50">
+            <span class="material-icons text-slate-500 text-xs">home</span>
+            <span class="text-xs font-bold text-slate-600 tracking-wide uppercase">Primary Timezone</span>
+          </div>
+          <div class="flex items-center gap-1 text-xs text-slate-400 font-bold">
+            <span class="material-icons text-xs">public</span>
+            {{ baseTimeDetails().offsetStr }}
+          </div>
+        </div>
+
+        <!-- Timezone Identifier & Selection Row -->
+        <div class="flex flex-col gap-3">
+          <div class="flex flex-wrap items-baseline gap-2">
+            <h2 class="text-xl font-bold text-slate-800">{{ baseTimeDetails().city }}</h2>
+            <span class="text-slate-400 text-xs font-medium">in {{ baseTimeDetails().country }}</span>
+          </div>
+
+          <!-- Quick selector -->
+          <div class="flex flex-col gap-1.5">
+            <label for="primary-tz-select" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Change
+              Primary Zone</label>
+            <select id="primary-tz-select" [ngModel]="baseTimezone()" (ngModelChange)="selectBaseTimezone($event)"
+              class="w-full bg-slate-50 hover:bg-slate-100/50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 font-semibold outline-none focus:ring-2 focus:ring-[#009966]/20 transition-all">
+              @for (tz of timezoneList(); track tz.timezone) {
+              <option [value]="tz.timezone">
+                {{ tz.city }} &bull; {{ tz.country }} ({{ tz.abbr }})
+              </option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- Clock Segment -->
+        <div
+          class="bg-slate-50/50 border border-slate-100 rounded-2xl p-6 flex flex-col items-center justify-center relative group">
+          <!-- Time Display button -->
+          <button (click)="copyBaseDateTime()" type="button" title="Click to copy exact date & time"
+            class="flex items-baseline gap-1 select-all hover:opacity-80 active:scale-[0.99] transition-all bg-transparent border-0 cursor-pointer p-0 m-0">
+            <span class="mono-font text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-none">
+              {{ baseTimeDetails().formattedTime }}
+            </span>
+            <span class="mono-font text-lg font-bold text-[#009966]">
+              .{{ baseTimeDetails().ms }}
+            </span>
+          </button>
+
+          <p class="text-xs font-bold text-slate-500 mt-3 text-center">
+            {{ baseTimeDetails().formattedDate }}
+          </p>
+
+          <!-- Abbreviation tag -->
+          <span
+            class="absolute top-3 right-3 bg-slate-200/60 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-md mono-font uppercase tracking-wider">
+            {{ baseTimeDetails().abbr }}
+          </span>
+
+          <span
+            class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-slate-400 text-[10px] flex items-center gap-0.5 font-bold">
+            <span class="material-icons text-xs">content_copy</span> Copy
+          </span>
+        </div>
+
+        <!-- Minimalist Interactive Sliders when NOT in Live Mode (Planner Active) -->
+        @if (!isLiveMode()) {
+        <div class="mt-2 pt-4 border-t border-slate-100 w-full flex flex-col gap-4 animate-fade-in">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+              <span class="material-icons text-xs text-[#009966]">tune</span> Adjust Hour
+            </span>
+            <span class="text-[#009966] text-xs font-bold bg-[#009966]/10 px-2 py-0.5 rounded-lg">
+              {{ customHour().toString().padStart(2, '0') }}:{{ customMinute().toString().padStart(2, '0') }}
+            </span>
+          </div>
+
+          <!-- Hour range input -->
+          <input type="range" min="0" max="23" [ngModel]="customHour()" (ngModelChange)="onHourChange($event)"
+            class="w-full h-2 rounded-lg appearance-auto bg-zinc-200 dark:bg-zinc-800 cursor-pointer accent-emerald-500" />
+
+          <div class="grid grid-cols-2 gap-3 mt-1">
+            <div class="flex flex-col gap-1">
+              <label for="planner-date" class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Planner
+                Date</label>
+              <input id="planner-date" type="date" [ngModel]="localDatePickerValue()"
+                (ngModelChange)="onDateChange($event)"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-700 font-semibold outline-none focus:ring-2 focus:ring-[#009966]/20" />
+            </div>
+            <div class="flex flex-col gap-1">
+              <label for="planner-minute"
+                class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Minute</label>
+              <input id="planner-minute" type="number" min="0" max="59" [ngModel]="customMinute()"
+                (ngModelChange)="onMinuteChange($event)"
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-[#009966]/20" />
+            </div>
+          </div>
+        </div>
+        }
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: COMPARED TIMEZONE -->
+    <section id="compared-timezone-details-card" class="flex flex-col gap-4">
+      <div
+        class="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 flex flex-col gap-6 relative">
+
+        <!-- Middle Overlaid Swap Trigger for fast switching on desktop -->
+        <button (click)="swapTimezones()" type="button" aria-label="Swap timezones"
+          class="absolute -left-5 top-[120px] hidden md:flex items-center justify-center w-9 h-9 bg-white hover:bg-slate-50 text-[#009966] rounded-full shadow-lg border border-slate-100 hover:scale-110 active:scale-95 transition-all duration-200 z-10 cursor-pointer">
+          <span class="material-icons text-lg">swap_horiz</span>
+        </button>
+
+        <!-- Card Header Decor -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200/50">
+            <span class="material-icons text-slate-500 text-xs">compare_arrows</span>
+            <span class="text-xs font-bold text-slate-600 tracking-wide uppercase">Compared Timezone</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Offset Shift Badge -->
+            <span
+              class="text-[11px] font-bold px-2 py-1 rounded-xl bg-emerald-50 text-[#009966] border border-emerald-100/50">
+              {{ comparedTimeDetails().diffStr }}
+            </span>
+
+            <!-- Quick swap button for mobile screens -->
+            <button (click)="swapTimezones()" type="button"
+              class="md:hidden flex items-center gap-1 text-xs font-bold text-[#009966] bg-[#009966]/10 px-2.5 py-1 rounded-lg transition-colors cursor-pointer">
+              <span class="material-icons text-sm">swap_vert</span>
+              Swap
+            </button>
+          </div>
+        </div>
+
+        <!-- Timezone Identifier & Live Search autocomplete -->
+        <div class="flex flex-col gap-3 relative">
+          <div class="flex flex-wrap items-baseline gap-2">
+            <h2 class="text-xl font-bold text-slate-800">{{ comparedTimeDetails().city }}</h2>
+            <span class="text-slate-400 text-xs font-medium">in {{ comparedTimeDetails().country }}</span>
+          </div>
+
+          <!-- Instant Search Field -->
+          <div class="flex flex-col gap-1 relative">
+            <label for="compared-tz-search"
+              class="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+              <span class="material-icons text-xs">search</span> Search any City or Country
+            </label>
+            <div class="relative">
+              <input id="compared-tz-search" type="text" [ngModel]="searchQuery()"
+                (ngModelChange)="searchQuery.set($event)" (focus)="showSearchDropdown.set(true)"
+                placeholder="Type city or country (e.g. Tokyo, Berlin...)"
+                class="w-full bg-slate-50 hover:bg-slate-100/50 focus:bg-white border border-slate-200 rounded-xl pl-9 pr-8 py-2.5 text-xs text-slate-800 font-semibold outline-none focus:ring-2 focus:ring-[#009966]/20 transition-all" />
+
+              <span class="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">public</span>
+
+              @if (searchQuery()) {
+              <button (click)="searchQuery.set('')" type="button" aria-label="Clear search input"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer">
+                <span class="material-icons text-xs">clear</span>
+              </button>
+              }
+            </div>
+
+            <!-- Search Results Overlay Dropdown -->
+            @if (showSearchDropdown() && timezoneSearchResults().length > 0) {
+            <!-- Overlay backdrop -->
+            <button type="button" aria-label="Close search options"
+              class="fixed inset-0 z-40 bg-transparent border-none w-full h-full cursor-default"
+              (click)="showSearchDropdown.set(false)"></button>
+
+            <div
+              class="absolute left-0 right-0 top-full mt-1.5 max-h-60 overflow-y-auto bg-white rounded-xl shadow-xl border border-slate-100 divide-y divide-slate-100 z-50 animate-fade-in-down"
+              role="listbox">
+              @for (result of timezoneSearchResults(); track result.timezone) {
+              <button (click)="selectComparedTimezone(result.timezone)" type="button"
+                class="w-full text-left px-4 py-2.5 hover:bg-slate-50 active:bg-slate-100/50 transition-colors flex items-center justify-between gap-3 cursor-pointer"
+                role="option" [attr.aria-selected]="comparedTimezone() === result.timezone">
+                <div class="flex flex-col">
+                  <span class="text-xs font-bold text-slate-800">{{ result.city }}</span>
+                  <span class="text-[10px] text-slate-400">{{ result.country }} &bull; {{ result.timezone }}</span>
+                </div>
+                <span class="mono-font text-[9px] bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-md">
+                  {{ result.abbr }}
+                </span>
+              </button>
+              }
+            </div>
+            }
+          </div>
+        </div>
+
+        <!-- Compared Clock Segment -->
+        <div
+          class="bg-[#009966]/5 border border-[#009966]/10 rounded-2xl p-6 flex flex-col items-center justify-center relative group">
+          <button
+            (click)="copyToClipboard(comparedTimeDetails().formattedDate + ' ' + comparedTimeDetails().formattedTime, 'Compared date & time copied!')"
+            type="button" title="Click to copy exact compared date & time"
+            class="flex items-baseline gap-1 select-all hover:opacity-80 active:scale-[0.99] transition-all bg-transparent border-0 cursor-pointer p-0 m-0">
+            <span class="mono-font text-4xl sm:text-5xl font-black tracking-tight text-slate-900 leading-none">
+              {{ comparedTimeDetails().formattedTime }}
+            </span>
+            <span class="mono-font text-lg font-bold text-[#009966]">
+              .{{ comparedTimeDetails().ms }}
+            </span>
+          </button>
+
+          <p class="text-xs font-bold text-slate-500 mt-3 text-center">
+            {{ comparedTimeDetails().formattedDate }}
+          </p>
+
+          <!-- Relative Day indicator (Today, Tomorrow, Yesterday) -->
+          <span class="absolute top-3 left-3 text-[9px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider"
+            [ngClass]="{
+                    'bg-emerald-100 text-emerald-800': comparedTimeDetails().relativeDay === 'Tomorrow',
+                    'bg-rose-100 text-rose-800': comparedTimeDetails().relativeDay === 'Yesterday',
+                    'bg-slate-200 text-slate-700': comparedTimeDetails().relativeDay === 'Today'
+                  }">
+            {{ comparedTimeDetails().relativeDay }}
+          </span>
+
+          <span
+            class="absolute top-3 right-3 bg-slate-200/60 text-slate-600 text-[9px] font-bold px-2 py-0.5 rounded-md mono-font uppercase tracking-wider">
+            {{ comparedTimeDetails().abbr }}
+          </span>
+        </div>
+
+        <!-- Help Info when Planner Active to keep cards visually balanced -->
+        @if (!isLiveMode()) {
+        <div class="mt-2 pt-4 border-t border-transparent w-full flex flex-col justify-center min-h-[105px]">
+          <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 flex items-start gap-2.5">
+            <span class="material-icons text-[#009966] text-sm mt-0.5">info</span>
+            <p class="text-[11px] text-slate-500 leading-relaxed font-medium">
+              Use the adjustment slider on the primary card. The compared card will compute the exact conversion
+              instantly based on the relative offset of <span class="text-slate-700 font-bold">{{
+                comparedTimeDetails().diffStr }}</span>.
+            </p>
+          </div>
+        </div>
+        }
+
+      </div>
+    </section>
+
+  </div>
+</div>

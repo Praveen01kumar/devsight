@@ -1,0 +1,518 @@
+
+  <div id="main-card" class="w-full bg-white overflow-hidden flex flex-col transition-all duration-300">
+    
+    <!-- Error Notification Banner -->
+    @if (errorMessage()) {
+      <div id="error-banner" class="m-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start gap-3">
+          <mat-icon class="text-rose-600 shrink-0">error_outline</mat-icon>
+          <span class="text-sm font-medium leading-relaxed">{{ errorMessage() }}</span>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-end shrink-0">
+          <button (click)="reset()" class="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-semibold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5">
+            <mat-icon class="text-xs scale-90">cloud_upload</mat-icon>
+            Upload Other PDF
+          </button>
+          <button id="close-error-btn" (click)="errorMessage.set(null)" class="text-rose-500 hover:text-rose-700 transition-colors cursor-pointer flex items-center justify-center">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- STEP 1: UPLOAD -->
+    @if (currentStep() === 'upload') {
+      <div id="step-upload" class="flex flex-col items-center text-center p-8 md:p-16">
+        <!-- Drag & Drop Zone -->
+        <div id="drop-zone" tabindex="0" (keydown.enter)="fileInput.click()"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)" (click)="fileInput.click()"
+             [class.border-[#007a55]]="isDragging()"
+             [class.bg-[#007a55]/5]="isDragging()"
+             class="w-full max-w-lg p-10 border-2 border-dashed border-zinc-200 rounded-2xl cursor-pointer hover:border-[#007a55] hover:bg-[#007a55]/2 transition-all duration-200 flex flex-col items-center justify-center group focus:outline-none focus:ring-2 focus:ring-[#007a55]/30">
+          <input #fileInput type="file" accept=".pdf" class="hidden" (change)="onFileSelected($event)">
+          
+          <mat-icon class="text-zinc-400 group-hover:text-[#007a55] transition-colors mb-4 scale-125">cloud_upload</mat-icon>
+          <span class="text-zinc-700 font-medium mb-1">Drag and drop your PDF here</span>
+          <span class="text-zinc-400 text-sm mb-4">or click to browse your computer</span>
+          <span class="px-3 py-1 bg-zinc-100 text-zinc-500 text-xs rounded-full font-mono">PDF documents only</span>
+        </div>
+      </div>
+    }
+
+    <!-- STEP 2: ANALYZE & CONFIGURE (Sidebar + Content Panel) -->
+    @if (currentStep() === 'analyze') {
+      <div id="step-analyze" class="flex flex-col">
+        <!-- Divided Layout: Sidebar (Metrics) + Right Body (Options) -->
+        <div class="flex flex-col lg:flex-row min-h-0 divide-y lg:divide-y-0 lg:divide-x divide-zinc-100">
+          
+          <!-- Left Sidebar: PDF Metrics & Estimates -->
+          <div class="w-full lg:w-72 bg-zinc-50/50 pt-2 px-6 pb-6 flex flex-col gap-2 shrink-0">
+            
+            <!-- Preview Canvas Thumbnail -->
+            <div class="flex flex-col items-center justify-center bg-white border border-zinc-200/80 rounded-xl p-3 shadow-xs">
+              <div class="relative max-w-full overflow-hidden shadow-xs rounded bg-white border border-zinc-150 mb-2">
+                <canvas #previewCanvas class="block h-auto w-full max-w-[160px] object-contain"></canvas>
+              </div>
+              <span class="text-[10px] text-zinc-400 font-mono flex items-center gap-1">
+                <mat-icon class="text-xs">pageview</mat-icon>
+                Page 1 of {{ analysis()?.pageCount }}
+              </span>
+            </div>
+
+            <!-- PDF Analysis Metrics list -->
+            <div class="space-y-4">
+              <span class="block text-[10px] uppercase font-bold tracking-widest text-zinc-400">PDF Analysis</span>
+              <div class="space-y-3">
+                <div class="flex justify-between items-end pb-1 border-b border-zinc-200/50">
+                  <span class="text-xs text-zinc-500">Name</span>
+                  <span class="text-xs font-semibold font-mono text-zinc-900">{{ uploadedFile()?.name }}</span>
+                </div>
+                <div class="flex justify-between items-end pb-1 border-b border-zinc-200/50">
+                  <span class="text-xs text-zinc-500">Original Size</span>
+                  <span class="text-xs font-semibold font-mono text-zinc-900">{{ formatBytes(uploadedFile()?.size || 0) }}</span>
+                </div>
+                <div class="flex justify-between items-end pb-1 border-b border-zinc-200/50">
+                  <span class="text-xs text-zinc-500">Page Count</span>
+                  <span class="text-xs font-semibold font-mono text-zinc-900">{{ analysis()?.pageCount }}</span>
+                </div>
+                <div class="flex justify-between items-end pb-1 border-b border-zinc-200/50">
+                  <span class="text-xs text-zinc-500">Images Found</span>
+                  <span class="text-xs font-semibold font-mono text-zinc-900">{{ analysis()?.imageCount }}</span>
+                </div>
+                @if (analysis()?.embeddedFonts?.length) {
+                  <div class="flex justify-between items-end pb-1 border-b border-zinc-200/50">
+                    <span class="text-xs text-zinc-500">Fonts Embedded</span>
+                    <span class="text-xs font-semibold font-mono text-zinc-900 truncate max-w-[110px]" [title]="analysis()?.embeddedFonts?.join(', ')">
+                      {{ analysis()?.embeddedFonts?.length }}
+                    </span>
+                  </div>
+                }
+                <div class="flex justify-between items-end pb-1 border-b border-zinc-200/50">
+                  <span class="text-xs text-zinc-500">Metadata</span>
+                  <span class="text-xs font-semibold font-mono text-zinc-900">{{ analysis()?.metadataPresent ? 'Present' : 'None' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Savings estimates block -->
+            <div class="p-4 bg-white border border-zinc-200 rounded-xl space-y-2.5 shadow-xs">
+              <p class="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">Estimated Savings</p>
+              
+              @if (selectedMode() === 'smart') {
+                <div class="flex justify-between items-baseline">
+                  <span class="text-xs text-zinc-500">Smart Profile</span>
+                  <span class="text-xs font-bold text-[#007a55] font-mono">-20% to -70%</span>
+                </div>
+                <div class="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-[#007a55] h-full w-[65%] rounded-full"></div>
+                </div>
+              } @else if (selectedMode() === 'lossless') {
+                <div class="flex justify-between items-baseline">
+                  <span class="text-xs text-zinc-500">Lossless Clean</span>
+                  <span class="text-xs font-bold text-[#007a55] font-mono">-5% to -30%</span>
+                </div>
+                <div class="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-[#007a55] h-full w-[20%] rounded-full"></div>
+                </div>
+              } @else if (selectedMode() === 'high') {
+                <div class="flex justify-between items-baseline">
+                  <span class="text-xs text-zinc-500">Extreme Profile</span>
+                  <span class="text-xs font-bold text-[#007a55] font-mono">-50% to -90%</span>
+                </div>
+                <div class="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-[#007a55] h-full w-[85%] rounded-full"></div>
+                </div>
+              } @else {
+                <div class="flex justify-between items-baseline">
+                  <span class="text-xs text-zinc-500">Custom Tuned</span>
+                  <span class="text-xs font-bold text-[#007a55] font-mono">Variable</span>
+                </div>
+                <div class="w-full bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-[#007a55] h-full w-[45%] rounded-full"></div>
+                </div>
+              }
+            </div>
+            <button id="restart-btn" type="button" (click)="reset()"
+                class="px-5 py-3 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-700 text-sm font-medium rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+              <mat-icon class="text-sm">refresh</mat-icon>
+              Choose Another PDF
+            </button>
+
+          </div>
+
+          <!-- Right Body Panel: Choose Profiles & Custom Parameters -->
+          <div class="flex-1 pt-2 px-6 pb-6 space-y-6">
+            
+            <h2 class="mb-2 text-xs font-bold text-zinc-900 uppercase tracking-wider">Select Compression Profile</h2>
+            
+            <form [formGroup]="compressionForm" class="space-y-6">
+              
+              <!-- Profiles Grid layout -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2">
+                
+                <!-- Lossless Profile Card -->
+                <label for="mode-lossless"
+                       [class.border-[#007a55]]="selectedMode() === 'lossless'"
+                       [class.bg-[#007a55]/[0.03]]="selectedMode() === 'lossless'"
+                       class="relative p-5 border border-zinc-200 bg-white rounded-2xl flex flex-col gap-2 cursor-pointer transition-all duration-200 hover:border-zinc-300">
+                  <input id="mode-lossless" type="radio" value="lossless" formControlName="mode" class="absolute top-5 right-5 accent-[#007a55] h-4 w-4">
+                  <span class="font-bold text-zinc-900">Lossless</span>
+                  <p class="text-xs text-zinc-500 leading-relaxed pr-6">Removes hidden metadata, redundant resource elements, and re-compresses binary streams. Page layouts and image definitions are perfectly untouched.</p>
+                  @if (analysis()) {
+                    <span class="mt-2 font-mono text-xs text-[#007a55]">Est. Output: {{ formatBytes(analysis()?.estimatedLosslessSize || 0) }}</span>
+                  }
+                  @if (selectedMode() === 'lossless') {
+                    <div class="absolute bottom-5 right-5 w-4 h-4 bg-[#007a55] rounded-full flex items-center justify-center">
+                      <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                  }
+                </label>
+
+                <!-- Smart Profile Card -->
+                <label for="mode-smart"
+                       [class.border-[#007a55]]="selectedMode() === 'smart'"
+                       [class.bg-[#007a55]/[0.03]]="selectedMode() === 'smart'"
+                       class="relative p-5 border border-zinc-200 bg-white rounded-2xl flex flex-col gap-2 cursor-pointer transition-all duration-200 hover:border-zinc-300">
+                  <input id="mode-smart" type="radio" value="smart" formControlName="mode" class="absolute top-5 right-5 accent-[#007a55] h-4 w-4">
+                  <div class="flex justify-between items-start">
+                    <span class="font-bold text-zinc-900">Smart Mode</span>
+                    <span class="px-2 py-0.5 bg-[#007a55] text-white text-[9px] font-bold rounded uppercase tracking-wider shrink-0 mr-6">Recommended</span>
+                  </div>
+                  <p class="text-xs text-zinc-500 leading-relaxed pr-6">Intelligently downscales large high-resolution images to screen boundaries and applies adaptive JPEG compression. Skips previously optimized items.</p>
+                  @if (analysis()) {
+                    <span class="mt-2 font-mono text-xs text-[#007a55]">Est. Output: {{ formatBytes(analysis()?.estimatedSmartSize || 0) }}</span>
+                  }
+                  @if (selectedMode() === 'smart') {
+                    <div class="absolute bottom-5 right-5 w-4 h-4 bg-[#007a55] rounded-full flex items-center justify-center">
+                      <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                  }
+                </label>
+
+                <!-- Extreme Profile Card -->
+                <label for="mode-high"
+                       [class.border-[#007a55]]="selectedMode() === 'high'"
+                       [class.bg-[#007a55]/[0.03]]="selectedMode() === 'high'"
+                       class="relative p-5 border border-zinc-200 bg-white rounded-2xl flex flex-col gap-2 cursor-pointer transition-all duration-200 hover:border-zinc-300">
+                  <input id="mode-high" type="radio" value="high" formControlName="mode" class="absolute top-5 right-5 accent-[#007a55] h-4 w-4">
+                  <span class="font-bold text-zinc-900">Extreme</span>
+                  <p class="text-xs text-zinc-500 leading-relaxed pr-6">Aggressively minimizes image size down to 150 DPI with low compression bounds. Removes annotations, previews, and extra elements for ultimate storage saving.</p>
+                  @if (analysis()) {
+                    <span class="mt-2 font-mono text-xs text-[#007a55]">Est. Output: {{ formatBytes(analysis()?.estimatedHighSize || 0) }}</span>
+                  }
+                  @if (selectedMode() === 'high') {
+                    <div class="absolute bottom-5 right-5 w-4 h-4 bg-[#007a55] rounded-full flex items-center justify-center">
+                      <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                  }
+                </label>
+
+                <!-- Custom Profile Card -->
+                <label for="mode-custom"
+                       [class.border-[#007a55]]="selectedMode() === 'custom'"
+                       [class.bg-[#007a55]/[0.03]]="selectedMode() === 'custom'"
+                       class="relative p-5 border border-zinc-200 bg-white rounded-2xl flex flex-col gap-2 cursor-pointer transition-all duration-200 hover:border-zinc-300">
+                  <input id="mode-custom" type="radio" value="custom" formControlName="mode" class="absolute top-5 right-5 accent-[#007a55] h-4 w-4">
+                  <span class="font-bold text-zinc-900">Custom parameters</span>
+                  <p class="text-xs text-zinc-500 leading-relaxed pr-6">Unlock complete visual parameter overrides. Set precise DPI limits, compression sliders, metadata removals, stream structures, and font variables.</p>
+                  <span class="mt-2 font-mono text-xs text-[#007a55]">Variable Options</span>
+                  @if (selectedMode() === 'custom') {
+                    <div class="absolute bottom-5 right-5 w-4 h-4 bg-[#007a55] rounded-full flex items-center justify-center">
+                      <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                  }
+                </label>
+
+              </div>
+
+              <!-- Iterative Target Size Section -->
+              <div class="p-2 mb-2 space-y-2 bg-zinc-50 border border-zinc-200 rounded-2xl transition-all duration-200"
+                   [class.border-[#007a55]]="targetSizeEnabled()"
+                   [class.bg-[#007a55]/[0.02]]="targetSizeEnabled()">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <label for="targetSizeEnabled" class="flex items-start sm:items-center gap-3 cursor-pointer">
+                    <input id="targetSizeEnabled" type="checkbox" formControlName="targetSizeEnabled" class="rounded h-4 w-4 accent-[#007a55] focus:ring-0 mt-1 sm:mt-0">
+                    <div>
+                      <span class="text-sm font-semibold text-zinc-900">Compress to Target Size</span>
+                      <p class="text-xs text-zinc-500 leading-tight">Achieve an exact target threshold using intelligent iterative binary searches</p>
+                    </div>
+                  </label>
+                  <div class="flex items-center gap-2 shrink-0">
+                    <input id="target-size-mb-input" type="number" formControlName="targetSizeMb" min="0.1" step="0.1"
+                           (focus)="compressionForm.get('targetSizeEnabled')?.setValue(true)"
+                           (input)="compressionForm.get('targetSizeEnabled')?.setValue(true)"
+                           class="w-24 h-10 border border-zinc-200 rounded-xl text-center font-mono text-sm focus:ring-2 focus:ring-[#007a55] focus:border-[#007a55] outline-none bg-white font-bold text-zinc-800">
+                    <span class="text-xs font-bold text-zinc-400 font-mono">MB</span>
+                  </div>
+                </div>
+
+                <!-- Target Estimator / Warnings -->
+                @if (estimatedOutput()) {
+                  <div class="pt-3 border-t border-zinc-200/50">
+                    @if (estimatedOutput()?.type === 'impossible') {
+                      <div class="flex items-start gap-3 p-3 bg-amber-50 border border-amber-150 text-amber-800 rounded-xl">
+                        <mat-icon class="text-amber-600 shrink-0 text-sm">warning</mat-icon>
+                        <div class="text-xs space-y-1">
+                          <span class="font-bold">Requested size cannot be achieved.</span>
+                          <p class="leading-relaxed">
+                            The document contains uncompressible text structures, font files, and vector paths totaling roughly <span class="font-bold font-mono">{{ formatBytes(estimatedOutput()?.estimatedSize || 0) }}</span>. The search engine will aim for this minimum technical boundary.
+                          </p>
+                        </div>
+                      </div>
+                    } @else if (estimatedOutput()?.type === 'target') {
+                      <div class="flex items-center gap-2.5 py-1.5 text-xs text-zinc-600">
+                        <div class="w-2 h-2 bg-[#009966] rounded-full animate-pulse shrink-0"></div>
+                        <span class="leading-none">A closer size will be achieved using <strong>6 iterative optimization steps</strong>. Estimated: <strong class="font-mono text-zinc-800">{{ formatBytes(estimatedOutput()?.minRange || 0) }} – {{ formatBytes(estimatedOutput()?.maxRange || 0) }}</strong></span>
+                      </div>
+                    } @else {
+                      <div class="flex items-center justify-between py-1 text-xs text-zinc-500 font-mono">
+                        <span>Estimated Output Size:</span>
+                        <span class="font-bold text-zinc-900">{{ formatBytes(estimatedOutput()?.estimatedSize || 0) }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Custom options sliders drawer -->
+              @if (selectedMode() === 'custom') {
+                <div id="custom-panel" class="bg-zinc-50/50 border border-zinc-200 p-6 rounded-2xl space-y-6 animate-fade-in">
+                  <h2 class="text-xs font-bold text-zinc-900 uppercase tracking-wider border-b border-zinc-200 pb-2">Custom Quality Bounds</h2>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Image Quality -->
+                    <div class="space-y-2">
+                      <div class="flex items-center justify-between text-xs font-semibold text-zinc-600">
+                        <span>JPEG Image Quality</span>
+                        <span class="font-mono text-[#007a55] font-bold">{{ compressionForm.value.imageQuality }}%</span>
+                      </div>
+                      <input type="range" min="10" max="100" step="5" formControlName="imageQuality"
+                             class="w-full accent-[#007a55] cursor-pointer">
+                    </div>
+
+                    <!-- Max DPI -->
+                    <div class="space-y-2">
+                      <div class="text-xs font-semibold text-zinc-600 block">Maximum Resolution Limit</div>
+                      <select id="max-dpi-select" formControlName="maxDpi"
+                              class="w-full px-3 py-2 bg-white border border-zinc-200 rounded-xl focus:outline-none focus:border-[#007a55] focus:ring-2 focus:ring-[#007a55]/20 text-zinc-700 text-sm font-medium">
+                        <option [value]="600">600 DPI (UHD Print)</option>
+                        <option [value]="300">300 DPI (HD Print)</option>
+                        <option [value]="200">200 DPI (Standard Screen)</option>
+                        <option [value]="150">150 DPI (Mobile/Web Screen)</option>
+                        <option [value]="96">96 DPI (Web Low-Res)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Option Toggles Checklist -->
+                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-zinc-200/50">
+                    <label for="optimizeImages" class="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-zinc-600">
+                      <input id="optimizeImages" type="checkbox" formControlName="optimizeImages" class="rounded h-4 w-4 accent-[#007a55] focus:ring-0">
+                      Optimize Images
+                    </label>
+                    <label for="optimizeFonts" class="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-zinc-600">
+                      <input id="optimizeFonts" type="checkbox" formControlName="optimizeFonts" class="rounded h-4 w-4 accent-[#007a55] focus:ring-0">
+                      Optimize Fonts
+                    </label>
+                    <label for="optimizeStreams" class="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-zinc-600">
+                      <input id="optimizeStreams" type="checkbox" formControlName="optimizeStreams" class="rounded h-4 w-4 accent-[#007a55] focus:ring-0">
+                      Optimize Streams
+                    </label>
+                    <label for="removeMetadata" class="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-zinc-600">
+                      <input id="removeMetadata" type="checkbox" formControlName="removeMetadata" class="rounded h-4 w-4 accent-[#007a55] focus:ring-0">
+                      Remove Metadata
+                    </label>
+                    <label for="removeThumbnails" class="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-zinc-600">
+                      <input id="removeThumbnails" type="checkbox" formControlName="removeThumbnails" class="rounded h-4 w-4 accent-[#007a55] focus:ring-0">
+                      Remove Thumbnails
+                    </label>
+                    <label for="removeAnnotations" class="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-zinc-600">
+                      <input id="removeAnnotations" type="checkbox" formControlName="removeAnnotations" class="rounded h-4 w-4 accent-[#007a55] focus:ring-0">
+                      Remove Annotations
+                    </label>
+                  </div>
+                </div>
+              }
+
+              <!-- Action triggers bottom -->
+              <div class="flex justify-end pt-2 border-t border-zinc-100">
+                <button id="optimize-btn-body" type="button" (click)="triggerCompression()"
+                        class="w-full sm:w-auto px-8 py-3.5 bg-[#007a55] hover:bg-[#008f63] text-white font-medium rounded-2xl shadow-sm transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer">
+                  <mat-icon>bolt</mat-icon>
+                  Optimize PDF Now
+                </button>
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+      </div>
+    }
+
+    <!-- STEP 3: COMPRESSING LOADER SCREEN -->
+    @if (currentStep() === 'compressing') {
+      <div id="step-compressing" class="py-16 px-8 flex flex-col items-center justify-center text-center space-y-8 min-h-[450px]">
+        
+        <!-- Spinner with percentage overlay -->
+        <div class="relative flex items-center justify-center">
+          <div class="animate-spin rounded-full h-20 w-20 border-4 border-zinc-100 border-t-[#007a55]"></div>
+          <div class="absolute text-sm font-mono font-bold text-[#007a55]">{{ progress()?.percent }}%</div>
+        </div>
+
+        <div class="space-y-2 max-w-md">
+          <h2 class="text-xl font-semibold text-zinc-950 tracking-tight">Optimizing PDF</h2>
+          <p class="text-xs text-zinc-500 font-mono tracking-wide uppercase">{{ progress()?.message }}</p>
+        </div>
+
+        <!-- Progress bar container -->
+        <div class="w-full max-w-md bg-zinc-100 h-1.5 rounded-full overflow-hidden">
+          <div class="bg-[#007a55] h-full rounded-full transition-all duration-300"
+               [style.width.%]="progress()?.percent || 0"></div>
+        </div>
+
+        <!-- Target Search Iteration Logs Console -->
+        @if (targetIterationLogs().length > 0) {
+          <div id="log-console" class="w-full max-w-lg bg-zinc-950 border border-zinc-900 text-zinc-300 rounded-2xl p-5 text-left font-mono text-[11px] leading-relaxed shadow-lg max-h-52 overflow-y-auto">
+            <div class="text-zinc-500 mb-2 border-b border-zinc-900 pb-2 flex items-center justify-between font-semibold">
+              <span>Target Optimization Search Log</span>
+              <span class="animate-pulse flex h-1.5 w-1.5 rounded-full bg-[#009966]"></span>
+            </div>
+            <div class="space-y-1">
+              @for (log of targetIterationLogs(); track log) {
+                <div class="flex items-start gap-2">
+                  <span class="text-emerald-500 font-bold shrink-0">&gt;</span>
+                  <span class="text-zinc-300">{{ log }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- STEP 4: SUCCESS RESULTS SCREEN -->
+    @if (currentStep() === 'result' && result()) {
+      <div id="step-result" class="divide-y divide-zinc-100">
+        
+        <!-- Successful header banner -->
+        <div class="px-8 py-2 text-center flex flex-col items-center">
+          <div class="mb-4 inline-flex p-3 bg-[#007a55]/5 text-[#007a55] rounded-xl">
+            <mat-icon class="scale-125">check_circle</mat-icon>
+          </div>
+          <h1 class="text-2xl font-bold text-zinc-950 tracking-tight">Rebuild Successful!</h1>
+          <p class="text-sm text-zinc-500 mt-1">Your newly optimized PDF file has been rebuilt and compressed completely client-side.</p>
+        </div>
+
+        <!-- Side-by-side core stats -->
+        <div class="p-2 md:p-3 bg-zinc-50/40">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            
+            <!-- Original size card -->
+            <div class="bg-white border border-zinc-200 p-5 rounded-2xl shadow-xs flex flex-col justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Original Size</span>
+              <div class="mt-2 text-xl font-bold text-zinc-500 font-mono">
+                {{ formatBytes(result()!.originalSize) }}
+              </div>
+            </div>
+
+            <!-- Optimized size card -->
+            <div class="bg-[#007a55]/[0.02] border border-[#007a55]/20 p-5 rounded-2xl shadow-xs flex flex-col justify-between relative overflow-hidden">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-[#007a55]">Optimized Size</span>
+              <div class="mt-2 text-2xl font-extrabold text-[#007a55] font-mono">
+                {{ formatBytes(result()!.compressedSize) }}
+              </div>
+            </div>
+
+            <!-- Savings card -->
+            <div class="bg-gradient-to-br from-[#007a55] to-[#008f63] text-white p-5 rounded-2xl shadow-sm shadow-[#007a55]/10 flex flex-col justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-white/80">Total Savings</span>
+              <div class="mt-2 text-3xl font-extrabold font-mono leading-none">
+                -{{ result()!.reductionPercent | number:'1.1-1' }}%
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Visual Verification and Specific foot statistics -->
+        <div class="p-2 md:p-3 grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- Thumbnail preview of result -->
+          <div class="flex flex-col items-center justify-center bg-zinc-50 border border-zinc-200/80 rounded-2xl p-6">
+            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-4">Output Page Verification</span>
+            <div class="relative max-w-full overflow-hidden shadow-md rounded-lg bg-white border border-zinc-150 mb-3">
+              <canvas #resultCanvas class="block h-auto w-full max-w-[180px] object-contain"></canvas>
+            </div>
+            <span class="text-[10px] text-zinc-500 font-mono">Page 1 processed result</span>
+          </div>
+
+          <!-- Specific parameters summary -->
+          <div class="space-y-6 flex flex-col justify-center">
+            <div>
+              <h3 class="text-xs font-bold text-zinc-900 uppercase tracking-wider mb-4">Compression Summary</h3>
+              
+              <div class="space-y-2 text-xs font-mono">
+                <div class="flex justify-between py-2 border-b border-zinc-100">
+                  <span class="text-zinc-500">Selected Profile:</span>
+                  <span class="font-bold text-zinc-800 uppercase">{{ compressionForm.value.mode }}</span>
+                </div>
+                @if (result()!.qualityUsed) {
+                  <div class="flex justify-between py-2 border-b border-zinc-100">
+                    <span class="text-zinc-500">Engine Quality Used:</span>
+                    <span class="font-bold text-[#007a55]">{{ result()!.qualityUsed }}%</span>
+                  </div>
+                }
+                <div class="flex justify-between py-2 border-b border-zinc-100">
+                  <span class="text-zinc-500">Processing Speed:</span>
+                  <span class="font-bold text-zinc-800">{{ result()!.timeTaken | number:'1.2-2' }} seconds</span>
+                </div>
+                <!-- Sticky download/restart footer block -->
+                <div class="bg-zinc-50/50 flex flex-col sm:flex-row gap-3 justify-end">
+                  <button id="restart-btn" type="button" (click)="reset()"
+                          class="px-5 py-3 bg-white border border-zinc-200 hover:bg-zinc-50 text-zinc-700 text-sm font-medium rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                    <mat-icon class="text-sm">refresh</mat-icon>
+                    Compress Another
+                  </button>
+                  
+                  <button id="download-btn" type="button" (click)="downloadOptimized()"
+                          class="px-7 py-3 bg-[#007a55] hover:bg-[#008f63] text-white text-sm font-semibold rounded-2xl shadow-sm transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer shadow-[#007a55]/10">
+                    <mat-icon class="text-sm">download</mat-icon>
+                    Download Optimized PDF
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Target Specific Details -->
+            @if (compressionForm.value.targetSizeEnabled) {
+              <div class="p-4 bg-zinc-50 border border-zinc-200 rounded-2xl space-y-2 text-xs leading-relaxed text-zinc-600">
+                <div class="flex justify-between font-mono font-bold text-zinc-900 border-b border-zinc-200 pb-1">
+                  <span>Target Output Parameter:</span>
+                  <span>{{ compressionForm.value.targetSizeMb }} MB</span>
+                </div>
+                @if (result()!.targetUnachievable) {
+                  <p class="text-amber-800 flex gap-1.5 items-start">
+                    <mat-icon class="text-sm shrink-0 text-amber-600">info</mat-icon>
+                    <span><strong>Boundary Reached:</strong> {{ result()!.reason }} Reached a structural limit of <strong>{{ formatBytes(result()!.minPossibleSize || 0) }}</strong>.</span>
+                  </p>
+                } @else {
+                  <p class="text-emerald-800 flex gap-1.5 items-start">
+                    <mat-icon class="text-sm shrink-0 text-[#007a55]">check</mat-icon>
+                    <span><strong>Target Met:</strong> The iterative search loops matched your requested target parameter.</span>
+                  </p>
+                }
+              </div>
+            }
+          </div>
+
+        </div>
+
+      </div>
+    }
+
+  </div>
+

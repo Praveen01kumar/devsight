@@ -192,6 +192,15 @@ export const CATEGORIES: CategoryMetadata[] = [
     icon: 'trending_up',
     metaTitle: 'Enterprise SEO Toolkit - Free Meta, OG, Schema, Sitemaps & robots.txt Tools',
     metaDescription: 'All-in-one suite of professional SEO developer and content tools: Meta Tag Generator, Open Graph previews, Schema JSON-LD generators, sitemap index builders & robots.txt validators. Fully offline-first and client-side.'
+  },
+  {
+    id: 'pdf-tools',
+    slug: 'pdf-tools',
+    name: 'PDF Tools',
+    description: 'View, edit, merge, split, compress, rearrange, rotate, extract, and manage PDF documents securely in your browser.',
+    icon: 'picture_as_pdf',
+    metaTitle: 'PDF Tools - View, Edit, Merge, Split & Compress PDFs | DevSight',
+    metaDescription: 'Free online PDF tools to view, edit, merge, split, compress, rearrange, rotate, extract pages, and manage PDF files securely with client-side processing.'
   }
 
 ];
@@ -1162,6 +1171,34 @@ export const TOOLS: ToolMetadata[] = [
     `
   },
   {
+    id: 'timezone-converter',
+    slug: 'timezone-converter',
+    name: 'World Time & Time Zone Converter',
+    shortDescription: 'Convert dates and times between global time zones, compare multiple cities, and instantly find the current local time anywhere in the world.',
+    metaTitle: 'World Time Zone Converter & Current Time Calculator - DevSight',
+    metaDescription: 'Convert time between UTC, GMT, and IANA time zones. Compare world clocks, calculate time differences, and schedule meetings across multiple countries with accurate daylight saving support.',
+    categoryId: 'date-time-tools',
+    icon: 'public',
+    tags: ['timezone', 'world-clock', 'time-converter', 'utc', 'gmt', 'dst', 'time-difference', 'meeting-planner', 'current-time', 'iana-timezone'],
+    relatedTools: ['date-difference', 'unix-timestamp-converter'],
+    faqs: [
+      {
+        question: 'Does the converter account for Daylight Saving Time (DST)?',
+        answer: 'Yes. The converter automatically applies Daylight Saving Time rules for supported IANA time zones whenever they are in effect.'
+      },
+      {
+        question: 'Can I compare multiple time zones at once?',
+        answer: 'Yes. You can view the same date and time across multiple cities and time zones simultaneously, making it easy to schedule international meetings.'
+      }
+    ],
+    detailedGuide: `
+    <h2>World Time Zone Converter & Global Clock</h2>
+    <p>Convert dates and times between any two time zones with precision. Compare local times across countries, view current times in major cities, and calculate offsets from UTC or GMT instantly.</p>
+
+    <p>Perfect for developers, remote teams, travelers, and businesses coordinating meetings across multiple regions. The tool supports IANA time zones and automatically adjusts for Daylight Saving Time where applicable.</p>
+  `
+  },
+  {
     id: 'unix-timestamp',
     slug: 'unix-timestamp',
     name: 'Unix Epoch Timestamp Converter & Local Time Tracker',
@@ -1866,6 +1903,158 @@ export const TOOLS: ToolMetadata[] = [
       }
     ],
     detailedGuide: '<h2>Advanced CSS Photo Filters Board</h2><p>Tweak filters visually, inspect render targets, and copy clean CSS scripts on the fly.</p>'
+  },
+  {
+    id: 'pdf-viewer',
+    slug: 'pdf-viewer',
+    name: 'PDF Viewer',
+    shortDescription: 'Open, read, search, zoom, and inspect PDF documents securely in your browser.',
+    metaTitle: 'PDF Viewer - Read PDF Files Online',
+    metaDescription: 'View PDF documents with page navigation, zoom, search, thumbnails, and document properties. 100% browser-based.',
+    categoryId: 'pdf-tools',
+    icon: 'picture_as_pdf',
+    tags: ['pdf', 'viewer', 'reader', 'preview', 'search'],
+    relatedTools: ['pdf-editor', 'pdf-compressor', 'pdf-page-organizer'],
+    faqs: [
+      {
+        question: 'Can I search inside PDFs?',
+        answer: 'Yes. Search text instantly and jump directly to matching pages.'
+      }
+    ],
+    detailedGuide: '<h2>PDF Viewer</h2><p>Open PDF files instantly, navigate pages, zoom, search text, and inspect document metadata without leaving your browser.</p>'
+  },
+  {
+    id: 'pdf-editor',
+    slug: 'pdf-editor',
+    name: 'PDF Editor',
+    shortDescription: 'Edit PDF documents by adding text, drawings, highlights, shapes, images, and signatures.',
+    metaTitle: 'PDF Editor - Edit PDF Online',
+    metaDescription: 'Edit PDF files securely with annotations, highlights, images, signatures, and text editing tools.',
+    categoryId: 'pdf-tools',
+    icon: 'edit_document',
+    tags: ['pdf', 'editor', 'annotate', 'signature', 'highlight'],
+    relatedTools: ['pdf-viewer', 'pdf-page-organizer', 'pdf-merge'],
+    faqs: [
+      {
+        question: 'Can I add signatures?',
+        answer: 'Yes. Insert handwritten or typed signatures directly into your PDF.'
+      }
+    ],
+    detailedGuide: '<h2>PDF Editor</h2><p>Modify PDF files with annotations, highlights, text, images, and signatures while keeping your documents private.</p>'
+  },
+  {
+    id: 'pdf-merge',
+    slug: 'pdf-merge',
+    name: 'PDF Merge',
+    shortDescription: 'Combine multiple PDF documents into one organized file.',
+    metaTitle: 'Merge PDF Files Online',
+    metaDescription: 'Merge multiple PDFs into a single document quickly with secure browser-based processing.',
+    categoryId: 'pdf-tools',
+    icon: 'join_full',
+    tags: ['pdf', 'merge', 'combine', 'join'],
+    relatedTools: ['pdf-split', 'pdf-page-organizer', 'pdf-compressor'],
+    faqs: [
+      {
+        question: 'Is there a limit to how many PDFs I can merge?',
+        answer: 'You can merge multiple PDF files depending on your browser memory and device capabilities.'
+      }
+    ],
+    detailedGuide: '<h2>Merge PDF Files</h2><p>Combine multiple PDF documents while preserving page order and formatting.</p>'
+  },
+  {
+    id: 'pdf-split',
+    slug: 'pdf-split',
+    name: 'PDF Splitter',
+    shortDescription: 'Split PDF files into individual pages or custom page ranges.',
+    metaTitle: 'Split PDF Online',
+    metaDescription: 'Separate PDF documents into smaller files by page or page ranges using your browser.',
+    categoryId: 'pdf-tools',
+    icon: 'call_split',
+    tags: ['pdf', 'split', 'pages', 'extract'],
+    relatedTools: ['pdf-merge', 'pdf-page-extractor'],
+    faqs: [
+      {
+        question: 'Can I split specific page ranges?',
+        answer: 'Yes. Extract individual pages or custom page ranges into new PDF files.'
+      }
+    ],
+    detailedGuide: '<h2>Split PDF</h2><p>Break large PDF documents into smaller files or extract only the pages you need.</p>'
+  },
+  {
+    id: 'pdf-compressor',
+    slug: 'pdf-compressor',
+    name: 'PDF Compressor',
+    shortDescription: 'Reduce PDF file size while maintaining excellent document quality.',
+    metaTitle: 'Compress PDF Online',
+    metaDescription: 'Compress PDF files to reduce storage space and improve sharing without significant quality loss.',
+    categoryId: 'pdf-tools',
+    icon: 'compress',
+    tags: ['pdf', 'compress', 'optimize', 'reduce-size'],
+    relatedTools: ['pdf-viewer', 'pdf-merge'],
+    faqs: [
+      {
+        question: 'Will compression reduce quality?',
+        answer: 'Compression balances file size and quality, minimizing visible degradation whenever possible.'
+      }
+    ],
+    detailedGuide: '<h2>Compress PDF</h2><p>Optimize PDF documents for email, web uploads, and storage by reducing file size.</p>'
+  },
+  {
+    id: 'pdf-organizer',
+    slug: 'pdf-organizer',
+    name: 'PDF Organizer',
+    shortDescription: 'Rearrange, duplicate, delete, and organize PDF pages with drag-and-drop.',
+    metaTitle: 'PDF Page Organizer',
+    metaDescription: 'Reorder, remove, duplicate, and organize PDF pages using an intuitive drag-and-drop interface.',
+    categoryId: 'pdf-tools',
+    icon: 'view_carousel',
+    tags: ['pdf', 'organize', 'pages', 'rearrange', 'drag-drop'],
+    relatedTools: ['pdf-rotate', 'pdf-merge', 'pdf-split'],
+    faqs: [
+      {
+        question: 'Can I delete unwanted pages?',
+        answer: 'Yes. Remove, duplicate, or rearrange pages before exporting your PDF.'
+      }
+    ],
+    detailedGuide: '<h2>Organize PDF Pages</h2><p>Manage page order visually with drag-and-drop controls and export the updated document instantly.</p>'
+  },
+  {
+    id: 'pdf-rotate',
+    slug: 'pdf-rotate',
+    name: 'PDF Rotator',
+    shortDescription: 'Rotate individual or entire PDF pages by 90°, 180°, or 270°.',
+    metaTitle: 'Rotate PDF Pages Online',
+    metaDescription: 'Correct page orientation by rotating selected PDF pages securely in your browser.',
+    categoryId: 'pdf-tools',
+    icon: 'rotate_right',
+    tags: ['pdf', 'rotate', 'orientation'],
+    relatedTools: ['pdf-page-organizer', 'pdf-viewer'],
+    faqs: [
+      {
+        question: 'Can I rotate only selected pages?',
+        answer: 'Yes. Rotate individual pages or the entire document as needed.'
+      }
+    ],
+    detailedGuide: '<h2>Rotate PDF Pages</h2><p>Fix incorrectly scanned or sideways pages with one-click page rotation.</p>'
+  },
+  {
+    id: 'pdf-page-extractor',
+    slug: 'pdf-page-extractor',
+    name: 'PDF Page Extractor',
+    shortDescription: 'Extract selected PDF pages into a brand-new document.',
+    metaTitle: 'Extract PDF Pages',
+    metaDescription: 'Create new PDF files by extracting selected pages or page ranges from existing documents.',
+    categoryId: 'pdf-tools',
+    icon: 'content_cut',
+    tags: ['pdf', 'extract', 'pages'],
+    relatedTools: ['pdf-split', 'pdf-merge'],
+    faqs: [
+      {
+        question: 'Does extraction modify the original PDF?',
+        answer: 'No. Your original PDF remains unchanged while a new file is generated.'
+      }
+    ],
+    detailedGuide: '<h2>Extract PDF Pages</h2><p>Save selected pages into a new PDF document without altering the original file.</p>'
   }
 ];
 

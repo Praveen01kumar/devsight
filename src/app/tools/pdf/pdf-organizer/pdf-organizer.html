@@ -1,0 +1,766 @@
+<div class="bg-[#fafafa] text-zinc-900 flex flex-col font-sans selection:bg-[#007a55]/20" (dragover)="onDragOver($event)" (drop)="onFileDropped($event)">
+  
+  <!-- LOADING & PROCESSING INDICATOR OVERLAY -->
+  @if (isProcessing()) {
+    <div class="fixed inset-0 bg-black/40 backdrop-blur-xs flex flex-col items-center justify-center z-50 text-white animate-fade-in">
+      <div class="w-16 h-16 border-4 border-[#007a55] border-t-transparent rounded-full animate-spin mb-4"></div>
+      <p class="font-medium text-lg tracking-wide">{{ progressMessage() || 'Processing PDF...' }}</p>
+      <p class="text-sm text-zinc-300 mt-1">Please keep this tab open — everything is computed 100% locally.</p>
+    </div>
+  }
+
+  <!-- LANDING ZONE: IF NO PDF LOADED YET -->
+  @if (!isMainDocLoaded()) {
+    <div class="flex flex-col items-center justify-center">
+      <div class="max-w-2xl w-full text-center space-y-8">
+        <!-- BIG DRAG-AND-DROP PANEL -->
+        <div class="bg-white border-2 border-dashed border-zinc-200 hover:border-[#007a55] rounded-3xl p-10 sm:p-16 shadow-xs hover:shadow-md transition-all duration-300 cursor-pointer group relative overflow-hidden"
+             (click)="fileInput.click()" (keydown.enter)="fileInput.click()" tabindex="0" role="button" aria-label="Drag and drop or browse PDF or image files to organize">
+          <div class="space-y-6 relative z-10 flex flex-col items-center">
+            <div class="w-20 h-20 rounded-2xl bg-zinc-50 flex items-center justify-center text-zinc-400 group-hover:bg-[#007a55]/10 group-hover:text-[#007a55] transition-all duration-300">
+              <span class="material-icons text-[40px] leading-none">picture_as_pdf</span>
+            </div>
+            <div class="space-y-2">
+              <p class="text-xl font-semibold text-zinc-800">
+                Drag & drop your PDF here, or <span class="text-[#007a55] underline decoration-2 underline-offset-4 group-hover:text-[#008f63]">browse</span>
+              </p>
+              <p class="text-sm text-zinc-400">
+                Supports standard PDFs and image files (PNG, JPEG) up to 500+ pages
+              </p>
+            </div>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+        <!-- FILE INPUT -->
+        <input #fileInput type="file" class="hidden" accept="application/pdf,image/*" (change)="onFileSelected($event)" />
+
+      </div>
+    </div>
+  }
+
+  <!-- MAIN ORGANIZER WORKSPACE -->
+  @if (isMainDocLoaded()) {
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+      
+      <!-- HEADER WORKBAR -->
+      <header class="h-16 bg-white border-b border-zinc-200 px-6 flex items-center justify-between shadow-xs select-none shrink-0 z-10">
+        <div class="flex items-center gap-4">
+          <div class="flex items-center gap-2">
+            <input #appendInput type="file" class="hidden" accept="application/pdf,image/*" (change)="onAppendFileSelected($event)" />
+            <button class="px-3.5 py-1.5 text-xs font-medium text-[#007a55] bg-[#007a55]/10 hover:bg-[#007a55]/20 rounded-xl transition-all flex items-center gap-1"
+                    (click)="appendInput.click()">
+              <span class="material-icons text-base">add_to_photos</span>
+              <span>Add PDF / Image</span>
+            </button>
+          </div>
+
+          <div class="h-5 w-[1px] bg-zinc-200 hidden sm:block"></div>
+
+          <!-- Undo & Redo Controls -->
+          <div class="flex border border-zinc-200 rounded-xl overflow-hidden shadow-2xs bg-white">
+            <button class="p-2 hover:bg-zinc-50 border-r border-zinc-200 text-zinc-500 disabled:opacity-30 disabled:hover:bg-transparent transition-colors duration-150 flex items-center justify-center cursor-pointer"
+                    title="Undo (Ctrl+Z)"
+                    [disabled]="!canUndo()"
+                    (click)="undo()">
+              <span class="material-icons text-lg">undo</span>
+            </button>
+            <button class="p-2 hover:bg-zinc-50 text-zinc-500 disabled:opacity-30 disabled:hover:bg-transparent transition-colors duration-150 flex items-center justify-center cursor-pointer"
+                    title="Redo (Ctrl+Y)"
+                    [disabled]="!canRedo()"
+                    (click)="redo()">
+              <span class="material-icons text-lg">redo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Selection Helpers & Batch Controls -->
+        <div class="flex items-center gap-3">
+          
+          <!-- Page Number Search Form -->
+          <form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()" class="relative max-w-[160px] hidden md:block">
+            <span class="material-icons absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-400 text-sm select-none">search</span>
+            <input type="text" formControlName="query" placeholder="Go to page..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl border border-zinc-200 focus:outline-hidden focus:ring-1 focus:ring-[#007a55] focus:border-[#007a55] font-mono bg-white" />
+          </form>
+
+          <div class="h-5 w-[1px] bg-zinc-200 hidden md:block"></div>
+
+          <div class="flex items-center gap-1 text-xs text-zinc-500 bg-zinc-50 rounded-xl p-1 border border-zinc-200">
+            <button class="px-2.5 py-1 rounded-md hover:bg-white hover:text-zinc-800 hover:shadow-2xs transition-all font-medium cursor-pointer" (click)="selectAllPages()">All</button>
+            <button class="px-2.5 py-1 rounded-md hover:bg-white hover:text-zinc-800 hover:shadow-2xs transition-all font-medium cursor-pointer" (click)="clearSelection()">None</button>
+            <button class="px-2.5 py-1 rounded-md hover:bg-white hover:text-zinc-800 hover:shadow-2xs transition-all font-medium cursor-pointer" (click)="invertSelection()">Invert</button>
+          </div>
+
+          <div class="h-5 w-[1px] bg-zinc-200"></div>
+
+          <button class="px-4 py-2 bg-[#007a55] hover:bg-[#008f63] text-white text-sm font-semibold rounded-2xl shadow-sm transition-colors flex items-center gap-2 cursor-pointer"
+                  (click)="saveAndDownloadAll()">
+            <span class="material-icons text-sm">cloud_download</span>
+            <span>Save & Download</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TWO-COLUMN EDITING BOARD -->
+      <div class="flex-1 flex overflow-hidden">
+        
+        <!-- PAGE GRID AREA -->
+        <main class="flex-1 bg-[#fafafa] p-6 overflow-y-auto scroll-smooth relative">
+          <div class="max-w-7xl mx-auto space-y-6">
+            <!-- DRAGGABLE PAGE CONTAINER -->
+             <div class="h-[650px] overflow-y-auto overflow-x-hidden pr-2">
+            <div cdkDropList 
+                 cdkDropListOrientation="mixed" 
+                 (cdkDropListDropped)="onDrop($event)" 
+                 class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 pt-2">
+              
+              @for (page of pages(); track page.id; let idx = $index) {
+                <!-- INDIVIDUAL PAGE CARD -->
+                <div [id]="'page-card-' + page.id" cdkDrag [cdkDragData]="page" class="group relative bg-white border-2 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all duration-200 select-none cursor-grab active:cursor-grabbing flex flex-col items-center gap-3"
+                     [class.border-[#007a55]]="selectedIds().has(page.id)"
+                     [class.bg-[#007a55]/10]="selectedIds().has(page.id)"
+                     [class.ring-4]="selectedIds().has(page.id)"
+                     [class.ring-[#007a55]/10]="selectedIds().has(page.id)"
+                     [class.border-zinc-200]="!selectedIds().has(page.id)"
+                     tabindex="0" role="button"
+                     [attr.aria-label]="'Page ' + page.label + ', Index ' + (idx + 1)"
+                     (click)="onPageClick($event, page.id)"
+                     (keydown.enter)="onPageClick($event, page.id)"
+                     (dblclick)="openPagePreview(page.id)">
+                  
+                  <!-- DRAG PREVIEW BOUNDS -->
+                  <div *cdkDragPlaceholder 
+                       class="w-full aspect-[3/4.5] min-h-[230px] bg-[#007a55]/5 border-2 border-dashed border-[#007a55] rounded-2xl flex flex-col items-center justify-center gap-2 p-4 text-center select-none shadow-inner">
+                    <span class="material-icons text-[#007a55]/40 text-2xl">move_to_inbox</span>
+                    <span class="text-[10px] text-[#007a55]/60 font-semibold uppercase tracking-wider">Drop Page Here</span>
+                  </div>
+
+                  <!-- SELECTION CHECKBOX (Top Left Hover) -->
+                  <div class="absolute top-3 left-3 z-10 select-none">
+                    <button class="selection-checkbox w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all bg-white shadow-xs cursor-pointer"
+                            [class.border-[#007a55]]="selectedIds().has(page.id)"
+                            [class.bg-[#007a55]]="selectedIds().has(page.id)"
+                            [class.text-white]="selectedIds().has(page.id)"
+                            [class.border-zinc-300]="!selectedIds().has(page.id)"
+                            (click)="togglePageSelection(page.id); $event.stopPropagation()">
+                      @if (selectedIds().has(page.id)) {
+                        <span class="material-icons text-sm leading-none font-bold">check</span>
+                      }
+                    </button>
+                  </div>
+
+                  <!-- PAGE HOVER QUICK-BAR -->
+                  <div class="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity duration-150 select-none">
+                    <button class="w-7 h-7 bg-white/95 backdrop-blur-xs border border-zinc-200 text-zinc-600 hover:text-[#007a55] rounded-lg shadow-xs flex items-center justify-center transition-colors cursor-pointer"
+                            title="Rotate Right"
+                            (click)="rotatePages('right', 'single', page.id); $event.stopPropagation()">
+                      <span class="material-icons text-base">rotate_right</span>
+                    </button>
+                    <button class="w-7 h-7 bg-white/95 backdrop-blur-xs border border-zinc-200 text-zinc-600 hover:text-[#007a55] rounded-lg shadow-xs flex items-center justify-center transition-colors cursor-pointer"
+                            title="Interactive Crop"
+                            (click)="openCropModal(page.id); $event.stopPropagation()">
+                      <span class="material-icons text-base">crop</span>
+                    </button>
+                    <button class="w-7 h-7 bg-white/95 backdrop-blur-xs border border-zinc-200 text-red-500 hover:bg-red-50 rounded-lg shadow-xs flex items-center justify-center transition-colors cursor-pointer"
+                            title="Delete"
+                            (click)="deletePages('single', page.id); $event.stopPropagation()">
+                      <span class="material-icons text-base">delete_outline</span>
+                    </button>
+                  </div>
+
+                  <!-- THUMBNAIL CANVAS/IMAGE HOUSING -->
+                  <div class="relative w-full aspect-[3/4] max-h-[160px] bg-zinc-50 border border-zinc-100 rounded-xl overflow-hidden flex items-center justify-center shadow-2xs group-hover:border-zinc-200 transition-all">
+                    @if (page.thumbnailUrl) {
+                      <img [src]="page.thumbnailUrl"
+                           alt="Page thumbnail preview"
+                           class="max-w-full max-h-full transition-transform duration-200"
+                           [style.transform]="'rotate(' + page.rotation + 'deg)'"
+                           [style.clip-path]="page.crop ? 'inset(' + page.crop.top + '% ' + (100 - (page.crop.left + page.crop.width)) + '% ' + (100 - (page.crop.top + page.crop.height)) + '% ' + page.crop.left + '%)' : 'none'"
+                           referrerpolicy="no-referrer" />
+                    } @else {
+                      <span class="material-icons text-zinc-300 text-3xl animate-pulse">image</span>
+                    }
+
+                    <!-- Background Fill Color Overlay Indicator -->
+                    @if (page.backgroundColor && page.backgroundColor !== 'transparent') {
+                      <div class="absolute inset-0 pointer-events-none rounded-xl"
+                           [style.background-color]="page.backgroundColor"
+                           style="opacity: 0.15"></div>
+                    }
+                  </div>
+
+                  <!-- PAGE LABELS & SPECS (Bottom Meta) -->
+                  <div class="w-full space-y-1 select-none">
+                    <div class="flex items-center justify-between">
+                      <span class="text-xs font-semibold text-zinc-800 tracking-tight flex items-center gap-1 font-mono">
+                        Page {{ page.label }}
+                        @if (page.isInsertedBlank) {
+                          <span class="text-[9px] px-1 bg-zinc-100 text-zinc-500 rounded-sm font-sans font-medium">Blank</span>
+                        }
+                        @if (page.isInsertedImage) {
+                          <span class="text-[9px] px-1 bg-emerald-50 text-emerald-600 rounded-sm font-sans font-medium">Image</span>
+                        }
+                      </span>
+                      <span class="text-[10px] text-zinc-400 font-mono">#{{ idx + 1 }}</span>
+                    </div>
+
+                    <!-- Visual badges for active transformations -->
+                    <div class="flex flex-wrap items-center gap-1 text-[10px]">
+                      
+                      <!-- Dimensions -->
+                      <span class="text-zinc-400 font-mono text-[9px] shrink-0" title="Dimensions in points (pt)">
+                        {{ page.width | number:'1.0-0' }}×{{ page.height | number:'1.0-0' }} pt
+                      </span>
+
+                      <!-- Indicators Badge Row -->
+                      <div class="ml-auto flex items-center gap-0.5 text-zinc-400">
+                        @if (page.rotation !== 0) {
+                          <span class="material-icons text-[11px] text-amber-500" title="Rotated {{ page.rotation }}°">sync</span>
+                        }
+                        @if (page.crop) {
+                          <span class="material-icons text-[11px] text-[#007a55]" title="Cropped">crop</span>
+                        }
+                        @if (page.backgroundColor && page.backgroundColor !== 'transparent') {
+                          <span class="material-icons text-[11px] text-indigo-500" title="Custom Background">palette</span>
+                        }
+                        @if (page.margin && page.margin !== 0) {
+                          <span class="material-icons text-[11px] text-sky-500" title="Margin adjusted">photo_size_select_small</span>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              }
+
+            </div>
+            </div>
+
+          </div>
+        </main>
+
+        <!-- RIGHT SIDEBAR: OPTIONS DOCK PANEL -->
+        <aside class="w-80 bg-white border-l border-zinc-200 flex flex-col select-none h-[650px] overflow-y-auto overflow-x-hidden shadow-2xs">
+          
+          <!-- DOC SUMMARY COUNTERS -->
+          <div class="p-5 border-b border-zinc-100 bg-[#fafafa]/50 space-y-4">
+            <h3 class="text-sm font-bold text-zinc-800 tracking-tight flex items-center gap-1.5">
+              <span class="material-icons text-[#007a55] text-base">analytics</span>
+              Document Statistics
+            </h3>
+            
+            <div class="grid grid-cols-2 gap-3 text-xs">
+              <div class="bg-white border border-zinc-100 p-2.5 rounded-xl space-y-1">
+                <p class="text-zinc-400 font-medium">Total Pages</p>
+                <p class="text-lg font-bold text-zinc-800 font-mono">{{ totalPagesCount() }}</p>
+              </div>
+              <div class="bg-white border border-zinc-100 p-2.5 rounded-xl space-y-1" [class.border-[#007a55]/20]="hasSelection()">
+                <p class="text-zinc-400 font-medium">Selected</p>
+                <p class="text-lg font-bold text-zinc-800 font-mono" [class.text-[#007a55]]="hasSelection()">{{ selectedPagesCount() }}</p>
+              </div>
+              <div class="bg-white border border-zinc-100 p-2.5 rounded-xl space-y-1">
+                <p class="text-zinc-400 font-medium font-sans">Current Size</p>
+                <p class="text-xs font-bold text-zinc-700 font-mono truncate" title="Raw file data sum">
+                  {{ estimatedOutputSize() }}
+                </p>
+              </div>
+              <div class="bg-white border border-zinc-100 p-2.5 rounded-xl space-y-1">
+                <p class="text-zinc-400 font-medium">Est. Output</p>
+                <p class="text-xs font-bold text-[#007a55] font-mono truncate">
+                  {{ estimatedOutputSize() }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIDEBAR ACTION ACCORDIONS (COLLAPSIBLE PANELS) -->
+          <div class="flex-1 divide-y divide-zinc-100">
+            
+            <!-- 1. MERGE & INSERT PAGES -->
+            <div class="p-5 space-y-3.5">
+              <h4 class="text-xs font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-icons text-zinc-400 text-sm">add_circle</span>
+                Merge & Insert Pages
+              </h4>
+
+              <!-- Insert Blank Page Option Form -->
+              <form [formGroup]="blankPageForm" (ngSubmit)="onInsertBlankSubmit()" class="space-y-3 bg-zinc-50 border border-zinc-100 p-3 rounded-xl">
+                <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Insert Blank Page</p>
+                
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="blank-width-input">Width (pt)</label>
+                    <input type="number" id="blank-width-input" formControlName="width" class="w-full px-2 py-1 text-xs border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#007a55] font-mono" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="blank-height-input">Height (pt)</label>
+                    <input type="number" id="blank-height-input" formControlName="height" class="w-full px-2 py-1 text-xs border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#007a55] font-mono" />
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="blank-bg-select">Background</label>
+                    <select id="blank-bg-select" formControlName="backgroundColor" class="w-full px-2 py-1 text-xs border border-zinc-200 bg-white rounded-lg focus:outline-hidden">
+                      <option value="#ffffff">White</option>
+                      <option value="#fafafa">Off-White</option>
+                      <option value="transparent">Transparent</option>
+                      <option value="#f0fdf4">Light Green</option>
+                      <option value="#eff6ff">Light Blue</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="blank-placement-select">Placement</label>
+                    <select id="blank-placement-select" formControlName="placement" class="w-full px-2 py-1 text-xs border border-zinc-200 bg-white rounded-lg focus:outline-hidden">
+                      <option value="end">End of Doc</option>
+                      <option value="before" [disabled]="!hasSelection()">Before Sel.</option>
+                      <option value="after" [disabled]="!hasSelection()">After Sel.</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit"
+                        [disabled]="blankPageForm.invalid"
+                        class="w-full py-1.5 rounded-lg bg-[#007a55] hover:bg-[#008f63] disabled:opacity-50 text-white text-xs font-semibold flex items-center justify-center gap-1 transition-all">
+                  <span class="material-icons text-xs">add</span>
+                  <span>Insert Blank Page</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- 2. SPLIT DOCUMENT PANEL -->
+            <div class="p-5 space-y-3.5">
+              <h4 class="text-xs font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-icons text-zinc-400 text-sm">call_split</span>
+                Split Document
+              </h4>
+
+              <form [formGroup]="splitForm" (ngSubmit)="onSplitSubmit()" class="space-y-3 bg-zinc-50 border border-zinc-100 p-3 rounded-xl">
+                <div class="space-y-1">
+                  <label class="text-[10px] text-zinc-500 font-medium" for="split-method-select">Split Method</label>
+                  <select id="split-method-select" formControlName="method" class="w-full px-2 py-1 text-xs border border-zinc-200 bg-white rounded-lg focus:outline-hidden">
+                    <option value="selected">Extract Selected Pages</option>
+                    <option value="range">By Custom Page Ranges</option>
+                    <option value="every">Every N Pages</option>
+                  </select>
+                </div>
+
+                @if (splitForm.get('method')?.value === 'range') {
+                  <div class="space-y-1 animate-scale-in">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="split-ranges-input">Ranges (comma-separated)</label>
+                    <input type="text"
+                           id="split-ranges-input"
+                           formControlName="rangeStr"
+                           placeholder="e.g. 1-2, 3-4, 5-5"
+                           class="w-full px-2 py-1 text-xs border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#007a55] font-mono" />
+                  </div>
+                }
+
+                @if (splitForm.get('method')?.value === 'every') {
+                  <div class="space-y-1 animate-scale-in">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="split-batch-input">N Pages per file</label>
+                    <input type="number"
+                           id="split-batch-input"
+                           formControlName="batchSize"
+                           class="w-full px-2 py-1 text-xs border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#007a55] font-mono" />
+                  </div>
+                }
+
+                <button type="submit"
+                        class="w-full py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold flex items-center justify-center gap-1 transition-all">
+                  <span class="material-icons text-xs">scissors</span>
+                  <span>Split & Download</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- 3. RENUMBER PAGE LABELS -->
+            <div class="p-5 space-y-3.5">
+              <h4 class="text-xs font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-icons text-zinc-400 text-sm">format_list_numbered</span>
+                Renumber page labels
+              </h4>
+
+              <form [formGroup]="renumberForm" (ngSubmit)="onRenumberSubmit()" class="space-y-3 bg-zinc-50 border border-zinc-100 p-3 rounded-xl">
+                <div class="space-y-1">
+                  <label class="text-[10px] text-zinc-500 font-medium" for="renumber-prefix-input">Prefix</label>
+                  <input type="text" id="renumber-prefix-input" formControlName="prefix" placeholder="e.g. Appendix, A" class="w-full px-2 py-1 text-xs border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#007a55]" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="renumber-start-input">Start Number</label>
+                    <input type="number" id="renumber-start-input" formControlName="startNumber" class="w-full px-2 py-1 text-xs border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#007a55] font-mono" />
+                  </div>
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="renumber-style-select">Style</label>
+                    <select id="renumber-style-select" formControlName="style" class="w-full px-2 py-1 text-xs border border-zinc-200 bg-white rounded-lg focus:outline-hidden">
+                      <option value="arabic">Arabic (1, 2)</option>
+                      <option value="roman">Roman (I, II)</option>
+                      <option value="alpha">Alpha (A, B)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-1">
+                  <input type="checkbox" formControlName="selectedOnly" id="renumber-sel-only" class="accent-[#007a55] w-3.5 h-3.5 rounded" />
+                  <label for="renumber-sel-only" class="text-[10px] text-zinc-500 font-medium">Apply to selected only</label>
+                </div>
+
+                <button type="submit"
+                        class="w-full py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold flex items-center justify-center gap-1 transition-all">
+                  <span class="material-icons text-xs">auto_awesome</span>
+                  <span>Apply New Sequence</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- 4. BACKGROUND COLOR & MARGINS -->
+            <div class="p-5 space-y-3.5">
+              <h4 class="text-xs font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-icons text-zinc-400 text-sm">layers</span>
+                Background & Margins
+              </h4>
+
+              <div class="space-y-3 bg-zinc-50 border border-zinc-100 p-3 rounded-xl">
+                
+                <!-- Background tint preset picker -->
+                <div class="space-y-1.5">
+                  <span class="text-[10px] text-zinc-500 font-medium">Apply Background Tint</span>
+                  <div class="flex items-center gap-2">
+                    <button class="w-6 h-6 rounded-full border border-zinc-300 bg-white shadow-2xs cursor-pointer" title="White" (click)="applyBackgroundColor('#ffffff', true)"></button>
+                    <button class="w-6 h-6 rounded-full border border-zinc-300 bg-[#fef3c7] shadow-2xs cursor-pointer" title="Cream Tint" (click)="applyBackgroundColor('#fef3c7', true)"></button>
+                    <button class="w-6 h-6 rounded-full border border-zinc-300 bg-[#eff6ff] shadow-2xs cursor-pointer" title="Blue Tint" (click)="applyBackgroundColor('#eff6ff', true)"></button>
+                    <button class="w-6 h-6 rounded-full border border-zinc-300 bg-[#f0fdf4] shadow-2xs cursor-pointer" title="Green Tint" (click)="applyBackgroundColor('#f0fdf4', true)"></button>
+                    <button class="w-6 h-6 rounded-full border border-zinc-300 bg-transparent flex items-center justify-center cursor-pointer text-zinc-400" title="Transparent" (click)="applyBackgroundColor('transparent', true)">
+                      <span class="material-icons text-[10px]">close</span>
+                    </button>
+                    <span class="text-[9px] text-zinc-400 font-medium ml-auto">Selected pages only</span>
+                  </div>
+                </div>
+
+                <div class="h-[1px] bg-zinc-200 my-2"></div>
+
+                <!-- Margin Adjustment Slider Buttons -->
+                <div class="space-y-1.5">
+                  <span class="text-[10px] text-zinc-500 font-medium">Add White Page Margins</span>
+                  <div class="grid grid-cols-2 gap-2">
+                    <button class="py-1 px-2 border border-zinc-200 hover:border-[#007a55] hover:text-[#007a55] rounded-lg text-xs font-semibold bg-white cursor-pointer transition-all flex items-center gap-1 justify-center"
+                            (click)="applyMargins(20, true)">
+                      <span class="material-icons text-xs">zoom_out_map</span>
+                      <span>+20pt Margin</span>
+                    </button>
+                    <button class="py-1 px-2 border border-zinc-200 hover:border-[#007a55] hover:text-[#007a55] rounded-lg text-xs font-semibold bg-white cursor-pointer transition-all flex items-center gap-1 justify-center"
+                            (click)="applyMargins(-20, true)">
+                      <span class="material-icons text-xs">zoom_in_map</span>
+                      <span>-20pt Crop</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="h-[1px] bg-zinc-200 my-2"></div>
+
+                <!-- Auto-Trim Margins Trigger -->
+                <button type="button"
+                        [disabled]="!hasSelection()"
+                        class="w-full py-1.5 rounded-lg border border-[#007a55] text-[#007a55] hover:bg-[#007a55]/5 disabled:opacity-50 text-xs font-bold flex items-center justify-center gap-1 transition-all"
+                        (click)="autoTrimMarginsForSelected()">
+                  <span class="material-icons text-sm">content_cut</span>
+                  <span>Auto-Trim White Margins</span>
+                </button>
+
+              </div>
+            </div>
+
+            <!-- 5. DIRECT PAGE MOVEMENT PANEL -->
+            <div class="p-5 space-y-3.5">
+              <h4 class="text-xs font-bold text-zinc-700 uppercase tracking-wider flex items-center gap-1.5">
+                <span class="material-icons text-zinc-400 text-sm">open_with</span>
+                Move Pages
+              </h4>
+
+              <div class="space-y-3 bg-zinc-50 border border-zinc-100 p-3 rounded-xl">
+                <div class="grid grid-cols-2 gap-2">
+                  <button [disabled]="!hasSelection()"
+                          (click)="moveSelectedToBeginning()"
+                          class="py-1 px-2 border border-zinc-200 bg-white hover:border-[#007a55] hover:text-[#007a55] disabled:opacity-50 rounded-lg text-xs font-semibold cursor-pointer transition-all flex items-center gap-1 justify-center">
+                    <span class="material-icons text-xs">first_page</span>
+                    <span>To Beginning</span>
+                  </button>
+                  <button [disabled]="!hasSelection()"
+                          (click)="moveSelectedToEnd()"
+                          class="py-1 px-2 border border-zinc-200 bg-white hover:border-[#007a55] hover:text-[#007a55] disabled:opacity-50 rounded-lg text-xs font-semibold cursor-pointer transition-all flex items-center gap-1 justify-center">
+                    <span class="material-icons text-xs">last_page</span>
+                    <span>To End</span>
+                  </button>
+                </div>
+
+                <div class="h-[1px] bg-zinc-200 my-2"></div>
+
+                <form [formGroup]="movePagesForm" (ngSubmit)="onMoveSubmit()" class="space-y-2">
+                  <p class="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">Relative Movement</p>
+                  
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="move-position-select">Move selected page(s)</label>
+                    <select id="move-position-select" formControlName="position" class="w-full px-2 py-1 text-xs border border-zinc-200 bg-white rounded-lg focus:outline-hidden">
+                      <option value="before">Before Page Label</option>
+                      <option value="after">After Page Label</option>
+                    </select>
+                  </div>
+
+                  <div class="space-y-1">
+                    <label class="text-[10px] text-zinc-500 font-medium" for="move-target-input">Target Page Label</label>
+                    <input type="text"
+                           id="move-target-input"
+                           formControlName="targetLabel"
+                           placeholder="Target page number (e.g. 5)"
+                           class="w-full px-2 py-1 text-xs border border-zinc-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-[#007a55] font-mono" />
+                  </div>
+
+                  <button type="submit"
+                          [disabled]="movePagesForm.invalid || !hasSelection()"
+                          class="w-full py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-semibold flex items-center justify-center gap-1 transition-all">
+                    <span class="material-icons text-xs">play_for_work</span>
+                    <span>Execute Move</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+        </aside>
+
+      </div>
+
+    </div>
+  }
+
+  <!-- INTERACTIVE CROP BOX DIALOG -->
+  @if (croppingPageId()) {
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in select-none">
+      <div class="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden shadow-xl animate-scale-in">
+        
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-zinc-200 flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-lg text-zinc-800 flex items-center gap-1.5">
+              <span class="material-icons text-[#007a55]">crop</span>
+              Interactive Bounding Crop
+            </h3>
+            <p class="text-xs text-zinc-400">Drag handles to set printable crop area boundaries. Crops are lossless and non-rasterized.</p>
+          </div>
+          <button class="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-500 transition-colors cursor-pointer" (click)="croppingPageId.set(null)">
+            <span class="material-icons text-xl leading-none">close</span>
+          </button>
+        </div>
+
+        <!-- Bounding Cropper Canvas Workspace -->
+        <div class="flex-1 bg-zinc-100 p-8 flex items-center justify-center overflow-hidden">
+          <div id="crop-container" class="relative max-h-[50vh] aspect-square bg-zinc-200 rounded-xl shadow-inner overflow-hidden select-none border border-zinc-300">
+            
+            <!-- Reference PDF Page Image -->
+            @let activePage = pages();
+            @for (p of activePage; track p.id) {
+              @if (p.id === croppingPageId()) {
+                <img [src]="p.thumbnailUrl"
+                     alt="Crop workspace canvas view"
+                     class="w-full h-full object-contain pointer-events-none"
+                     referrerpolicy="no-referrer" />
+              }
+            }
+
+            <!-- Semitransparent Dark Mask + Clear Highlighted Center (CSS Box-shadow trick!) -->
+            <div class="absolute border border-dashed border-[#007a55] bg-transparent cursor-move"
+                 [style.left.%]="cropBoxPercent().left"
+                 [style.top.%]="cropBoxPercent().top"
+                 [style.width.%]="cropBoxPercent().width"
+                 [style.height.%]="cropBoxPercent().height"
+                 style="box-shadow: 0 0 0 9999px rgba(9, 9, 11, 0.65)"
+                 (mousedown)="onCropDragStart($event, 'move')"
+                 (touchstart)="onCropDragStart($event, 'move')">
+              
+              <!-- Core draggable resize corner handles -->
+              <!-- Top Left Handle -->
+              <div class="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-[#007a55] border-2 border-white rounded-full cursor-nwse-resize hover:scale-125 transition-transform"
+                   (mousedown)="onCropDragStart($event, 'tl'); $event.stopPropagation()"
+                   (touchstart)="onCropDragStart($event, 'tl'); $event.stopPropagation()"></div>
+              
+              <!-- Top Right Handle -->
+              <div class="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-[#007a55] border-2 border-white rounded-full cursor-nesw-resize hover:scale-125 transition-transform"
+                   (mousedown)="onCropDragStart($event, 'tr'); $event.stopPropagation()"
+                   (touchstart)="onCropDragStart($event, 'tr'); $event.stopPropagation()"></div>
+              
+              <!-- Bottom Left Handle -->
+              <div class="absolute -bottom-1.5 -left-1.5 w-3.5 h-3.5 bg-[#007a55] border-2 border-white rounded-full cursor-nesw-resize hover:scale-125 transition-transform"
+                   (mousedown)="onCropDragStart($event, 'bl'); $event.stopPropagation()"
+                   (touchstart)="onCropDragStart($event, 'bl'); $event.stopPropagation()"></div>
+              
+              <!-- Bottom Right Handle -->
+              <div class="absolute -bottom-1.5 -right-1.5 w-3.5 h-3.5 bg-[#007a55] border-2 border-white rounded-full cursor-nwse-resize hover:scale-125 transition-transform"
+                   (mousedown)="onCropDragStart($event, 'br'); $event.stopPropagation()"
+                   (touchstart)="onCropDragStart($event, 'br'); $event.stopPropagation()"></div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Bounding Cropper Controls Footer -->
+        <div class="px-6 py-4 border-t border-zinc-200 flex items-center justify-between bg-zinc-50">
+          <div class="flex items-center gap-3">
+            <button class="px-3.5 py-1.5 border border-zinc-200 hover:border-zinc-300 text-zinc-600 bg-white text-xs font-semibold rounded-xl cursor-pointer"
+                    (click)="resetCropInModal()">
+              Reset Bounds
+            </button>
+
+            <div class="flex items-center gap-2">
+              <input type="checkbox" id="lock-aspect-ratio-check" class="accent-[#007a55]" [checked]="lockAspectRatio()" (change)="lockAspectRatio.set(!lockAspectRatio())" />
+              <label for="lock-aspect-ratio-check" class="text-xs text-zinc-500 font-medium">Lock Aspect Ratio</label>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button class="px-4 py-2 border border-zinc-200 text-zinc-600 hover:bg-zinc-100 text-xs font-semibold rounded-xl cursor-pointer"
+                    (click)="croppingPageId.set(null)">
+              Cancel
+            </button>
+            <button class="px-5 py-2 bg-[#007a55] hover:bg-[#008f63] text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+                    (click)="saveCrop()">
+              Apply Lossless Crop
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- HIGH-FIDELITY PREVIEW DIALOG MODAL -->
+  @if (activePreviewPageId()) {
+    <div class="fixed inset-0 bg-black/85 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fade-in select-none">
+      <div class="bg-white rounded-3xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden shadow-xl animate-scale-in">
+        
+        <!-- Preview Modal Header -->
+        <div class="px-6 py-4 border-b border-zinc-200 flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-lg text-zinc-800 flex items-center gap-2">
+              <span class="material-icons text-[#007a55]">zoom_in</span>
+              @let activePrevPage = pages();
+              @for (p of activePrevPage; track p.id) {
+                @if (p.id === activePreviewPageId()) {
+                  <span>Page {{ p.label }} High-Res Preview</span>
+                }
+              }
+            </h3>
+            <p class="text-xs text-zinc-400">Review full canvas details. Zoom and rotate settings here are temporary visual previews.</p>
+          </div>
+          <button class="p-1.5 rounded-full hover:bg-zinc-100 text-zinc-500 transition-colors cursor-pointer" (click)="activePreviewPageId.set(null)">
+            <span class="material-icons text-xl leading-none">close</span>
+          </button>
+        </div>
+
+        <!-- Preview Modal Viewer Workspace -->
+        <div class="flex-1 bg-zinc-900 p-8 flex items-center justify-center overflow-auto">
+          
+          <div class="relative transition-all duration-300 max-w-full"
+               [style.transform]="'scale(' + previewZoom() / 100 + ') rotate(' + previewRotation() + 'deg)'">
+            
+            @let previewPages = pages();
+            @for (p of previewPages; track p.id) {
+              @if (p.id === activePreviewPageId()) {
+                <img [src]="p.thumbnailUrl"
+                     alt="High resolution page preview canvas"
+                     class="max-h-[60vh] object-contain rounded-lg shadow-2xl bg-white border border-zinc-800 transition-transform"
+                     [style.transform]="'rotate(' + p.rotation + 'deg)'"
+                     [style.clip-path]="p.crop ? 'inset(' + p.crop.top + '% ' + (100 - (p.crop.left + p.crop.width)) + '% ' + (100 - (p.crop.top + p.crop.height)) + '% ' + p.crop.left + '%)' : 'none'"
+                     referrerpolicy="no-referrer" />
+              }
+            }
+
+          </div>
+
+        </div>
+
+        <!-- Preview Modal Controls Footer -->
+        <div class="px-6 py-4 border-t border-zinc-200 flex items-center justify-between bg-zinc-50 select-none">
+          <!-- Left: Page Navigator buttons -->
+          <div class="flex items-center gap-2">
+            <button class="px-3.5 py-1.5 border border-zinc-200 hover:bg-zinc-100 text-zinc-600 text-xs font-semibold rounded-xl flex items-center gap-1 cursor-pointer"
+                    (click)="navigatePreview('prev')">
+              <span class="material-icons text-sm">chevron_left</span>
+              <span>Previous Page</span>
+            </button>
+            <button class="px-3.5 py-1.5 border border-zinc-200 hover:bg-zinc-100 text-zinc-600 text-xs font-semibold rounded-xl flex items-center gap-1 cursor-pointer"
+                    (click)="navigatePreview('next')">
+              <span>Next Page</span>
+              <span class="material-icons text-sm">chevron_right</span>
+            </button>
+          </div>
+
+          <!-- Center: Zoom Controls & Local Rotation Preview -->
+          <div class="flex items-center gap-3">
+            <button class="p-2 border border-zinc-200 hover:bg-zinc-100 rounded-xl text-zinc-600 flex items-center justify-center cursor-pointer shadow-2xs" (click)="zoomPreview(-15)" title="Zoom Out">
+              <span class="material-icons text-sm">zoom_out</span>
+            </button>
+            <span class="text-xs font-bold text-zinc-600 font-mono w-12 text-center">{{ previewZoom() }}%</span>
+            <button class="p-2 border border-zinc-200 hover:bg-zinc-100 rounded-xl text-zinc-600 flex items-center justify-center cursor-pointer shadow-2xs" (click)="zoomPreview(15)" title="Zoom In">
+              <span class="material-icons text-sm">zoom_in</span>
+            </button>
+
+            <div class="w-[1px] h-5 bg-zinc-200"></div>
+
+            <button class="p-2 border border-zinc-200 hover:bg-zinc-100 rounded-xl text-zinc-600 flex items-center justify-center gap-1 cursor-pointer shadow-2xs"
+                    (click)="rotatePreview()"
+                    title="Rotate Preview 90°">
+              <span class="material-icons text-sm">rotate_right</span>
+              <span class="text-xs font-medium">90°</span>
+            </button>
+          </div>
+
+          <!-- Right: Action Button Close -->
+          <button class="px-5 py-2 bg-[#007a55] hover:bg-[#008f63] text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
+                  (click)="activePreviewPageId.set(null)">
+            Done Previewing
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- FLOATING SELECTION DOCK (High Density Theme) -->
+  @if (hasSelection()) {
+    <div id="floating-selection-dock" 
+         class="fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-white border border-zinc-200 shadow-2xl rounded-[28px] p-2 pr-6 z-20 animate-scale-in">
+      <div class="px-4 flex flex-col">
+        <span class="text-[10px] font-bold text-[#007a55] uppercase tracking-wider">Selected</span>
+        <span class="text-sm font-bold font-mono leading-tight">{{ selectedPagesCount() | number:'2.0-0' }} Page{{ selectedPagesCount() > 1 ? 's' : '' }}</span>
+      </div>
+      <div class="w-px h-8 bg-zinc-200 mx-2"></div>
+      <div class="flex items-center gap-1">
+        <button class="p-2.5 rounded-2xl hover:bg-[#007a551a] hover:text-[#007a55] text-zinc-600 transition-all flex items-center justify-center cursor-pointer" 
+                title="Rotate Left 90°"
+                (click)="rotatePages('left', 'selected')">
+          <span class="material-icons text-xl">rotate_left</span>
+        </button>
+        <button class="p-2.5 rounded-2xl hover:bg-[#007a551a] hover:text-[#007a55] text-zinc-600 transition-all flex items-center justify-center cursor-pointer" 
+                title="Rotate Right 90°"
+                (click)="rotatePages('right', 'selected')">
+          <span class="material-icons text-xl">rotate_right</span>
+        </button>
+        <button class="p-2.5 rounded-2xl hover:bg-[#007a551a] hover:text-[#007a55] text-zinc-600 transition-all flex items-center justify-center cursor-pointer" 
+                title="Duplicate Selected"
+                (click)="duplicatePages('selected')">
+          <span class="material-icons text-xl">content_copy</span>
+        </button>
+        <div class="w-px h-8 bg-zinc-200 mx-1"></div>
+        <button class="p-2.5 rounded-2xl hover:bg-red-50 hover:text-red-600 text-zinc-400 transition-all flex items-center justify-center cursor-pointer" 
+                title="Delete Selected"
+                (click)="deletePages('selected')">
+          <span class="material-icons text-xl text-red-500">delete</span>
+        </button>
+      </div>
+    </div>
+  }
+
+</div>

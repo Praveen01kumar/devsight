@@ -1,0 +1,380 @@
+<div
+  class="flex flex-col bg-[#fafafa] dark:bg-[#09090b] text-[#09090b] dark:text-zinc-100 font-sans selection:bg-primary/20 transition-colors duration-300">
+  <!-- Error Alert Banner -->
+  @if (errorMessage()) {
+  <div
+    class="fade-in mx-6 mt-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/30 text-rose-800 dark:text-rose-300 p-3.5 rounded-xl flex items-start gap-3 shadow-sm shrink-0">
+    <mat-icon class="text-rose-500 shrink-0">error_outline</mat-icon>
+    <div class="flex-1 text-xs">
+      <p class="font-bold">Execution Warning</p>
+      <p class="mt-0.5 opacity-90">{{ errorMessage() }}</p>
+    </div>
+    <button (click)="errorMessage.set('')"
+      class="text-rose-400 hover:text-rose-600 dark:hover:text-rose-200 transition-colors" aria-label="Dismiss error">
+      <mat-icon class="text-sm">close</mat-icon>
+    </button>
+  </div>
+  }
+
+  <!-- WORKSPACE STATE 1: Empty / Upload PDF Drag Zone -->
+  @if (!currentFile()) {
+  <div class="flex-1 flex flex-col items-center justify-center bg-[#fafafa] dark:bg-[#09090b]">
+    <div id="drop-zone"
+      class="w-full max-w-2xl min-h-[300px] flex flex-col items-center justify-center border-2 border-dashed rounded-3xl p-4 md:p-6 transition-all duration-300 text-center cursor-pointer select-none focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-2 bg-white dark:bg-zinc-900 shadow-sm"
+      [class.border-primary]="isDragging()" [class.bg-primary/5]="isDragging()" [class.border-zinc-200]="!isDragging()"
+      [class.dark:border-zinc-800]="!isDragging()" [class.hover:border-primary]="!isProcessing()"
+      [class.hover:bg-zinc-50]="!isDragging() && !isProcessing()"
+      [class.dark:hover:bg-zinc-900/40]="!isDragging() && !isProcessing()" (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="!isProcessing() && triggerFileOpen()"
+      (keyup.enter)="!isProcessing() && triggerFileOpen()" (keyup.space)="!isProcessing() && triggerFileOpen()"
+      tabindex="0" role="button" aria-label="Drag and drop your PDF here or click to browse files">
+      <input #fileInput type="file" class="hidden" accept="application/pdf" (change)="onFileSelected($event)"
+        id="pdf-file-selector" />
+
+      @if (isProcessing()) {
+      <div class="flex flex-col items-center gap-4 py-8">
+        <div class="relative w-14 h-14">
+          <div class="absolute inset-0 rounded-full border-4 border-zinc-100 dark:border-zinc-800"></div>
+          <div
+            class="absolute inset-0 rounded-full border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent animate-spin">
+          </div>
+        </div>
+        <p class="text-sm font-semibold text-zinc-700 dark:text-zinc-300 animate-pulse">
+          Parsing local PDF document...
+        </p>
+        <div class="w-40 bg-zinc-100 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden mt-1">
+          <div class="bg-primary h-full transition-all duration-300" [style.width.%]="processingProgress()"></div>
+        </div>
+        <p class="text-[10px] text-zinc-400 font-mono">{{ processingProgress() }}%</p>
+      </div>
+      } @else {
+      <div class="flex flex-col items-center gap-6 max-w-md">
+        <div
+          class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-sm hover:scale-105 transition-transform duration-200">
+          <mat-icon class="text-3xl h-8 w-8 flex items-center justify-center">picture_as_pdf</mat-icon>
+        </div>
+        <div>
+          <p class="text-lg font-bold text-zinc-800 dark:text-zinc-100">
+            Drag & Drop PDF file here
+          </p>
+          <p class="text-xs text-zinc-400 dark:text-zinc-500 mt-1.5">
+            or click anywhere in this container to browse your device
+          </p>
+        </div>
+
+        <button type="button"
+          class="px-5 py-2.5 bg-primary hover:bg-primary-hover active:scale-98 text-white font-medium rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 text-xs">
+          <mat-icon class="text-sm h-4 w-4">folder_open</mat-icon>
+          Select PDF File
+        </button>
+
+        <p class="text-[10px] text-zinc-400 dark:text-zinc-500 font-mono mt-2">
+          Press <kbd
+            class="px-1 py-0.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded">Ctrl +
+            O</kbd> key combination to import
+        </p>
+      </div>
+      }
+    </div>
+  </div>
+  }
+
+  <!-- WORKSPACE STATE 2: PDF File Loaded Workstation -->
+  @if (currentFile()) {
+  <div class="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0 bg-[#fafafa] dark:bg-[#09090b]">
+
+    <!-- Left Control Sidebar -->
+    <aside
+      class="w-full md:w-80 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 py-5 px-2 flex flex-col gap-6 overflow-y-auto shrink-0">
+
+      <!-- Section: Split Modes -->
+      <section>
+        <h2 class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.2em] mb-3">Split Mode
+        </h2>
+        <div class="space-y-2.5">
+
+          <!-- Option 1: Every Page -->
+          <label
+            class="flex items-center p-3 rounded-xl border cursor-pointer transition-all bg-zinc-50/40 dark:bg-zinc-950/20"
+            [class.border-primary]="splitMode() === 'every'" [class.bg-primary/[0.04]]="splitMode() === 'every'"
+            [class.border-zinc-200]="splitMode() !== 'every'" [class.dark:border-zinc-800]="splitMode() !== 'every'"
+            [class.hover:border-zinc-300]="splitMode() !== 'every'"
+            [class.dark:hover:border-zinc-700]="splitMode() !== 'every'">
+            <input type="radio" name="mode"
+              class="w-4 h-4 text-primary border-zinc-300 focus:ring-primary focus:outline-none accent-primary"
+              [checked]="splitMode() === 'every'" (change)="splitMode.set('every')" id="mode-every" />
+            <span class="ml-3 text-xs font-medium" [class.text-primary]="splitMode() === 'every'"
+              [class.font-semibold]="splitMode() === 'every'">Every Page</span>
+          </label>
+
+          <!-- Option 2: Page Range -->
+          <label
+            class="flex items-center p-3 rounded-xl border cursor-pointer transition-all bg-zinc-50/40 dark:bg-zinc-950/20"
+            [class.border-primary]="splitMode() === 'range'" [class.bg-primary/[0.04]]="splitMode() === 'range'"
+            [class.border-zinc-200]="splitMode() !== 'range'" [class.dark:border-zinc-800]="splitMode() !== 'range'"
+            [class.hover:border-zinc-300]="splitMode() !== 'range'"
+            [class.dark:hover:border-zinc-700]="splitMode() !== 'range'">
+            <input type="radio" name="mode"
+              class="w-4 h-4 text-primary border-zinc-300 focus:ring-primary focus:outline-none accent-primary"
+              [checked]="splitMode() === 'range'" (change)="splitMode.set('range')" id="mode-range" />
+            <span class="ml-3 text-xs font-medium" [class.text-primary]="splitMode() === 'range'"
+              [class.font-semibold]="splitMode() === 'range'">Page Range</span>
+          </label>
+
+          <!-- Option 3: Selected Pages -->
+          <label
+            class="flex items-center p-3 rounded-xl border cursor-pointer transition-all bg-zinc-50/40 dark:bg-zinc-950/20"
+            [class.border-primary]="splitMode() === 'selected'" [class.bg-primary/[0.04]]="splitMode() === 'selected'"
+            [class.border-zinc-200]="splitMode() !== 'selected'"
+            [class.dark:border-zinc-800]="splitMode() !== 'selected'"
+            [class.hover:border-zinc-300]="splitMode() !== 'selected'"
+            [class.dark:hover:border-zinc-700]="splitMode() !== 'selected'">
+            <input type="radio" name="mode"
+              class="w-4 h-4 text-primary border-zinc-300 focus:ring-primary focus:outline-none accent-primary"
+              [checked]="splitMode() === 'selected'" (change)="splitMode.set('selected')" id="mode-selected" />
+            <span class="ml-3 text-xs font-medium" [class.text-primary]="splitMode() === 'selected'"
+              [class.font-semibold]="splitMode() === 'selected'">Selected Pages</span>
+          </label>
+
+          <!-- Option 4: Every N Pages -->
+          <label
+            class="flex items-center p-3 rounded-xl border cursor-pointer transition-all bg-zinc-50/40 dark:bg-zinc-950/20"
+            [class.border-primary]="splitMode() === 'n_pages'" [class.bg-primary/[0.04]]="splitMode() === 'n_pages'"
+            [class.border-zinc-200]="splitMode() !== 'n_pages'" [class.dark:border-zinc-800]="splitMode() !== 'n_pages'"
+            [class.hover:border-zinc-300]="splitMode() !== 'n_pages'"
+            [class.dark:hover:border-zinc-700]="splitMode() !== 'n_pages'">
+            <input type="radio" name="mode"
+              class="w-4 h-4 text-primary border-zinc-300 focus:ring-primary focus:outline-none accent-primary"
+              [checked]="splitMode() === 'n_pages'" (change)="splitMode.set('n_pages')" id="mode-npages" />
+            <span class="ml-3 text-xs font-medium" [class.text-primary]="splitMode() === 'n_pages'"
+              [class.font-semibold]="splitMode() === 'n_pages'">Every N Pages</span>
+          </label>
+
+        </div>
+      </section>
+
+      <!-- Section: Dynamic Configurations -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.2em]">Configuration</h2>
+
+        <!-- Case Range Config -->
+        @if (splitMode() === 'range') {
+        <div class="space-y-1.5">
+          <label for="sidebarRange" class="text-[11px] font-semibold text-zinc-500">Define Ranges</label>
+          <div class="relative">
+            <input id="sidebarRange" type="text" [formControl]="rangeControl" placeholder="e.g. 1-4, 6-8, 10"
+              class="w-full px-3 py-2 bg-white dark:bg-zinc-950 border rounded-lg text-xs font-mono focus:ring-1 focus:ring-primary focus:border-transparent outline-none text-zinc-800 dark:text-zinc-200"
+              [class.border-rose-500]="rangeValue() && !rangeValidation().valid"
+              [class.border-zinc-200]="!rangeValue() || rangeValidation().valid"
+              [class.dark:border-zinc-800]="!rangeValue() || rangeValidation().valid" />
+            @if (rangeValue() && rangeValidation().valid) {
+            <mat-icon class="absolute right-2.5 top-2.5 text-emerald-500 text-sm h-4 w-4">check_circle</mat-icon>
+            }
+          </div>
+
+          @if (rangeValue() && !rangeValidation().valid) {
+          <p class="text-[10px] text-rose-500 flex items-center gap-1 mt-1">
+            <mat-icon class="text-xs w-3 h-3 flex items-center justify-center">error_outline</mat-icon>
+            {{ rangeValidation().error }}
+          </p>
+          } @else {
+          <p class="text-[10px] text-zinc-400 italic">Separate with commas. e.g. 1-5, 8, 11-13</p>
+          }
+        </div>
+        }
+
+        <!-- Case Every N Pages Config -->
+        @if (splitMode() === 'n_pages') {
+        <div class="space-y-1.5">
+          <label for="sidebarNPages" class="text-[11px] font-semibold text-zinc-500">Pages Per Document</label>
+          <div class="relative flex items-center">
+            <input id="sidebarNPages" type="number" [formControl]="nPagesControl" min="1" [max]="totalPages()"
+              class="w-full px-3 py-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs font-mono focus:ring-1 focus:ring-primary focus:border-transparent outline-none text-zinc-800 dark:text-zinc-200" />
+            <span class="absolute right-3 text-[10px] font-mono text-zinc-400 pointer-events-none">pages</span>
+          </div>
+          <p class="text-[10px] text-zinc-400 italic">Groups pages every {{ nPagesValue() || 5 }} pages.</p>
+        </div>
+        }
+
+        <!-- Case Selected Extraction Info -->
+        @if (splitMode() === 'selected') {
+        <div
+          class="p-3 bg-zinc-50 dark:bg-zinc-950/40 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1">
+          <p class="text-xs font-semibold text-zinc-600 dark:text-zinc-400">Manual Selection</p>
+          <p class="text-[10px] text-zinc-400 leading-relaxed">Click any document preview pages on the right layout grid
+            to construct your split file.</p>
+          <div class="flex items-center gap-2 mt-2">
+            <span
+              class="text-xs font-mono font-bold text-zinc-800 dark:text-zinc-200 bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 rounded-md">
+              {{ selectedPagesCount() }} / {{ totalPages() }}
+            </span>
+            <span class="text-[10px] text-zinc-500">pages selected</span>
+          </div>
+        </div>
+        }
+
+        <!-- Files Summary Dashboard Widget exactly like layout design -->
+        <div
+          class="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-950/40 border border-dashed border-zinc-200 dark:border-zinc-800 mt-2">
+          <div class="flex justify-between text-[11px] mb-1.5 font-mono">
+            <span class="text-zinc-500">Files to Generate:</span>
+            <span class="font-bold text-primary">{{ filesToGenerateCount() }} File{{ filesToGenerateCount() === 1 ? '' :
+              's' }}</span>
+          </div>
+          <div class="flex justify-between text-[11px] font-mono">
+            <span class="text-zinc-500">Packaging Format:</span>
+            <span class="font-bold text-primary">{{ splitMode() === 'selected' ? 'Single PDF' : (filesToGenerateCount()
+              > 1 ? 'ZIP Archive' : 'Single PDF') }}</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-2 bg-white dark:bg-zinc-900 shrink-0">
+          <!-- Active PDF File Chips Block -->
+          @if (currentFile()) {
+          <div
+            class="flex items-center gap-4 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-1.5 shadow-sm max-w-lg">
+            <div class="flex flex-col min-w-0">
+              <span class="text-[9px] uppercase tracking-wider text-zinc-500 font-bold">Filename</span>
+              <span class="text-xs font-semibold truncate max-w-[120px] md:max-w-[200px]" [title]="fileName()">{{
+                fileName() }}</span>
+            </div>
+            <div class="w-px h-6 bg-zinc-200 dark:bg-zinc-800 mx-1"></div>
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase tracking-wider text-zinc-500 font-bold font-mono">Pages</span>
+              <span class="text-xs font-bold font-mono text-primary">{{ totalPages() }}</span>
+            </div>
+            <div class="w-px h-6 bg-zinc-200 dark:bg-zinc-800 mx-1"></div>
+            <div class="flex flex-col">
+              <span class="text-[9px] uppercase tracking-wider text-zinc-500 font-bold font-mono">Size</span>
+              <span class="text-xs font-bold font-mono text-primary">{{ fileSizeStr() }}</span>
+            </div>
+          </div>
+          } @else {
+          <!-- Keyboard Shortcuts Indicator when empty -->
+          <div class="hidden md:flex gap-2 text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
+            <span
+              class="px-2 py-1 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-md">Ctrl+O
+              : Open</span>
+            <span
+              class="px-2 py-1 bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-md">Ctrl+Enter
+              : Split</span>
+          </div>
+          }
+        </div>
+        <button (click)="resetState()" title="Close file and upload a new one" aria-label="Close file"
+          class="flex items-center p-3 rounded-xl border cursor-pointer transition-all bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold">
+          <mat-icon
+            class="text-sm h-4 w-4 flex items-center justify-center text-zinc-400 dark:text-zinc-500">restart_alt</mat-icon>
+          <span class="ml-3 text-xs font-medium text-zinc-600 dark:text-zinc-400">Reset & Upload New PDF</span>
+        </button>
+        <div class="flex flex-col gap-1 shrink-0">
+          <label for="prefixInput"
+            class="text-[9px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">Filename
+            Prefix</label>
+          <div class="relative">
+            <input id="prefixInput" type="text" [formControl]="prefixControl" placeholder="e.g. Split"
+              class="pl-3 pr-12 py-2 border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-semibold focus:ring-2 focus:ring-primary focus:border-transparent outline-none bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 w-48 shadow-sm" />
+            <span
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 dark:text-zinc-500 text-[10px] font-mono">.pdf</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-center">
+          @if (isProcessing()) {
+          <div class="flex flex-col gap-1 w-52">
+            <div class="w-full bg-zinc-150 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+              <div class="bg-primary h-full transition-all duration-300" [style.width.%]="processingProgress()"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-zinc-400 dark:text-zinc-500 font-mono">
+              <span class="animate-pulse">Splitting documents...</span>
+              <span>{{ processingProgress() }}%</span>
+            </div>
+          </div>
+          } @else {
+          <button type="button" (click)="splitPdf()" [disabled]="isSplitDisabled()"
+            class="w-full sm:w-auto px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 dark:disabled:text-zinc-600 disabled:cursor-not-allowed text-white rounded-2xl font-semibold text-sm shadow-md hover:shadow-lg hover:shadow-primary/10 transition-all flex items-center justify-center gap-2.5 active:scale-[0.98]"
+            id="split-pdf-btn">
+            <mat-icon class="text-base h-4 w-4">call_split</mat-icon>
+            Split PDF into {{ filesToGenerateCount() }} Document{{ filesToGenerateCount() === 1 ? '' : 's' }}
+          </button>
+          }
+        </div>
+      </section>
+    </aside>
+
+    <!-- Page Grid View Panel -->
+    <section class="flex-1 p-6 overflow-y-auto bg-[#fafafa] dark:bg-[#09090b] flex flex-col gap-5 min-h-0">
+
+      <div class="flex items-center justify-between shrink-0">
+        <h2 class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Document Preview Layout</h2>
+        <div class="flex gap-1.5">
+          <button type="button" (click)="selectAllPages()"
+            class="px-2.5 py-1 text-[11px] font-semibold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors shadow-sm"
+            id="select-all-btn">
+            Select All
+          </button>
+          <button type="button" (click)="clearSelection()" [disabled]="selectedPagesCount() === 0"
+            class="px-2.5 py-1 text-[11px] font-semibold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed text-zinc-700 dark:text-zinc-300 transition-colors shadow-sm"
+            id="clear-selection-btn">
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div class="h-[450px] overflow-y-auto overflow-x-hidden pr-2">
+        <!-- Scrollable grid of page thumbnails -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 pr-1" id="thumbnails-grid">
+          @for (pageNum of pageNumbers(); track pageNum) {
+          <div [attr.data-page-num]="pageNum" (click)="onPageClick(pageNum, $event)"
+            (keydown.enter)="onPageClick(pageNum, $event)"
+            (keydown.space)="$event.preventDefault(); onPageClick(pageNum, $event)" tabindex="0" role="button"
+            [attr.aria-label]="'Select page ' + pageNum + (selectedPages().has(pageNum) ? ', selected' : '')"
+            class="page-thumbnail-card relative flex flex-col items-center group cursor-pointer focus:outline-none rounded-xl"
+            [id]="'page-card-' + pageNum">
+            <!-- Frame container -->
+            <div
+              class="aspect-[3/4] w-full bg-white dark:bg-zinc-900 rounded-xl p-2.5 shadow-sm border-2 transition-all overflow-hidden relative flex items-center justify-center group-hover:border-zinc-300 dark:group-hover:border-zinc-700"
+              [class.border-primary]="selectedPages().has(pageNum)"
+              [class.bg-primary/[0.02]]="selectedPages().has(pageNum)"
+              [class.border-zinc-200]="!selectedPages().has(pageNum)"
+              [class.dark:border-zinc-800]="!selectedPages().has(pageNum)">
+              @if (renderedThumbnails()[pageNum]) {
+              <img [src]="renderedThumbnails()[pageNum]" alt="Page {{ pageNum }} thumbnail preview"
+                class="w-full h-full object-contain filter dark:brightness-95 select-none pointer-events-none rounded fade-in"
+                referrerpolicy="no-referrer" />
+              } @else {
+              <!-- Pulsing lazy loading skeleton -->
+              <div
+                class="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-zinc-50 dark:bg-zinc-950 text-zinc-300 dark:text-zinc-700 animate-pulse">
+                <mat-icon class="text-lg animate-spin">hourglass_empty</mat-icon>
+                <span class="text-[9px] uppercase font-mono tracking-wider">Loading</span>
+              </div>
+              }
+
+              <!-- Check icon overlays exactly matching layout mock -->
+              @if (selectedPages().has(pageNum)) {
+              <div
+                class="absolute top-2.5 right-2.5 w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shadow-md border border-white dark:border-zinc-900 fade-in z-10">
+                <mat-icon class="text-xs h-3.5 w-3.5 flex items-center justify-center font-bold">check</mat-icon>
+              </div>
+              }
+            </div>
+
+            <!-- Label in JetBrains Mono underneath -->
+            <span class="mt-2 font-mono text-[11px] font-bold" [class.text-primary]="selectedPages().has(pageNum)"
+              [class.text-zinc-400]="!selectedPages().has(pageNum)">
+              Page {{ pageNum < 10 ? '0' + pageNum : pageNum }} </span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div
+        class="flex items-center justify-between text-[10px] text-zinc-400 dark:text-zinc-500 font-mono mt-auto pt-4 border-t border-zinc-150 dark:border-zinc-800 shrink-0">
+        <span>Page thumbnails load lazily during grid scrolling</span>
+        <span>Hold Shift key to select sequence ranges</span>
+      </div>
+
+    </section>
+  </div>
+  }
+</div>

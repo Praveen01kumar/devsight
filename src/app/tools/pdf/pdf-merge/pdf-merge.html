@@ -1,0 +1,288 @@
+<div class="flex flex-col items-center justify-center relative select-none">
+  
+  <!-- Outer Window Drag Overlay -->
+  @if (isDragging()) {
+    <div class="absolute inset-0 bg-[#007a55]/10 border-4 border-dashed border-[#007a55] z-50 flex flex-col items-center justify-center backdrop-blur-[2px] transition-all duration-300 pointer-events-none">
+      <div class="bg-white px-8 py-6 rounded-3xl shadow-xl border border-zinc-100 flex flex-col items-center gap-4 transform scale-100 transition-transform duration-200">
+        <div class="w-16 h-16 bg-[#007a55]/10 rounded-full flex items-center justify-center text-[#007a55] animate-bounce">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+        </div>
+        <p class="text-lg font-semibold text-zinc-800">Drop your PDFs here to add</p>
+        <p class="text-xs text-zinc-500">Only PDF documents will be imported</p>
+      </div>
+    </div>
+  }
+
+  <!-- Global Error Alert -->
+  @if (globalError()) {
+    <div class="fixed top-6 left-1/2 transform -translate-x-1/2 z-40 max-w-md w-full px-4 animate-fade-in">
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-4 shadow-md flex items-start gap-3">
+        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div class="flex-grow">
+          <h4 class="text-sm font-semibold text-red-800">Action Required</h4>
+          <p class="text-xs text-red-700 mt-1 leading-relaxed">{{ globalError() }}</p>
+        </div>
+        <button (click)="clearGlobalError()" class="text-red-400 hover:text-red-600 transition-colors p-1 rounded-lg hover:bg-red-100/50 flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Main Merge Engine UI Layout Container -->
+
+    @if (files().length === 0) {
+      <!-- Empty State / Main Drag & Drop Interface -->
+      <div class="my-auto w-full max-w-5xl mx-auto">
+        <div (click)="fileBrowseInput.click()"
+          (keydown.enter)="fileBrowseInput.click()"
+          tabindex="0"class="drop-zone rounded-3xl h-64 flex flex-col items-center justify-center border-2 border-dashed border-[#007a5544] bg-[#007a5503] hover:bg-[#007a5508] hover:border-[#007a5577] transition-all duration-300 group cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#007a55]/30 focus:border-[#007a55]/40">
+          <div class="w-16 h-16 bg-[#007a5515] rounded-2xl flex items-center justify-center mb-4 text-[#007a55] transform group-hover:scale-105 transition-all duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <h2 class="text-xl md:text-2xl font-semibold tracking-tight text-zinc-800">Drag PDFs here to start</h2>
+          <p class="text-zinc-500 text-sm mt-1">
+            or <span class="text-[#007a55] font-semibold underline underline-offset-4 hover:text-[#006242] transition-colors">browse files</span> from your device
+          </p>
+        </div>
+        
+        <!-- Feature Safety Badge -->
+        <div class="mt-8 flex items-center justify-center gap-2 text-zinc-400 text-xs font-mono uppercase tracking-wider">
+          <svg class="w-4 h-4 text-[#007a55]/70 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944a11.954 11.954 0 007.834 3.056 10.03 10.03 0 01-1.161 6.136 9.773 9.773 0 01-4.721 4.555c-.753.337-1.6.337-2.353 0a9.773 9.773 0 01-4.722-4.555 10.029 10.029 0 01-1.16-6.136zM10 5a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1zm0 7a1 1 0 100 2 1 1 0 000-2z" clip-rule="evenodd" />
+          </svg>
+          <span>Processed 100% locally — No cloud uploads</span>
+        </div>
+      </div>
+    } @else {
+      <!-- Full-Featured PDF Manager Panel -->
+      <div class="w-full flex flex-col space-y-6 animate-fade-in flex-1">
+        
+        <!-- Top Drop-Zone Banner (mini drop-zone) -->
+        <div (click)="fileBrowseInput.click()" (keydown.enter)="fileBrowseInput.click()" tabindex="0"
+          class="drop-zone rounded-3xl h-32 flex flex-col items-center justify-center border-2 border-dashed border-[#007a5533] bg-[#007a5503] hover:bg-[#007a5508] transition-all duration-300 group cursor-pointer focus:outline-hidden focus:ring-2 focus:ring-[#007a55]/30 focus:border-[#007a55]/40">
+          <div class="w-10 h-10 bg-[#007a5515] rounded-xl flex items-center justify-center mb-1 text-[#007a55]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <p class="text-xs sm:text-sm font-medium text-zinc-700">Drag more PDFs here or <span class="text-[#007a55] font-semibold underline underline-offset-4">browse files</span></p>
+        </div>
+
+        <!-- Header Row with Document counts and upper actions -->
+        <div class="flex justify-between items-end">
+          <div class="space-y-1">
+            <h3 class="text-xs font-semibold text-zinc-400 uppercase tracking-widest font-mono">Document Queue</h3>
+            <p class="text-xl sm:text-2xl font-bold text-zinc-900">{{ files().length }} {{ files().length === 1 ? 'File' : 'Files' }} Selected</p>
+          </div>
+          <div class="flex space-x-3">
+            <button 
+              (click)="clearAll()" 
+              class="btn-secondary px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:bg-zinc-50 transition-colors border border-zinc-200 text-zinc-700 shadow-2xs cursor-pointer"
+            >
+              Clear All
+            </button>
+            <button 
+              (click)="fileBrowseInput.click()" 
+              class="btn-secondary px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium hover:bg-zinc-50 flex items-center space-x-2 border border-zinc-200 text-zinc-700 shadow-2xs cursor-pointer"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              <span>Add More</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable File Grid Container -->
+        <div 
+          cdkDropList 
+          [cdkDropListData]="files()" 
+          (cdkDropListDropped)="onDropListDropped($event)"
+          class="flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 content-start max-h-[360px] pr-1 select-none"
+        >
+          @for (item of files(); track item.id; let index = $index) {
+            <!-- List Item Card -->
+            <div 
+              cdkDrag 
+              class="card p-4 flex items-center space-x-4 shadow-sm border border-zinc-200 rounded-2xl bg-white"
+            >
+              <!-- Custom Drag Handle Indicator -->
+              <div 
+                cdkDragHandle 
+                class="w-8 h-8 flex items-center justify-center cursor-grab active:cursor-grabbing text-zinc-300 hover:text-zinc-500 rounded-lg hover:bg-zinc-50 transition-colors flex-shrink-0"
+                title="Drag to reorder"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="9" cy="5" r="1.5"/>
+                  <circle cx="9" cy="12" r="1.5"/>
+                  <circle cx="9" cy="19" r="1.5"/>
+                  <circle cx="15" cy="5" r="1.5"/>
+                  <circle cx="15" cy="12" r="1.5"/>
+                  <circle cx="15" cy="19" r="1.5"/>
+                </svg>
+              </div>
+
+              <!-- Thumbnail Container Frame -->
+              <div class="w-14 h-18 bg-zinc-50 rounded border border-zinc-200/60 flex flex-col justify-between p-1.5 shadow-inner relative flex-shrink-0">
+                @if (item.status === 'ready') {
+                  @if (item.thumbnailUrl) {
+                    <img 
+                      [src]="item.thumbnailUrl" 
+                      [alt]="item.name" 
+                      class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none rounded"
+                      referrerpolicy="no-referrer"
+                    />
+                  } @else {
+                    <div class="w-full h-full flex items-center justify-center text-zinc-300">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                      </svg>
+                    </div>
+                  }
+                  <!-- Bottom Page Badge overlay using Mono -->
+                  <div class="absolute bottom-1 right-1 bg-zinc-950/70 text-white text-[8px] px-1 rounded font-mono font-medium leading-normal rounded-sm">
+                    {{ index + 1 }}
+                  </div>
+                } @else if (item.status === 'loading') {
+                  <div class="w-full h-full flex items-center justify-center bg-zinc-100 animate-pulse">
+                    <div class="w-4 h-4 border-2 border-[#007a55] border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                } @else {
+                  <div class="w-full h-full flex items-center justify-center bg-red-50 text-red-500 rounded">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                  </div>
+                }
+              </div>
+
+              <!-- File Info -->
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold truncate text-zinc-800" [title]="item.name">{{ item.name }}</p>
+                <div class="flex items-center space-x-3 mt-1 text-zinc-500">
+                  @if (item.status === 'ready') {
+                    <span class="mono text-zinc-500 uppercase font-mono text-[11px] font-medium">
+                      {{ item.pageCount }} {{ item.pageCount === 1 ? 'Page' : 'Pages' }}
+                    </span>
+                    <span class="w-1 h-1 bg-zinc-300 rounded-full"></span>
+                    <span class="mono text-zinc-500 uppercase font-mono text-[11px] font-medium">
+                      {{ formatBytes(item.size) }}
+                    </span>
+                  } @else if (item.status === 'loading') {
+                    <span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full font-semibold animate-pulse">
+                      Reading file...
+                    </span>
+                  } @else {
+                    <span class="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 rounded-full font-semibold">
+                      {{ item.errorMessage || 'Corrupt PDF' }}
+                    </span>
+                  }
+                </div>
+              </div>
+
+              <!-- Remove Button -->
+              <button 
+                (click)="removeFile(item.id)" 
+                class="p-2 text-zinc-400 hover:text-red-600 transition-colors cursor-pointer rounded-xl hover:bg-red-50"
+                title="Remove PDF"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+              </button>
+
+            </div>
+          }
+        </div>
+
+        <!-- Action Footer Area -->
+        <div class="my-2 flex items-center justify-between border-t border-zinc-200">
+          <!-- Merged Statistics Area -->
+          <div class="w-auto flex items-center space-x-8 bg-zinc-900 border border-zinc-800 rounded-2xl px-3 py-1">
+            <div class="text-center">
+              <p class="mono text-zinc-400 uppercase text-[10px] mb-1 font-mono">Total Pages</p>
+              <p class="text-lg font-bold text-emerald-400 font-mono">{{ totalPageCount() }}</p>
+            </div>
+            <div class="h-8 w-px bg-zinc-200"></div>
+            <div class="text-center">
+              <p class="mono text-zinc-400 uppercase text-[10px] mb-1 font-mono">Estimated Size</p>
+              <p class="text-lg font-bold text-emerald-400 font-mono">{{ formatBytes(totalSize()) }}</p>
+            </div>
+          </div>
+
+          <!-- Output Filename Choice Field -->
+          <div class="w-auto">
+            <label for="output-filename" class="block text-center text-[10px] font-semibold text-zinc-400 uppercase tracking-widest mb-2 font-mono">Output Filename</label>
+            <input 
+              id="output-filename"
+              [formControl]="outputFilenameControl"
+              type="text" 
+              class="bg-zinc-950 border border-zinc-850 rounded-xl w-full px-4 py-2.5 text-center focus:border-[#007a55] focus:ring-3 focus:ring-[#007a55]/10 rounded-xl text-sm font-medium dark:text-zinc-200 text-zinc-800 transition-all outline-hidden shadow-2xs"
+              placeholder="Merged.pdf"
+            />
+          </div>
+
+          <!-- Merge Core Button -->
+          <button (click)="mergePDFs()" [disabled]="readyFileCount() < 2 || isMerging() || hasErrorFiles()"
+          class="bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold w-auto py-2 px-3 rounded-2xl text-lg flex items-center justify-center space-x-3 hover:opacity-90 disabled:opacity-40 disabled:shadow-none disabled:bg-zinc-100 disabled:text-zinc-400 disabled:cursor-not-allowed shadow-lg shadow-[#007a5525] transition-all duration-200 cursor-pointer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M16 12l-4-4-4 4"/>
+              <path d="M12 8v11"/>
+              <rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="4 4"/>
+            </svg>
+            <span>Merge to Single PDF</span>
+          </button>
+        </div>
+        <p class="text-center mt-0 text-[10px] text-zinc-400 font-mono uppercase tracking-tight">Files are processed 100% locally in your browser</p>
+
+      </div>
+    }
+
+  <!-- PDF Processing/Merging Progress Overlay -->
+  @if (isMerging()) {
+    <div class="fixed inset-0 bg-zinc-950/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fade-in">
+      <div class="bg-white max-w-sm w-full p-8 rounded-3xl shadow-2xl border border-zinc-100 flex flex-col items-center text-center animate-scale-in">
+        
+        <!-- Rotating merger action spinner -->
+        <div class="w-16 h-16 bg-[#007a55]/10 text-[#007a55] rounded-full flex items-center justify-center mb-6 animate-pulse">
+          <svg class="w-8 h-8 animate-spin" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+        </div>
+
+        <h3 class="text-lg font-bold text-zinc-900 mb-1">Generating Merged PDF</h3>
+        <p class="text-zinc-500 text-xs mb-6 leading-normal">{{ currentMergeStep() }}</p>
+
+        <!-- Progress bar tracks real metrics -->
+        <div class="w-full bg-zinc-100 h-2.5 rounded-full overflow-hidden relative mb-2">
+          <div 
+            class="bg-[#007a55] h-full rounded-full transition-all duration-300" 
+            [style.width.%]="mergeProgress()"
+          ></div>
+        </div>
+        
+        <span class="font-mono text-zinc-600 text-xs font-bold">{{ mergeProgress() }}%</span>
+      </div>
+    </div>
+  }
+
+  <!-- Pure Invisible HTML File Browser Input -->
+  <input #fileBrowseInput type="file" multiple accept="application/pdf" class="hidden" (change)="onFilesSelected($event)" />
+
+</div>

@@ -43,6 +43,12 @@ import { ParquetViewerComponent } from '../../tools/parquet-viewer/parquet-viewe
 import { FakeDataGeneratorComponent } from '../../tools/fake-data-generator/fake-data-generator.component';
 import { JsonDifferenceComponent } from '../../tools/json-difference/json-difference';
 import { JsonMergeComponent } from '../../tools/json-merge/json-merge.component';
+import { TimezoneConverter } from '../../tools/timezone-converter/timezone-converter';
+import { PdfOrganizer } from '../../tools/pdf/pdf-organizer/pdf-organizer';
+import { PdfCompressor } from '../../tools/pdf/pdf-compressor/pdf-compressor';
+import { PdfSplit } from '../../tools/pdf/pdf-split/pdf-split';
+import { PdfMerge } from '../../tools/pdf/pdf-merge/pdf-merge';
+import { PdfRotate } from '../../tools/pdf/pdf-rotate/pdf-rotate';
 
 @Component({
   selector: 'app-tool-wrapper',
@@ -92,8 +98,14 @@ import { JsonMergeComponent } from '../../tools/json-merge/json-merge.component'
     CubicBezierGeneratorComponent,
     DesignTokenStudioComponent,
     DevUtilitiesComponent,
-    UiPreviewStudioComponent
-  ],
+    UiPreviewStudioComponent,
+    TimezoneConverter,
+    PdfOrganizer,
+    PdfCompressor,
+    PdfSplit,
+    PdfMerge,
+    PdfRotate
+],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-6 select-text">
@@ -236,6 +248,18 @@ import { JsonMergeComponent } from '../../tools/json-merge/json-merge.component'
                 <app-date-time-suite [mode]="currentTool()!.id" />
               } @else if (currentTool()?.id === 'flexbox-playground') {
                 <app-flexbox-playground />
+              } @else if (currentTool()?.id === 'timezone-converter') {
+                <app-timezone-converter />
+              } @else if (currentTool()?.id === 'pdf-organizer') {
+                <app-pdf-organizer />
+              }@else if (currentTool()?.id === 'pdf-split') {
+                <app-pdf-split />
+              }@else if (currentTool()?.id === 'pdf-compressor') {
+                <app-pdf-compressor />
+              }@else if (currentTool()?.id === 'pdf-merge') {
+                <app-pdf-merge />
+              } @else if (currentTool()?.id === 'pdf-rotate') {
+                <app-pdf-rotate />
               } @else if (currentTool()?.id === 'typescript-workspace') {
                 <app-typescript-workspace />
               } @else if (currentTool()?.id === 'rxjs-visualizer') {
