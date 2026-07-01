@@ -32,25 +32,22 @@ interface ValidationIssue {
       <div class="flex flex-wrap items-center justify-between gap-4 p-2 bg-zinc-950 border border-zinc-800 rounded-2xl select-none">
         <div class="flex flex-wrap items-center gap-1.5">
           <button (click)="activeTab.set('playground')"
-            [class.bg-zinc-800]="activeTab() === 'playground'"
             [class.text-emerald-400]="activeTab() === 'playground'"
-            class="px-4 py-2 text-xs font-mono font-bold rounded-xl text-zinc-400 hover:text-zinc-200 transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
+            class="px-4 py-2 text-xs font-mono font-bold rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:text-emerald-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
           >
             <mat-icon class="text-xs scale-90">preview</mat-icon>
             PLAYGROUND & VIEWER
           </button>
           <button (click)="activeTab.set('editor')"
-            [class.bg-zinc-800]="activeTab() === 'editor'"
-            [class.text-cyan-400]="activeTab() === 'editor'"
-            class="px-4 py-2 text-xs font-mono font-bold rounded-xl text-zinc-400 hover:text-zinc-200 transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
+            [class.text-emerald-400]="activeTab() === 'editor'"
+            class="px-4 py-2 text-xs font-mono font-bold rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:text-emerald-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
           >
             <mat-icon class="text-xs scale-90">code</mat-icon>
             EDIT & CONVERT TOOLS
           </button>
           <button (click)="activeTab.set('seo-preview')"
-            [class.bg-zinc-800]="activeTab() === 'seo-preview'"
-            [class.text-indigo-400]="activeTab() === 'seo-preview'"
-            class="px-4 py-2 text-xs font-mono font-bold rounded-xl text-zinc-400 hover:text-zinc-200 transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
+            [class.text-emerald-400]="activeTab() === 'seo-preview'"
+            class="px-4 py-2 text-xs font-mono font-bold rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:text-emerald-400 transition-all duration-200 flex items-center gap-1.5 cursor-pointer"
           >
             <mat-icon class="text-xs scale-90">devices</mat-icon>
             SEO & SOCIAL PREVIEW
@@ -73,7 +70,7 @@ interface ValidationIssue {
             <!-- Editor Title Ribbon & Commands -->
             <div class="flex items-center justify-between px-4 py-3 bg-zinc-950 border-b border-zinc-800/80">
               <div class="flex items-center gap-2 font-mono">
-                <span class="p-1 px-2 text-[10px] bg-zinc-800 text-zinc-300 rounded font-mono font-bold tracking-wide flex items-center gap-1">
+                <span class="p-1 px-2 text-[10px] bg-zinc-100 dark:bg-zinc-800 text-zinc-300 rounded font-mono font-bold tracking-wide flex items-center gap-1">
                   <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> LOCAL HTML SOURCE
                 </span>
                 <span class="text-[11px] font-mono text-zinc-500 font-semibold hidden md:inline">UTF-8 File Workspace</span>
@@ -274,27 +271,27 @@ interface ValidationIssue {
               <!-- Responsive devices bar & features -->
               <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
                 <!-- Screen profile modes selection -->
-                <div class="flex items-center bg-zinc-950 rounded-xl p-1 border border-zinc-800/80">
+                <div class="flex items-center bg-zinc-950 rounded-xl p-1 border border-zinc-800/80 gap-2">
                   <button (click)="previewWidth.set('100%')"
-                    [class.bg-zinc-800]="previewWidth() === '100%'"
+                    [class.bg-zinc-100]="previewWidth() === '100%'"
                     [class.text-emerald-400]="previewWidth() === '100%'"
-                    class="px-3 py-1.5 text-xs font-mono font-bold rounded-lg text-zinc-400 hover:text-white transition-all flex items-center gap-1 cursor-pointer"
+                    class="px-3 py-1.5 text-xs font-mono font-bold rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:text-emerald-400 transition-all flex items-center gap-1 cursor-pointer"
                     title="Liquid width preview dashboard">
                     <mat-icon class="scale-75">desktop_windows</mat-icon>
                     DESKTOP (100%)
                   </button>
                   <button (click)="previewWidth.set('768px')"
-                    [class.bg-zinc-800]="previewWidth() === '768px'"
-                    [class.text-indigo-400]="previewWidth() === '768px'"
-                    class="px-3 py-1.5 text-xs font-mono font-bold rounded-lg text-zinc-400 hover:text-white transition-all flex items-center gap-1 cursor-pointer"
+                    [class.bg-zinc-100]="previewWidth() === '768px'"
+                    [class.text-emerald-400]="previewWidth() === '768px'"
+                    class="px-3 py-1.5 text-xs font-mono font-bold rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:text-emerald-400 transition-all flex items-center gap-1 cursor-pointer"
                     title="Simulate medium tablet view port">
                     <mat-icon class="scale-75">tablet_mac</mat-icon>
                     TABLET (768px)
                   </button>
                   <button (click)="previewWidth.set('375px')"
-                    [class.bg-zinc-800]="previewWidth() === '375px'"
-                    [class.text-purple-400]="previewWidth() === '375px'"
-                    class="px-3 py-1.5 text-xs font-mono font-bold rounded-lg text-zinc-400 hover:text-white transition-all flex items-center gap-1 cursor-pointer"
+                    [class.bg-zinc-100]="previewWidth() === '375px'"
+                    [class.text-emerald-400]="previewWidth() === '375px'"
+                    class="px-3 py-1.5 text-xs font-mono font-bold rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:text-emerald-400 transition-all flex items-center gap-1 cursor-pointer"
                     title="Simulate mobile device layout">
                     <mat-icon class="scale-75">phone_iphone</mat-icon>
                     MOBILE (375px)

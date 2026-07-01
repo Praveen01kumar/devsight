@@ -15,7 +15,7 @@ import { MergeInputFile, MergeMode, ConflictResolution, ArrayMergeStrategy, JSON
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="relative w-full h-full border border-zinc-800 rounded-xl overflow-hidden bg-zinc-950/60 flex flex-col">
+    <div class="relative w-full h-full overflow-hidden bg-zinc-950/60 flex flex-col">
       <!-- Editor Header/Controls -->
       <div class="flex items-center justify-between px-3 py-1.5 bg-zinc-900 border-b border-zinc-800 text-xs text-zinc-400 font-mono">
         <div class="flex items-center space-x-2">
@@ -23,20 +23,13 @@ import { MergeInputFile, MergeMode, ConflictResolution, ArrayMergeStrategy, JSON
           <span>{{ title() }}</span>
         </div>
         <div class="flex items-center space-x-1.5">
-          <button (click)="toggleWordWrap()" 
-                  title="Toggle Word Wrap"
-                  class="p-1 rounded hover:bg-zinc-800 hover:text-zinc-200 transition-colors cursor-pointer"
-                  [class.text-emerald-400]="wordWrap() === 'on'">
+          <button (click)="toggleWordWrap()" title="Toggle Word Wrap" class="p-1 rounded hover:bg-zinc-800 hover:text-zinc-200 transition-colors cursor-pointer" [class.text-emerald-400]="wordWrap() === 'on'">
             <mat-icon class="text-sm scale-75">wrap_text</mat-icon>
           </button>
-          <button (click)="formatText()" 
-                  title="Format Document"
-                  class="p-1 rounded hover:bg-zinc-800 hover:text-zinc-200 transition-colors cursor-pointer">
+          <button (click)="formatText()" title="Format Document" class="p-1 rounded hover:bg-zinc-800 hover:text-zinc-200 transition-colors cursor-pointer">
             <mat-icon class="text-sm scale-75">format_align_left</mat-icon>
           </button>
-          <button (click)="minifyText()" 
-                  title="Minify"
-                  class="p-1 rounded hover:bg-zinc-800 hover:text-zinc-200 transition-colors cursor-pointer">
+          <button (click)="minifyText()" title="Minify" class="p-1 rounded hover:bg-zinc-800 hover:text-zinc-200 transition-colors cursor-pointer">
             <mat-icon class="text-sm scale-75">compress</mat-icon>
           </button>
         </div>
@@ -181,47 +174,38 @@ export class JsonEditor implements AfterViewInit, OnDestroy {
         <section class="bg-zinc-900/50 border border-zinc-800 rounded-xl p-2.5 flex flex-wrap items-center justify-between gap-3 shadow-2xl">
           <input type="file" #fileInput multiple accept=".json" class="hidden" (change)="onFileSelected($event)">
           <div class="flex flex-wrap gap-2">
-            <button (click)="uploadFiles()" 
-                    title="Upload JSON Files"
-                    class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-sm">
+            <button (click)="uploadFiles()" title="Upload JSON Files" class="h-8 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-2 transition-colors cursor-pointer shadow-sm">
               <mat-icon class="text-sm scale-90">upload_file</mat-icon>
               <span>Upload Files</span>
             </button>
-            <button (click)="service.addEmptyEditor()" 
-                    class="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer">
+            <button (click)="service.addEmptyEditor()" class="h-8 px-3 py-2 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold border border-zinc-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer">
               <mat-icon class="text-sm scale-90">add_box</mat-icon>
               <span>Add Empty</span>
             </button>
-            <button (click)="pasteJSON()" 
-                    class="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer">
+            <button (click)="pasteJSON()" class="h-8 px-3 py-2 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold border border-zinc-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer">
               <mat-icon class="text-sm scale-90">content_paste</mat-icon>
               <span>Paste JSON</span>
             </button>
-            <button (click)="service.clearFiles()" 
-                    class="px-3 py-2 bg-zinc-850 hover:bg-zinc-750 text-zinc-300 text-xs font-bold rounded-lg flex items-center gap-1.5 border border-zinc-700 transition-colors cursor-pointer">
+            <button (click)="service.clearFiles()" class="h-8 px-3 py-2 bg-zinc-850 hover:bg-zinc-750 text-zinc-300 text-xs font-bold rounded-lg flex items-center gap-1.5 border border-zinc-700 transition-colors cursor-pointer">
               <mat-icon class="text-sm scale-90">clear_all</mat-icon>
               <span>Clear</span>
             </button>
           </div>
           <div class="flex flex-wrap items-center gap-2">
-            <button (click)="validateAll()" 
-                    class="px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer">
+            <button (click)="validateAll()" class="h-8 px-3 py-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer">
               <mat-icon class="text-sm scale-90">assignment_turned_in</mat-icon>
               <span>Validate</span>
             </button>
-            <button (click)="formatAll()" 
-                    class="px-3 py-2 bg-zinc-800/60 hover:bg-zinc-800 text-zinc-300 border border-zinc-700/50 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer">
+            <button (click)="formatAll()" class="h-8 px-3 py-2 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-800 text-zinc-300 border border-zinc-700/50 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer">
               <mat-icon class="text-sm scale-90">format_align_left</mat-icon>
               <span>Format</span>
             </button>
-            <button (click)="minifyAll()" 
-                    class="px-3 py-2 bg-zinc-800/60 hover:bg-zinc-800 text-zinc-300 border border-zinc-700/50 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer">
+            <button (click)="minifyAll()" class="h-8 px-3 py-2 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-800 text-zinc-300 border border-zinc-700/50 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer">
               <mat-icon class="text-sm scale-90">compress</mat-icon>
               <span>Minify</span>
             </button>
             <div class="w-px h-6 bg-zinc-800 mx-1 hidden sm:block"></div>
-            <button (click)="service.triggerMerge()" [disabled]="service.isMerging() || service.files().length === 0"
-                    class="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:shadow-none">
+            <button (click)="service.triggerMerge()" [disabled]="service.isMerging() || service.files().length === 0" class="h-8 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:shadow-none">
               <mat-icon class="text-sm scale-110">play_circle_filled</mat-icon>
               <span>{{ service.isMerging() ? 'MERGING...' : 'MERGE' }}</span>
             </button>
@@ -582,9 +566,8 @@ export class JsonEditor implements AfterViewInit, OnDestroy {
 
           <!-- RIGHT: Output Preview (12 cols) -->
           <section class="lg:col-span-12 flex flex-col bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl relative">
-            <div class="bg-zinc-800/50 p-3 border-b border-zinc-800 flex justify-between items-center">
+            <div class="bg-zinc-950 dark:bg-zinc-800 p-3 border-b border-zinc-800 flex justify-between items-center">
               <span class="text-[10px] font-mono font-bold text-zinc-400 uppercase">merged_result.json</span>
-              
               @if (service.mergedResult()) {
                 <div class="flex gap-2">
                   <button (click)="copyOutputToClipboard()" 
@@ -605,7 +588,7 @@ export class JsonEditor implements AfterViewInit, OnDestroy {
 
             <!-- Output Empty State -->
             @if (!service.mergedResult()) {
-              <div class="h-[360px] md:h-[420px] flex flex-col items-center justify-center text-center p-6 bg-zinc-950/25">
+              <div class="h-[360px] md:h-[420px] flex flex-col items-center justify-center text-center p-6 bg-zinc-950 dark:bg-zinc-800">
                 <mat-icon class="text-zinc-700 scale-125 mb-2.5">find_in_page</mat-icon>
                 <h4 class="text-xs font-semibold text-zinc-500 font-mono uppercase tracking-widest">No Merged Document</h4>
                 <p class="text-[11px] text-zinc-600 mt-1 max-w-[240px] leading-relaxed">
@@ -617,13 +600,7 @@ export class JsonEditor implements AfterViewInit, OnDestroy {
             <!-- Output Editor -->
             @if (service.mergedResult()) {
               <div class="h-[360px] md:h-[420px] relative">
-                <app-json-editor 
-                  [title]="'merged_result.json'"
-                  [content]="service.mergedResult()"
-                  [isReadonly]="true"
-                  [wordWrap]="'on'"
-                  [isValid]="true"
-                  (contentChange)="onOutputChanged()">
+                <app-json-editor [title]="'merged_result.json'" [content]="service.mergedResult()" [isReadonly]="true" [wordWrap]="'on'" [isValid]="true" (contentChange)="onOutputChanged()">
                 </app-json-editor>
 
                 <!-- Overlay Badge -->
@@ -635,7 +612,7 @@ export class JsonEditor implements AfterViewInit, OnDestroy {
 
             <!-- Detailed Output Stats inside card footer -->
             @if (service.mergedResult()) {
-              <div class="p-3 bg-zinc-950/50 border-t border-zinc-800 grid grid-cols-2 gap-3 text-[10px] font-mono text-zinc-500">
+              <div class="p-3 bg-zinc-950 dark:bg-zinc-800 border-t border-zinc-800 grid grid-cols-2 gap-3 text-[10px] font-mono text-zinc-500">
                 <div class="space-y-0.5">
                   <div class="flex justify-between">
                     <span>Objects:</span>
@@ -671,18 +648,16 @@ export class JsonEditor implements AfterViewInit, OnDestroy {
         <!-- FOOTER: LOGS & STATS (Arranged side by side) -->
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-4">
           <!-- System logs (left col, 8 cols) -->
-          <div class="lg:col-span-12 bg-black/40 border border-zinc-800 rounded-xl p-3 font-mono text-[10px] overflow-hidden flex flex-col justify-between h-[110px]">
+          <div class="lg:col-span-12 bg-zinc-950 dark:bg-zinc-800 border border-zinc-800 rounded-xl p-3 font-mono text-[10px] overflow-hidden flex flex-col justify-between h-[110px]">
             <div class="flex items-center justify-between border-b border-zinc-800/50 pb-1 mb-1.5">
               <span class="text-zinc-500 font-bold uppercase tracking-wider text-[9px] flex items-center">
                 <mat-icon class="text-[10px] scale-75 mr-1 text-zinc-500">receipt_long</mat-icon>
                 Developer Diagnostics Console
               </span>
-              <button (click)="service.clearLogs()" 
-                      class="text-[8px] uppercase bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors px-1.5 py-0.5 rounded cursor-pointer">
+              <button (click)="service.clearLogs()" class="text-[8px] uppercase bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors px-1.5 py-0.5 rounded cursor-pointer">
                 Clear
               </button>
             </div>
-            
             <div class="flex-1 overflow-y-auto space-y-1 pr-1.5">
               @if (service.logs().length === 0) {
                 <div class="text-zinc-650 text-center py-2">

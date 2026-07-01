@@ -554,7 +554,7 @@ export class EditorPanelComponent implements OnInit, OnDestroy {
         <div class="flex items-center gap-2">
           <mat-icon class="text-emerald-500 scale-90 font-bold">format_list_bulleted</mat-icon>
           <h3 class="font-sans font-semibold text-zinc-100 text-sm tracking-wide">DIFFERENCE EXPLORER</h3>
-          <span class="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full font-mono">
+          <span class="text-[10px]  bg-zinc-200 dark:bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full font-mono">
             {{ filteredDiffs().length }} of {{ allDiffsCount() }} MATCHES
           </span>
         </div>
@@ -715,7 +715,7 @@ export class DifferenceListComponent {
       @if (diffService.stats(); as s) {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           <!-- Similarity Index (Circle ring) -->
-          <div class="col-span-1 bg-zinc-950/55 border border-zinc-850 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+          <div class="col-span-1 bg-zinc-950 border border-zinc-850 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
             <span class="text-[10px] font-bold text-zinc-500 tracking-wider uppercase mb-2 select-none">SIMILARITY INDEX</span>
             <div class="relative w-24 h-24 flex items-center justify-center">
               <!-- Background Ring -->
@@ -734,7 +734,7 @@ export class DifferenceListComponent {
           </div>
 
           <!-- Diff Operation Breakdown (Stacked horizontal bars) -->
-          <div class="col-span-1 sm:col-span-2 bg-zinc-950/55 border border-zinc-850 rounded-2xl p-4 flex flex-col justify-between">
+          <div class="col-span-1 sm:col-span-2 bg-zinc-950 border border-zinc-850 rounded-2xl p-4 flex flex-col justify-between">
             <span class="text-[10px] font-bold text-zinc-500 tracking-wider uppercase mb-2 select-none">DIFFERENCE BREAKDOWN</span>
             <div class="grid grid-cols-2 gap-4 my-auto">
               <!-- Added -->
@@ -783,7 +783,7 @@ export class DifferenceListComponent {
           </div>
 
           <!-- Runtime & Performance -->
-          <div class="col-span-1 bg-zinc-950/55 border border-zinc-850 rounded-2xl p-4 flex flex-col justify-between">
+          <div class="col-span-1 bg-zinc-950 border border-zinc-850 rounded-2xl p-4 flex flex-col justify-between">
             <span class="text-[10px] font-bold text-zinc-500 tracking-wider uppercase mb-2 select-none">PERFORMANCE METRICS</span>
             <div class="flex flex-col gap-2.5 my-auto">
               <!-- Comparison time -->
@@ -1017,7 +1017,7 @@ export class ValidationCardComponent {
 
       <!-- Path displays and value tools -->
       @if (currentDiff(); as diff) {
-        <div id="diff-path-indicator" class="flex-1 min-w-[200px] max-w-md bg-zinc-950/60 border border-zinc-800/40 rounded-xl px-3 py-1.5 flex items-center justify-between gap-2 overflow-hidden">
+        <div id="diff-path-indicator" class="flex-1 min-w-[200px] max-w-md  bg-zinc-950 dark:bg-zinc-800 border border-zinc-800/40 rounded-xl px-3 py-1.5 flex items-center justify-between gap-2 overflow-hidden">
           <div class="flex items-center gap-2 overflow-hidden">
             <mat-icon [class]="getTypeColorClass(diff.type) + ' text-[15px] w-3.5 h-3.5 leading-none'">
               {{ getTypeIcon(diff.type) }}

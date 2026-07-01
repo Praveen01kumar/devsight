@@ -9,7 +9,7 @@ export type AppTheme = 'dark' | 'light';
 export class ToolboxService {
   private readonly document = inject(DOCUMENT);
   // Theme state signal
-  public theme = signal<AppTheme>('dark');
+  public theme = signal<AppTheme>('light');
   // Favorites list signal
   public favorites = signal<string[]>([]);
   // Recently used tool slugs signal

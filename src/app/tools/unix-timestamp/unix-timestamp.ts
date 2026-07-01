@@ -67,7 +67,7 @@ import { MatIconModule } from '@angular/material/icon';
 
           <!-- Outputs computed dates -->
           @if (calendarEpoch()) {
-            <div class="space-y-1 bg-zinc-950/45 p-4 rounded-xl border border-zinc-850 flex flex-col justify-center font-mono text-xs text-left leading-relaxed">
+            <div class="space-y-1 bg-zinc-50/50 dark:bg-zinc-950/20 p-4 rounded-xl border border-zinc-850 flex flex-col justify-center font-mono text-xs text-left leading-relaxed">
               <div>
                 <span class="text-zinc-500 block text-[10px] uppercase font-bold tracking-widest">UNIX TIMESTAMP (Sec)</span>
                 <span class="text-emerald-400 font-bold select-all text-sm">{{ calendarEpoch() }}</span>

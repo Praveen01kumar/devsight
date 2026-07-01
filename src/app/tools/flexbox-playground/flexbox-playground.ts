@@ -153,10 +153,7 @@ export class FlexboxPlaygroundComponent {
 
   // Computes the viewport styling set
   public viewClasses = computed(() => {
-    const dirClass = this.direction() === 'row' ? 'flex-row' : 
-                     this.direction() === 'row-reverse' ? 'flex-row-reverse' : 
-                     this.direction() === 'col' ? 'flex-col' : 'flex-col-reverse';
-    
+    const dirClass = this.direction() === 'row' ? 'flex-row' : this.direction() === 'row-reverse' ? 'flex-row-reverse' : this.direction() === 'col' ? 'flex-col' : 'flex-col-reverse';
     return [
       dirClass,
       this.justifyContent(),
@@ -165,42 +162,22 @@ export class FlexboxPlaygroundComponent {
   });
 
   public tailwindClassesCode = computed(() => {
-    const dirTerm = this.direction() === 'row' ? 'flex-row' : 
-                    this.direction() === 'row-reverse' ? 'flex-row-reverse' : 
-                    this.direction() === 'col' ? 'flex-col' : 'flex-col-reverse';
+    const dirTerm = this.direction() === 'row' ? 'flex-row' : this.direction() === 'row-reverse' ? 'flex-row-reverse' : this.direction() === 'col' ? 'flex-col' : 'flex-col-reverse';
     const justify = this.justifyContent();
     const align = this.alignItems();
-    
     // Find approximate tailwind gap mappings
     const gapNum = this.gapSize();
-    const gapClass = gapNum === 0 ? 'gap-0' : 
-                     gapNum === 8 ? 'gap-2' : 
-                     gapNum === 16 ? 'gap-4' : 
-                     gapNum === 24 ? 'gap-6' : 
-                     gapNum === 32 ? 'gap-8' : 
-                     gapNum === 40 ? 'gap-10' : 'gap-12';
-
+    const gapClass = gapNum === 0 ? 'gap-0' : gapNum === 8 ? 'gap-2' : gapNum === 16 ? 'gap-4' : gapNum === 24 ? 'gap-6' : gapNum === 32 ? 'gap-8' : gapNum === 40 ? 'gap-10' : 'gap-12';
     return `flex ${dirTerm} ${justify} ${align} ${gapClass}`;
   });
 
   public cssBlockCode = computed(() => {
-    const dir = this.direction() === 'row' ? 'row' : 
-                this.direction() === 'row-reverse' ? 'row-reverse' : 
-                this.direction() === 'col' ? 'column' : 'column-reverse';
-    
+    const dir = this.direction() === 'row' ? 'row' : this.direction() === 'row-reverse' ? 'row-reverse' : this.direction() === 'col' ? 'column' : 'column-reverse';
     // Justify Content terms
     const justSel = this.justifyContent();
-    const justVal = justSel === 'justify-start' ? 'flex-start' : 
-                    justSel === 'justify-end' ? 'flex-end' : 
-                    justSel === 'justify-center' ? 'center' : 
-                    justSel === 'justify-between' ? 'space-between' : 
-                    justSel === 'justify-around' ? 'space-around' : 'space-evenly';
-                    
+    const justVal = justSel === 'justify-start' ? 'flex-start' : justSel === 'justify-end' ? 'flex-end' : justSel === 'justify-center' ? 'center' : justSel === 'justify-between' ? 'space-between' : justSel === 'justify-around' ? 'space-around' : 'space-evenly';
     const alignSel = this.alignItems();
-    const alignVal = alignSel === 'items-start' ? 'flex-start' : 
-                     alignSel === 'items-center' ? 'center' : 
-                     alignSel === 'items-end' ? 'flex-end' : 'stretch';
-
+    const alignVal = alignSel === 'items-start' ? 'flex-start' : alignSel === 'items-center' ? 'center' : alignSel === 'items-end' ? 'flex-end' : 'stretch';
     return `.container {\n  display: flex;\n  flex-direction: ${dir};\n  justify-content: ${justVal};\n  align-items: ${alignVal};\n  gap: ${this.gapSize()}px;\n}`;
   });
 

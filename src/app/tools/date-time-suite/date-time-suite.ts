@@ -34,62 +34,6 @@ interface OccurenceRow {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-4 text-zinc-900 dark:text-zinc-105 select-text">
-      
-      <!-- Top Live Banner Card -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="md:col-span-2 p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm select-none">
-          <div class="space-y-1">
-            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 font-bold block">SYSTEM TIME & ZONE (AUTO-DETECTED)</span>
-            <div class="text-xl font-mono text-emerald-600 dark:text-emerald-400 font-extrabold tracking-tight">
-              {{ systemClock() }}
-            </div>
-            <div class="text-[11px] font-medium text-zinc-500 flex items-center gap-1.5 font-mono">
-              <mat-icon class="scale-50 max-h-4">public</mat-icon>
-              <span>{{ userTimezone() }} (UTC{{ userOffsetString() }})</span>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-2 text-center text-[10px] font-mono shrink-0">
-            <div class="p-2 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl leading-snug">
-              <span class="text-zinc-500 block uppercase font-bold">DAY OF YR</span>
-              <span class="text-zinc-800 dark:text-zinc-300 font-extrabold">{{ dayOfYear() }}</span>
-            </div>
-            <div class="p-2 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl leading-snug">
-              <span class="text-zinc-500 block uppercase font-bold">WEEK NO</span>
-              <span class="text-zinc-800 dark:text-zinc-300 font-extrabold">{{ weekOfYear() }}</span>
-            </div>
-            <div class="p-2 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl leading-snug">
-              <span class="text-zinc-500 block uppercase font-bold">LEAP YEAR</span>
-              <span class="font-extrabold" [class.text-emerald-500]="isLeapYear()" [class.text-zinc-500]="!isLeapYear()">
-                {{ isLeapYear() ? 'YES' : 'NO' }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div class="p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl flex flex-col justify-between shadow-sm font-mono text-center relative overflow-hidden select-none">
-          <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 font-bold block pb-1 border-b border-zinc-150 dark:border-zinc-850">LIVE EPOCH</span>
-          <div class="text-xl md:text-2xl font-bold text-emerald-500 dark:text-sky-455 tracking-wider py-1.5 select-all">
-            {{ tickingEpoch() }}
-          </div>
-          <div class="flex items-center justify-center gap-2 text-[10px]">
-            <button 
-              (click)="toggleEpochPause()" 
-              class="px-2.5 py-1 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 rounded-lg text-zinc-650 hover:text-zinc-900 dark:text-zinc-450 dark:hover:text-white transition flex items-center gap-1 font-bold cursor-pointer dark:text-zinc-400"
-            >
-              <mat-icon class="scale-50 max-h-4 text-emerald-500">{{ epochPaused() ? 'play_arrow' : 'pause' }}</mat-icon>
-              <span>{{ epochPaused() ? 'RESUME' : 'PAUSE' }}</span>
-            </button>
-            <button 
-              (click)="copyEpochTicker()" 
-              class="px-2.5 py-1 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 rounded-lg text-zinc-650 hover:text-zinc-900 dark:text-zinc-450 dark:hover:text-white transition flex items-center gap-1 font-bold cursor-pointer dark:text-zinc-400"
-            >
-              <mat-icon class="scale-50 max-h-4 text-emerald-500">{{ tickerCopied() ? 'check' : 'content_copy' }}</mat-icon>
-              <span>{{ tickerCopied() ? 'COPIED' : 'COPY' }}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
       <!-- Suite Tabs Navigation Header (Synchronized with URL Mode or fallback) -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-zinc-150 dark:border-zinc-800 select-none no-scrollbar">
         @for (item of SUITE_TABS; track item.id) {
@@ -103,7 +47,7 @@ interface OccurenceRow {
             [class.dark:border-zinc-800]="activeMode() !== item.id"
             [class.text-zinc-600]="activeMode() !== item.id"
             [class.dark:text-zinc-400]="activeMode() !== item.id"
-            class="px-3.5 py-2 shrink-0 border rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-950/20 text-xs font-mono font-bold transition flex items-center gap-1.5 cursor-pointer"
+            class="px-2 py-1 shrink-0 border rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-950/20 text-xs font-mono font-bold transition flex items-center gap-1.5 cursor-pointer"
           >
             <mat-icon class="scale-75 text-zinc-500 dark:text-zinc-400">{{ item.icon }}</mat-icon>
             <span>{{ item.label | uppercase }}</span>
@@ -190,7 +134,7 @@ interface OccurenceRow {
                 <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-350 pb-2 border-b border-zinc-150 dark:border-zinc-850 block flex items-center justify-between">
                   <span>📊 DIFFERENCE COMPILATION REPORT</span>
                   <button [disabled]="!isDiffValid()" (click)="saveCalculationsList('Difference')" class="text-[10px] font-bold text-emerald-500 flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-md hover:bg-emerald-500/20 transition">
-                    <mat-icon class="scale-50 max-h-4">favorite</mat-icon> SAVE RESULT
+                    <mat-icon class="scale-50 6">favorite</mat-icon> SAVE RESULT
                   </button>
                 </span>
 
@@ -251,11 +195,11 @@ interface OccurenceRow {
 
                   <!-- Quick copy summary link -->
                   <div class="pt-4 border-t border-zinc-150 dark:border-zinc-850 flex flex-wrap gap-2">
-                    <button (click)="copyDiffText('exact')" class="px-3 py-1.5 border border-zinc-150 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 rounded-lg text-[10px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer dark:text-zinc-400">
-                      <mat-icon class="scale-50 max-h-4 text-emerald-500">content_copy</mat-icon> COPY CHRONO SUMMARY
+                    <button (click)="copyDiffText('exact')" class="h-8 px-3 py-1.5 border border-zinc-150 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 rounded-lg text-[10px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer dark:text-zinc-400">
+                      <mat-icon class="scale-50 max-h-6 text-emerald-500">content_copy</mat-icon> COPY CHRONO SUMMARY
                     </button>
-                    <button (click)="copyDiffText('units')" class="px-3 py-1.5 border border-zinc-150 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 rounded-lg text-[10px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer dark:text-zinc-400">
-                      <mat-icon class="scale-50 max-h-4 text-emerald-500">content_copy</mat-icon> COPY ALL UNITS LIST
+                    <button (click)="copyDiffText('units')" class="h-8 px-3 py-1.5 border border-zinc-150 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 rounded-lg text-[10px] font-mono font-bold transition flex items-center gap-1.5 cursor-pointer dark:text-zinc-400">
+                      <mat-icon class="scale-50 max-h-6 text-emerald-500">content_copy</mat-icon> COPY ALL UNITS LIST
                     </button>
                   </div>
                 }
@@ -301,12 +245,12 @@ interface OccurenceRow {
                 <div class="p-3.5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl text-[11px] leading-relaxed select-none font-mono">
                   <span class="text-zinc-400 font-bold block uppercase text-[9px] tracking-wider mb-1">BIRTHDAY HIGHLIGHTS</span>
                   @if (isDobLeapYear()) {
-                    <div class="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1"><mat-icon class="scale-50 max-h-4">check_circle</mat-icon> Born in a Leap Year!</div>
+                    <div class="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1"><mat-icon class="scale-50 max-h-6">check_circle</mat-icon> Born in a Leap Year!</div>
                   } @else {
-                    <div class="text-zinc-500 flex items-center gap-1"><mat-icon class="scale-50 max-h-4">info</mat-icon> Non-leap Year baby.</div>
+                    <div class="text-zinc-500 flex items-center gap-1"><mat-icon class="scale-50 max-h-6">info</mat-icon> Non-leap Year baby.</div>
                   }
                   <div class="text-zinc-500 font-medium mt-1 flex items-center gap-1">
-                    <mat-icon class="scale-50 max-h-4 text-emerald-500">calendar_today</mat-icon>
+                    <mat-icon class="scale-50 max-h-6 text-emerald-500">calendar_today</mat-icon>
                     <span>Day of Arrival: <strong>{{ dobWeekday() }}</strong></span>
                   </div>
                 </div>
@@ -319,7 +263,7 @@ interface OccurenceRow {
                 <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-350 pb-2 border-b border-zinc-150 dark:border-zinc-850 block flex items-center justify-between">
                   <span>🎂 AGE COMPLEX SYNOPSIS</span>
                   <button (click)="saveCalculationsList('Age')" class="text-[10px] font-bold text-emerald-500 flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-md hover:bg-emerald-500/20 transition">
-                    <mat-icon class="scale-50 max-h-4">favorite</mat-icon> SAVE RECORD
+                    <mat-icon class="scale-50 max-h-6">favorite</mat-icon> SAVE RECORD
                   </button>
                 </span>
 
@@ -340,7 +284,7 @@ interface OccurenceRow {
                   <!-- Next birthday ticking countdown -->
                   <div class="p-5 bg-sky-500/5 dark:bg-sky-500/10 border border-sky-150 dark:border-sky-500/30 rounded-2xl text-left space-y-1.5">
                     <span class="block text-[9px] font-mono tracking-wider font-extrabold text-sky-600 dark:text-sky-400 uppercase flex items-center gap-1">
-                      <mat-icon class="scale-50 max-h-4 animate-bounce">alarm</mat-icon> COUNTDOWN TO NEXT BIRTHDAY
+                      <mat-icon class="scale-50 max-h-6 animate-bounce">alarm</mat-icon> COUNTDOWN TO NEXT BIRTHDAY
                     </span>
                     <div class="text-base font-extrabold text-zinc-900 dark:text-white leading-none font-mono">
                       {{ computedBirthdayCountdown() }}
@@ -383,8 +327,8 @@ interface OccurenceRow {
                 </div>
 
                 <div class="pt-4 border-t border-zinc-155 dark:border-zinc-850">
-                  <button (click)="copyAgeToClipboard()" class="px-3.5 py-2 border border-zinc-150 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-750 bg-zinc-50 dark:bg-zinc-950 rounded-xl text-[10px] font-mono font-bold hover:text-white transition flex items-center gap-1.5 select-none dark:text-zinc-400">
-                    <mat-icon class="scale-50 max-h-4 text-emerald-500">content_copy</mat-icon> COPY BIOMETRICS SYNOPIS
+                  <button (click)="copyAgeToClipboard()" class="h-8 px-3 py-1.5 border border-zinc-150 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-750 bg-zinc-50 dark:bg-zinc-950 rounded-xl text-[10px] font-mono font-bold hover:text-white transition flex items-center gap-1.5 select-none dark:text-zinc-400 cursor-pointer">
+                    <mat-icon class="scale-50 max-h-6 text-emerald-500">content_copy</mat-icon> COPY BIOMETRICS SYNOPIS
                   </button>
                 </div>
               </div>
@@ -426,9 +370,9 @@ interface OccurenceRow {
                       [class.border-emerald-500]="addOperation() === 'add'"
                       [class.border-zinc-200]="addOperation() !== 'add'"
                       [class.dark:border-zinc-850]="addOperation() !== 'add'"
-                      class="py-2.5 border text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 dark:text-zinc-400 cursor-pointer"
+                      class="cursor-pointer px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-mono font-bold transition flex items-center shrink-0 justify-center"
                     >
-                      <mat-icon class="scale-50 max-h-4">add_circle</mat-icon> ADD (+)
+                      <mat-icon class="scale-50 max-h-6">add_circle</mat-icon> ADD (+)
                     </button>
                     <button 
                       (click)="addOperation.set('sub')" 
@@ -437,9 +381,9 @@ interface OccurenceRow {
                       [class.border-amber-600]="addOperation() === 'sub'"
                       [class.border-zinc-200]="addOperation() !== 'sub'"
                       [class.dark:border-zinc-850]="addOperation() !== 'sub'"
-                      class="py-2.5 border text-xs font-bold rounded-xl transition flex items-center justify-center gap-1 dark:text-zinc-400 cursor-pointer"
+                      class="cursor-pointer px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-mono font-bold transition flex items-center shrink-0 justify-center"
                     >
-                      <mat-icon class="scale-50 max-h-4">remove_circle</mat-icon> SUBTRACT (-)
+                      <mat-icon class="scale-50 max-h-6">remove_circle</mat-icon> SUBTRACT (-)
                     </button>
                   </div>
                 </div>
@@ -513,7 +457,7 @@ interface OccurenceRow {
                 <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-350 pb-2 border-b border-zinc-150 dark:border-zinc-850 block flex items-center justify-between">
                   <span>🎯 TARGET CALCULATED DATETIME</span>
                   <button (click)="saveCalculationsList('Temporal shift')" class="text-[10px] font-bold text-emerald-500 flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-md hover:bg-emerald-500/20 transition cursor-pointer">
-                    <mat-icon class="scale-50 max-h-4">favorite</mat-icon> SAVE RESULT
+                    <mat-icon class="scale-50 max-h-6">favorite</mat-icon> SAVE RESULT
                   </button>
                 </span>
 
@@ -717,7 +661,7 @@ interface OccurenceRow {
                 <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-350 pb-2 border-b border-zinc-150 dark:border-zinc-850 block flex items-center justify-between">
                   <span>⏰ REAL-TIME DRIFT REPORT</span>
                   <button (click)="saveCalculationsList('Drift')" class="text-[10px] font-bold text-emerald-500 flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-md hover:bg-emerald-500/20 transition cursor-pointer">
-                    <mat-icon class="scale-50 max-h-4">favorite</mat-icon> SAVE TRACKER
+                    <mat-icon class="scale-50 max-h-6">favorite</mat-icon> SAVE TRACKER
                   </button>
                 </span>
 
@@ -798,7 +742,7 @@ interface OccurenceRow {
                   />
                 </div>
 
-                <div class="p-3.5 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl text-[10px] !leading-relaxed select-none space-y-1">
+                <div class="p-3.5 border dark:text-zinc-400 w-full bg-zinc-950 border border-zinc-850 rounded-xl text-[10px] !leading-relaxed select-none space-y-1">
                   <span class="text-zinc-500 block uppercase font-bold text-[9px] mb-1">SYNTAX BREAKDOWN INDEX</span>
                   <div class="flex justify-between border-b border-zinc-150 dark:border-zinc-850/50 pb-1"><span>*</span> <span>minute (0-59)</span></div>
                   <div class="flex justify-between border-b border-zinc-150 dark:border-zinc-850/50 pb-1"><span>*</span> <span>hour (0-23)</span></div>
@@ -851,6 +795,55 @@ interface OccurenceRow {
         }
 
       </main>
+
+      <!-- Top Live Banner Card -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2 p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm select-none">
+          <div class="space-y-1">
+            <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 font-bold block">SYSTEM TIME & ZONE (AUTO-DETECTED)</span>
+            <div class="text-xl font-mono text-emerald-600 dark:text-emerald-400 font-extrabold tracking-tight">
+              {{ systemClock() }}
+            </div>
+            <div class="text-[11px] font-medium text-zinc-500 flex items-center gap-1.5 font-mono">
+              <mat-icon class="scale-50 max-h-6">public</mat-icon>
+              <span>{{ userTimezone() }} (UTC{{ userOffsetString() }})</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-center text-[10px] font-mono shrink-0">
+            <div class="p-2 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl leading-snug">
+              <span class="text-zinc-500 block uppercase font-bold">DAY OF YR</span>
+              <span class="text-zinc-800 dark:text-zinc-300 font-extrabold">{{ dayOfYear() }}</span>
+            </div>
+            <div class="p-2 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl leading-snug">
+              <span class="text-zinc-500 block uppercase font-bold">WEEK NO</span>
+              <span class="text-zinc-800 dark:text-zinc-300 font-extrabold">{{ weekOfYear() }}</span>
+            </div>
+            <div class="p-2 border border-zinc-150 dark:border-zinc-850 bg-zinc-50/50 dark:bg-zinc-950/20 rounded-xl leading-snug">
+              <span class="text-zinc-500 block uppercase font-bold">LEAP YEAR</span>
+              <span class="font-extrabold" [class.text-emerald-500]="isLeapYear()" [class.text-zinc-500]="!isLeapYear()">
+                {{ isLeapYear() ? 'YES' : 'NO' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl flex flex-col justify-between shadow-sm font-mono text-center relative overflow-hidden select-none">
+          <span class="text-[10px] uppercase font-mono tracking-widest text-zinc-500 font-bold block pb-1 border-b border-zinc-150 dark:border-zinc-850">LIVE EPOCH</span>
+          <div class="text-xl md:text-2xl font-bold text-emerald-500 dark:text-sky-455 tracking-wider py-1.5 select-all">
+            {{ tickingEpoch() }}
+          </div>
+          <div class="flex items-center justify-center gap-2 text-[10px]">
+            <button (click)="toggleEpochPause()" class="px-1 py-0.5 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 rounded-lg text-zinc-650 hover:text-zinc-900 dark:text-zinc-450 dark:hover:text-white transition flex items-center gap-1 font-bold cursor-pointer dark:text-zinc-400">
+              <mat-icon class="scale-50 max-h-6 text-emerald-500">{{ epochPaused() ? 'play_arrow' : 'pause' }}</mat-icon>
+              <span>{{ epochPaused() ? 'RESUME' : 'PAUSE' }}</span>
+            </button>
+            <button (click)="copyEpochTicker()" class="px-1 py-0.5 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-350 dark:hover:border-zinc-700 bg-zinc-50 dark:bg-zinc-950 rounded-lg text-zinc-650 hover:text-zinc-900 dark:text-zinc-450 dark:hover:text-white transition flex items-center gap-1 font-bold cursor-pointer dark:text-zinc-400">
+              <mat-icon class="scale-50 max-h-6 text-emerald-500">{{ tickerCopied() ? 'check' : 'content_copy' }}</mat-icon>
+              <span>{{ tickerCopied() ? 'COPIED' : 'COPY' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
       <!-- ======================= BOTTOM PANEL: RECENT COPIES OR CALCULATIONS HISTORY ======================= -->
       @if (calculationsHistory().length > 0) {

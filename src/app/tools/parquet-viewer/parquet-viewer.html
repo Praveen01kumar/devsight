@@ -58,7 +58,7 @@
           <!-- Standard Input Click -->
           <div>
             <label
-              class="cursor-pointer inline-flex items-center gap-1 bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg border border-zinc-700 font-medium transition-colors">
+              class="cursor-pointer inline-flex items-center gap-1 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-white text-xs px-3 py-1.5 rounded-lg border border-zinc-700 font-medium transition-colors">
               <mat-icon class="text-xs">folder_open</mat-icon>
               Choose Files
               <input type="file" multiple (change)="onFilesSelected($event)" class="hidden"
@@ -73,22 +73,22 @@
           </p>
           <div class="grid grid-cols-2 gap-2">
             <button (click)="loadDemoDataset('sales')"
-              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700 cursor-pointer">
               <mat-icon class="text-xs scale-90 text-emerald-400">shopping_bag</mat-icon>
               Sales (1k)
             </button>
             <button (click)="loadDemoDataset('users')"
-              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700 cursor-pointer">
               <mat-icon class="text-xs scale-90 text-sky-400">group</mat-icon>
               Users (1k)
             </button>
             <button (click)="loadDemoDataset('events')"
-              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700 cursor-pointer">
               <mat-icon class="text-xs scale-90 text-purple-400">bolt</mat-icon>
               Events (1.5k)
             </button>
             <button (click)="loadDemoDataset('flights')"
-              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/50 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700">
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs rounded-lg transition-colors text-left font-medium border border-zinc-800 hover:border-zinc-700 cursor-pointer">
               <mat-icon class="text-xs scale-90 text-amber-400">flight_takeoff</mat-icon>
               Flights (1.2k)
             </button>
@@ -128,12 +128,12 @@
             <div class="flex items-center gap-1">
               <!-- Preview shortcut -->
               <span
-                class="text-[10px] bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                class="text-[10px] bg-zinc-950 dark:bg-zinc-800 text-zinc-400 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                 Select
               </span>
               <!-- Drop action -->
               <button (click)="dropTable(tbl.name, $event)"
-                class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-rose-400 rounded transition-colors"
+                class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-rose-400 rounded transition-colors cursor-pointer"
                 title="Drop Table">
                 <mat-icon class="text-xs scale-90">delete</mat-icon>
               </button>
@@ -153,7 +153,7 @@
           </h2>
           @if (selectedTableName()) {
           <button (click)="copySchemaAsSql()"
-            class="text-[10px] text-zinc-400 hover:text-white flex items-center gap-0.5" title="Copy CREATE TABLE SQL">
+            class="text-[10px] text-zinc-400 hover:text-white flex items-center gap-0.5 cursor-pointer" title="Copy CREATE TABLE SQL">
             <mat-icon class="text-xs scale-90">content_copy</mat-icon>
             Copy SQL
           </button>
@@ -227,14 +227,14 @@
                 [ngClass]="activeTabId() === tab.id ? 'text-emerald-400' : 'text-zinc-600'">code</mat-icon>
               <span>{{ tab.name }}</span>
               <button (click)="closeTab(tab.id, $event)"
-                class="p-0.5 rounded-full hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                class="p-0.5 rounded-full hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                 title="Close tab">
                 <mat-icon class="text-[10px] scale-75">close</mat-icon>
               </button>
             </button>
             }
             <button (click)="addTab()"
-              class="p-1.5 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg transition-colors"
+              class="p-1.5 hover:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg transition-colors cursor-pointer"
               title="Add tab">
               <mat-icon class="text-xs">add</mat-icon>
             </button>
@@ -266,7 +266,7 @@
           <div class="flex items-center gap-3">
             <!-- Formatting -->
             <button (click)="formatQuery()"
-              class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold rounded-lg border border-zinc-750 flex items-center gap-1.5 transition-colors"
+              class="px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold rounded-lg border border-zinc-750 flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Format SQL statement">
               <mat-icon class="text-xs scale-90">format_align_left</mat-icon>
               Beautify SQL
@@ -325,17 +325,17 @@
           <div class="flex flex-wrap items-center gap-2 self-stretch sm:self-auto justify-end">
             <span class="text-xs text-zinc-500 font-medium mr-1">Download:</span>
             <button (click)="exportResults('parquet')"
-              class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono">
+              class="px-2.5 py-1 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono cursor-pointer">
               <mat-icon class="text-[10px] scale-75 text-emerald-400">download</mat-icon>
               Parquet
             </button>
             <button (click)="exportResults('csv')"
-              class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono">
+              class="px-2.5 py-1 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono cursor-pointer">
               <mat-icon class="text-[10px] scale-75 text-sky-400">download</mat-icon>
               CSV
             </button>
             <button (click)="exportResults('json')"
-              class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono">
+              class="px-2.5 py-1 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 border border-zinc-750 text-zinc-200 hover:text-white rounded text-xs transition-colors flex items-center gap-1 font-mono cursor-pointer">
               <mat-icon class="text-[10px] scale-75 text-purple-400">download</mat-icon>
               JSON
             </button>
@@ -384,7 +384,7 @@
 
               <!-- Copy full grid as CSV -->
               <button (click)="copyTableAsCsv()"
-                class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white text-[11px] font-medium rounded-lg transition-colors flex items-center gap-1">
+                class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white text-[11px] font-medium rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
                 <mat-icon class="text-xs scale-90">assignment</mat-icon>
                 Copy Table CSV
               </button>
@@ -392,7 +392,7 @@
               <!-- Column Visibility dropdown toggler -->
               <div class="relative group/columns">
                 <button
-                  class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white text-[11px] font-medium rounded-lg transition-colors flex items-center gap-1">
+                  class="px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 hover:text-white text-[11px] font-medium rounded-lg transition-colors flex items-center gap-1 cursor-pointer">
                   <mat-icon class="text-xs scale-90">visibility</mat-icon>
                   Columns
                 </button>
@@ -445,8 +445,7 @@
 
                     @for (col of activeResult()?.columns; track col) {
                     @if (!hiddenColumns().has(col)) {
-                    <th (click)="sort(col)"
-                      class="p-3 border-r border-zinc-850/60 font-semibold cursor-pointer hover:bg-zinc-850 hover:text-white transition-colors relative pr-6 truncate min-w-[120px]">
+                    <th (click)="sort(col)" class="p-3 border-r border-zinc-850/60 font-semibold cursor-pointer hover:bg-zinc-850 hover:text-white transition-colors relative pr-6 truncate min-w-[120px]">
                       <span>{{ col }}</span>
                       <!-- Sort Icons -->
                       <div class="absolute right-2 top-3">
@@ -495,7 +494,7 @@
                       <!-- Quick hover cell copy helper -->
                       @if (selectedCell()?.rowIndex === $index && selectedCell()?.columnName === col) {
                       <button (click)="copySelectedCellValue(row[col]); $event.stopPropagation()"
-                        class="absolute right-1 top-1.5 p-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded shadow-lg transition-all scale-90 border border-zinc-700"
+                        class="absolute right-1 top-1.5 p-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded shadow-lg transition-all scale-90 border border-zinc-700 cursor-pointer"
                         title="Copy cell value">
                         <mat-icon class="text-[10px] scale-90">content_copy</mat-icon>
                       </button>
@@ -507,7 +506,7 @@
                     <!-- Row level Action panel -->
                     <td class="p-2 text-center">
                       <button (click)="copyRowAsJson(row)"
-                        class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded transition-colors text-[10px]"
+                        class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-white rounded transition-colors text-[10px] cursor-pointer"
                         title="Copy row as JSON">
                         <mat-icon class="text-xs scale-90">data_object</mat-icon>
                       </button>
@@ -583,7 +582,7 @@
           </h2>
           @if (duckDb.queryHistory().length > 0) {
           <button (click)="duckDb.clearHistory()"
-            class="text-[10px] text-zinc-400 hover:text-rose-400 flex items-center gap-0.5 font-medium">
+            class="text-[10px] text-zinc-400 hover:text-rose-400 flex items-center gap-0.5 font-medium cursor-pointer">
             <mat-icon class="text-xs scale-90">delete_sweep</mat-icon>
             Clear History
           </button>
@@ -617,14 +616,14 @@
               </button>
               <!-- Favorite status -->
               <button (click)="duckDb.toggleFavoriteHistoryItem(item.id)"
-                class="p-1 hover:bg-zinc-800 rounded transition-colors"
+                class="p-1 hover:bg-zinc-800 rounded transition-colors cursor-pointer"
                 [ngClass]="item.isFavorite ? 'text-amber-400 hover:text-amber-500' : 'text-zinc-500 hover:text-zinc-300'"
                 [title]="item.isFavorite ? 'Remove Favorite' : 'Mark Favorite'">
                 <mat-icon class="text-xs scale-110">star</mat-icon>
               </button>
               <!-- Delete item -->
               <button (click)="duckDb.deleteHistoryItem(item.id)"
-                class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-rose-400 rounded transition-colors"
+                class="p-1 hover:bg-zinc-800 text-zinc-500 hover:text-rose-400 rounded transition-colors cursor-pointer"
                 title="Delete log entry">
                 <mat-icon class="text-xs scale-110">delete</mat-icon>
               </button>

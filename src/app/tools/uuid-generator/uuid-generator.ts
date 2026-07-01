@@ -83,19 +83,19 @@ import { MatIconModule } from '@angular/material/icon';
           <div class="flex justify-between items-center bg-zinc-950 px-4 py-2 rounded-lg border border-zinc-855 font-mono">
             <span class="text-[10px] text-zinc-500 uppercase font-bold">GENERATED OUTPUTS</span>
             <button (click)="copyAll()"
-              class="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
+              class="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 cursor-pointer">
               <mat-icon class="text-xs scale-75">{{ copySuccess() ? 'check' : 'content_copy' }}</mat-icon>
               {{ copySuccess() ? 'COPIED ALL!' : 'COPY ALL' }}
             </button>
           </div>
 
           <!-- Code output frame -->
-          <div class="max-h-[300px] overflow-y-auto border border-zinc-850 rounded-xl bg-zinc-950/60 p-4 font-mono text-zinc-300 text-xs text-left leading-relaxed divide-y divide-zinc-900">
+          <div class="max-h-[300px] overflow-y-auto border border-zinc-850 rounded-xl bg-zinc-900 p-4 font-mono text-zinc-300 text-xs text-left leading-relaxed divide-y divide-zinc-900">
             @for (uuid of resultsList(); track uuid) {
               <div class="py-2 flex items-center justify-between group">
                 <span class="select-all">{{ uuid }}</span>
                 <button (click)="copySingle(uuid, $index)"
-                  class="opacity-0 group-hover:opacity-100 p-1 text-[10px] text-zinc-500 hover:text-white hover:bg-zinc-800 rounded transition"
+                  class="opacity-0 group-hover:opacity-100 p-1 text-[10px] text-zinc-500 hover:text-white hover:bg-zinc-800 rounded transition cursor-pointer"
                   title="Copy this UUID">
                   <mat-icon class="text-xs scale-75">
                     {{ activeSingleCopiedIndex() === $index ? 'check' : 'content_copy' }}

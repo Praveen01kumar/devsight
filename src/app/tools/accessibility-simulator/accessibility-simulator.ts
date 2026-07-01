@@ -11,7 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
     <div class="space-y-6 max-w-5xl mx-auto text-left">
       <!-- Grid -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
         <!-- Controls Sidebar -->
         <div class="p-6 bg-zinc-90 border border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 rounded-2xl space-y-4 shadow-sm h-fit">
           <span class="text-xs font-mono font-bold text-zinc-500 dark:text-zinc-400 block border-b dark:border-zinc-800 pb-2">ACCESSIBILITY CONTROLLER</span>
@@ -20,13 +19,11 @@ import { MatIconModule } from '@angular/material/icon';
             <span class="text-xs font-mono font-bold text-zinc-400">VISION SIMULATOR TYPE</span>
             <div class="flex flex-col gap-1.5 font-mono text-xs">
               @for (filter of visionFilters; track filter.id) {
-                <button 
-                  (click)="activeFilterId.set(filter.id)"
+                <button (click)="activeFilterId.set(filter.id)"
                   [class.bg-emerald-500/10]="activeFilterId() === filter.id"
                   [class.text-emerald-500]="activeFilterId() === filter.id"
                   [class.border-emerald-500/30]="activeFilterId() === filter.id"
-                  class="p-2.5 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-xl transition flex items-center justify-between text-left cursor-pointer"
-                >
+                  class="p-2.5 bg-zinc-50 dark:bg-zinc-950 hover:bg-zinc-100 dark:hover:bg-zinc-900 border border-zinc-200 dark:border-zinc-850 rounded-xl transition flex items-center justify-between text-left cursor-pointer">
                   <div class="flex flex-col">
                     <span class="font-bold">{{ filter.name }}</span>
                     <span class="text-[9px] text-zinc-500 lowercase mt-0.5">{{ filter.desc }}</span>
@@ -45,10 +42,8 @@ import { MatIconModule } from '@angular/material/icon';
           <span class="text-xs font-mono font-bold text-zinc-500 block">SIMULATED INTERACTIVE SANDBOX</span>
 
           <!-- Virtual device viewport applying visual CSS matrices on filters -->
-          <div 
-            class="p-8 border border-zinc-250 dark:border-zinc-800 bg-white dark:bg-zinc-950 rounded-2xl min-h-[300px] shadow-sm relative overflow-hidden transition-all duration-300"
-            [style.filter]="compiledCssFilterStyle()"
-          >
+          <div class="p-8 border border-zinc-250 dark:border-zinc-800 bg-white dark:bg-zinc-950 rounded-2xl min-h-[300px] shadow-sm relative overflow-hidden transition-all duration-300"
+            [style.filter]="compiledCssFilterStyle()">
             <!-- Mock Web interface to inspect -->
             <div class="space-y-6">
               <!-- Navigation bar simulator -->
@@ -65,7 +60,6 @@ import { MatIconModule } from '@angular/material/icon';
 
               <!-- Content Cards -->
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                
                 <!-- Card 1: Alert level indicator -->
                 <div class="p-4 rounded-xl border border-rose-500/20 bg-rose-500/5 space-y-2">
                   <div class="flex justify-between items-center">

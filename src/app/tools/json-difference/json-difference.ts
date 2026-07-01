@@ -30,7 +30,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
         <div id="main-toolbar" class="bg-zinc-900 border border-zinc-800 rounded-2xl p-3 flex flex-wrap items-center gap-2 shadow-lg shadow-black/20 shrink-0 select-none">
           <!-- Upload Left -->
           <button id="btn-upload-left"
-            class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
+            class="px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
             (click)="leftFileInput.click()"
             title="Upload Left JSON file"
           >
@@ -40,7 +40,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Upload Right -->
           <button id="btn-upload-right"
-            class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
+            class="px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
             (click)="rightFileInput.click()"
             title="Upload Right JSON file"
           >
@@ -52,7 +52,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Paste Left -->
           <button id="btn-paste-left"
-            class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
+            class="px-2.5 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
             (click)="pasteDocument('left')"
             title="Paste JSON content into original left document"
           >
@@ -62,7 +62,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Paste Right -->
           <button id="btn-paste-right"
-            class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
+            class="px-2.5 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
             (click)="pasteDocument('right')"
             title="Paste JSON content into modified right document"
           >
@@ -74,7 +74,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Swap -->
           <button id="btn-swap-docs"
-            class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
+            class="px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-lg border border-zinc-700 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
             (click)="diffService.swapDocuments()"
             title="Swap Left and Right documents"
           >
@@ -84,7 +84,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Format -->
           <button id="btn-format-all"
-            class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-emerald-400 hover:text-emerald-300 rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
+            class="px-2.5 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-emerald-400 hover:text-emerald-300 rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
             (click)="formatAll()"
             title="Prettify formatting on both documents"
           >
@@ -94,7 +94,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Minify -->
           <button id="btn-minify-all"
-            class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
+            class="px-2.5 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
             (click)="minifyAll()"
             title="Minify and compress whitespace on both documents"
           >
@@ -104,11 +104,11 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Clear -->
           <button id="btn-clear-all"
-            class="px-3 py-1.5 bg-zinc-800 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 rounded-lg border border-zinc-700 hover:border-rose-900 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
+            class="px-3 py-1.5 bg-zinc-950 dark:bg-zinc-800 hover:bg-rose-950/40 text-zinc-400 hover:text-rose-400 rounded-lg border border-zinc-700 hover:border-rose-900 text-xs font-semibold flex items-center gap-1.5 transition-all duration-150 cursor-pointer"
             (click)="diffService.clearAll()"
             title="Clear current workspace"
           >
-            <mat-icon class="text-[14px] w-3.5 h-3.5 leading-none">delete_sweep</mat-icon>
+            <mat-icon class="text-rose-400 text-[14px] w-3.5 h-3.5 leading-none">delete_sweep</mat-icon>
             Clear
           </button>
 
@@ -129,7 +129,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
           <!-- View Mode Toggle -->
           <div class="flex bg-zinc-950 p-0.5 rounded-lg border border-zinc-800">
             <button id="btn-mode-split"
-              [class]="'px-3 py-1 rounded-md text-[11px] transition-all font-semibold cursor-pointer ' + 
+              [class]="' bg-zinc-950 dark:bg-zinc-800 px-3 py-1 rounded-md text-[11px] transition-all font-semibold cursor-pointer ' + 
                 (diffService.viewMode() === 'split' ? 'bg-zinc-800 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300')"
               (click)="diffService.setViewMode('split')"
               title="Split side-by-side editors (Ctrl + 1)"
@@ -137,7 +137,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
               Split View
             </button>
             <button id="btn-mode-unified"
-              [class]="'px-3 py-1 rounded-md text-[11px] transition-all font-semibold cursor-pointer ' + 
+              [class]="' bg-zinc-950 dark:bg-zinc-800 px-3 py-1 rounded-md text-[11px] transition-all font-semibold cursor-pointer ' + 
                 (diffService.viewMode() === 'unified' ? 'bg-zinc-800 text-zinc-100 shadow-sm' : 'text-zinc-500 hover:text-zinc-300')"
               (click)="diffService.setViewMode('unified')"
               title="Unified inline diff editor (Ctrl + 2)"
@@ -150,7 +150,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Export Report -->
           <button id="btn-export-report"
-            class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
+            class="px-2.5 py-1.5  bg-zinc-950 dark:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
             (click)="exportReport()"
             title="Download comparative difference report"
           >
@@ -160,7 +160,7 @@ import { ComparisonOptions } from './json-difference.interfaces';
 
           <!-- Copy Patch -->
           <button id="btn-copy-patch"
-            class="px-2.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
+            class="px-2.5 py-1.5  bg-zinc-950 dark:bg-zinc-800 text-zinc-400 hover:text-white rounded-lg border border-zinc-700 text-xs font-medium flex items-center gap-1 transition-all duration-150 cursor-pointer"
             (click)="copyJSONPatch()"
             title="Copy comparative JSON patch to clipboard"
           >

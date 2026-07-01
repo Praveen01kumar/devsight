@@ -23,7 +23,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
         <!-- Left Toggle -->
         <button
             (click)="toggleLeftSidebar()"
-            class="cursor-pointer flex absolute cursor-pointer left-0 top-2 z-50 bg-white/10 border border-slate-700 rounded-r-md p-0 text-white shadow-lg">
+            class="flex absolute cursor-pointer left-0 top-2 z-50 bg-white/10 border border-slate-700 rounded-r-md p-0 text-white shadow-lg">
             <mat-icon>
             {{ isLeftSidebarOpen() ? 'chevron_left' : 'chevron_right' }}
             </mat-icon>
@@ -32,7 +32,7 @@ import { DEMO_SVGS } from '../../data/demo-templates';
         <!-- Right Toggle -->
         <button
             (click)="toggleRightSidebar()"
-            class="cursor-pointer flex absolute cursor-pointer right-0 top-2 z-50 bg-white/10 border border-slate-700 rounded-l-md p-0 text-white shadow-lg">
+            class="flex absolute cursor-pointer right-0 top-2 z-50 bg-white/10 border border-slate-700 rounded-l-md p-0 text-white shadow-lg">
             <mat-icon>
             {{ isRightSidebarOpen() ? 'chevron_right' : 'chevron_left' }}
             </mat-icon>

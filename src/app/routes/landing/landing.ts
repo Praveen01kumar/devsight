@@ -29,19 +29,14 @@ import { SeoService } from '../../core/services/seo';
         <div class="max-w-xl mx-auto pt-6 relative select-text">
           <div class="flex items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-zinc-300 dark:hover:border-zinc-700 focus-within:border-emerald-600 transition pl-4 pr-2 py-1.5 shadow-sm">
             <mat-icon class="text-zinc-400 dark:text-zinc-500 scale-90">search</mat-icon>
-            <input 
-              type="text" 
-              #queryInput
-              [value]="searchQuery()"
+            <input type="text" #queryInput [value]="searchQuery()"
               (input)="searchQuery.set(queryInput.value)"
               placeholder="Search or filter tools (e.g. JSON, JWT, password, CSS)..."
               class="w-full bg-transparent border-none outline-none text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 text-sm font-mono focus:ring-0 p-3 select-text"
             />
             @if (searchQuery()) {
-              <button 
-                (click)="searchQuery.set(''); queryInput.value = ''"
-                class="px-2 py-1 text-xs font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg transition"
-              >
+              <button (click)="searchQuery.set(''); queryInput.value = ''"
+                class="px-2 py-1 text-xs font-mono bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white rounded-lg transition cursor-pointer">
                 CLEAR
               </button>
             }
@@ -51,10 +46,8 @@ import { SeoService } from '../../core/services/seo';
 
       <!-- Main Layout Divided Structure -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
         <!-- Search Results overlay section or regular dashboard -->
         <div class="lg:col-span-3 space-y-8">
-          
           <!-- Query feedback state -->
           @if (searchQuery()) {
             <div class="space-y-4 text-left">
@@ -75,11 +68,9 @@ import { SeoService } from '../../core/services/seo';
                             <mat-icon class="scale-90">{{ tool.icon }}</mat-icon>
                           </div>
                           <!-- Bookmark button -->
-                          <button 
-                            (click)="toggleFavorite($event, tool.id)"
-                            class="text-zinc-400 dark:text-zinc-500 hover:text-amber-500 dark:hover:text-amber-400 transition"
-                            title="Add to Favorites"
-                          >
+                          <button (click)="toggleFavorite($event, tool.id)"
+                            class="text-zinc-400 dark:text-zinc-500 hover:text-amber-500 dark:hover:text-amber-400 transition cursor-pointer"
+                            title="Add to Favorites">
                             <mat-icon class="scale-90">
                               {{ isBookmarked(tool.id) ? 'star' : 'star_border' }}
                             </mat-icon>
@@ -102,8 +93,6 @@ import { SeoService } from '../../core/services/seo';
               }
             </div>
           } @else {
-            <!-- Regular Dashboard View: Favorites, Categories & All utilities -->
-            
             <!-- Bookmarks Panel -->
             @if (favoritedTools().length > 0) {
               <div class="space-y-4">
@@ -118,11 +107,9 @@ import { SeoService } from '../../core/services/seo';
                           <div class="p-2 border border-zinc-150 dark:border-zinc-750 bg-zinc-50 dark:bg-zinc-950 text-emerald-600 dark:text-emerald-400 rounded-xl">
                             <mat-icon class="scale-90">{{ tool.icon }}</mat-icon>
                           </div>
-                          <button 
-                            (click)="toggleFavorite($event, tool.id)"
-                            class="text-amber-500 hover:text-zinc-400 dark:hover:text-zinc-500 transition"
-                            title="Remove Favorite"
-                          >
+                          <button (click)="toggleFavorite($event, tool.id)"
+                            class="text-amber-500 hover:text-zinc-400 dark:hover:text-zinc-500 transition cursor-pointer"
+                            title="Remove Favorite">
                             <mat-icon class="scale-90">star</mat-icon>
                           </button>
                         </div>
@@ -156,11 +143,9 @@ import { SeoService } from '../../core/services/seo';
                         <div class="p-2 border border-zinc-150 dark:border-zinc-750 bg-zinc-50 dark:bg-zinc-950 text-emerald-600 dark:text-emerald-400 rounded-xl">
                           <mat-icon class="scale-90">{{ tool.icon }}</mat-icon>
                         </div>
-                        <button 
-                          (click)="toggleFavorite($event, tool.id)"
-                          class="text-zinc-400 dark:text-zinc-500 hover:text-amber-500 dark:hover:text-amber-400 transition"
-                          title="Bookmark"
-                        >
+                        <button (click)="toggleFavorite($event, tool.id)"
+                          class="text-zinc-400 dark:text-zinc-500 hover:text-amber-500 dark:hover:text-amber-400 transition cursor-pointer"
+                          title="Bookmark">
                           <mat-icon class="scale-90">
                             {{ isBookmarked(tool.id) ? 'star' : 'star_border' }}
                           </mat-icon>
@@ -208,13 +193,11 @@ import { SeoService } from '../../core/services/seo';
 
         <!-- Sidebar (Recents, stats context, static index directories) -->
         <div class="lg:col-span-1 space-y-6">
-          
           <!-- Recently Loaded Tools -->
           <div class="p-5 border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 rounded-2xl shadow-sm text-left space-y-4 select-text">
             <div class="flex items-center gap-1.5 font-mono font-bold text-xs uppercase tracking-wider text-zinc-500 dark:text-zinc-400 border-b border-zinc-150 dark:border-zinc-850 pb-2">
               <mat-icon class="text-emerald-600 dark:text-emerald-400 scale-75">access_time</mat-icon> RECENTLY USED
             </div>
-            
             @if (recentlyUsedTools().length === 0) {
               <p class="text-xs italic text-zinc-500 dark:text-zinc-500 leading-relaxed">No tracking records yet. Explore any utility to view history indicators.</p>
             } @else {

@@ -35,7 +35,7 @@ export interface TreeChangePayload {
     <div class="space-y-4 select-text text-left">
       <!-- File Operations & Utility Toolbar -->
       <ng-template #formatToolbar>
-        <div class="flex flex-wrap items-center bg-zinc-950 px-1.5 py-1 rounded-lg border border-zinc-800 gap-1 select-none">
+        <div class="flex flex-wrap items-center bg-zinc-950 px-1.5 py-0.5 h-9 rounded-lg border border-zinc-800 gap-1 select-none">
           <button (click)="unfoldAll()"
             class="px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-400 hover:text-white transition flex items-center gap-0.5 cursor-pointer bg-transparent border-none text-zinc-400 font-mono font-bold cursor-pointer"
             title="Expand All Nodes"
@@ -71,7 +71,7 @@ export interface TreeChangePayload {
       </ng-template>
       <ng-template #fileToolbar>
         <div class="flex flex-wrap gap-2">
-          <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+          <div class="flex bg-zinc-900 h-9 p-1 rounded-xl border border-zinc-800">
             <!-- File Import -->
             <button (click)="fileInput.click()" class="relative px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer" title="Import Json File">
                 <mat-icon class="text-xs scale-75">upload_file</mat-icon>
@@ -103,10 +103,11 @@ export interface TreeChangePayload {
               <mat-icon class="text-xs scale-75">{{ justCopied() ? 'check' : 'content_copy' }}</mat-icon>
             </button>
           </div>
-          <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+          <div class="flex bg-zinc-900 h-9 p-1 rounded-xl border border-zinc-800">
             @for (vMode of ['text', 'tree', 'table', 'split']; track vMode) {
               <button (click)="editorSubView.set(vMode)"
-                [class.bg-zinc-800]="editorSubView() === vMode"
+                [class.bg-zinc-200]="editorSubView() === vMode"
+                [class.dark:bg-zinc-800]="editorSubView() === vMode"
                 [class.text-white]="editorSubView() === vMode"
                 [class.text-zinc-500]="editorSubView() !== vMode"
                 class="px-2 py-0.5 text-xs font-mono font-bold uppercase rounded-lg transition cursor-pointer">
@@ -115,7 +116,7 @@ export interface TreeChangePayload {
             }
           </div>
           <button (click)="isEditorFullScreen.set(!isEditorFullScreen())"
-              class="px-2 py-0.5 bg-red-950 hover:bg-red-900 border border-red-900/40 text-red-300 text-[10px] font-mono font-bold uppercase rounded-lg transition flex items-center gap-1 cursor-pointer bg-transparent cursor-pointer"
+              class="h-8 px-2 py-0.5 bg-red-950 hover:bg-red-900 border border-red-900/40 text-red-300 text-[10px] font-mono font-bold uppercase rounded-lg transition flex items-center gap-1 cursor-pointer bg-transparent cursor-pointer"
               [title]="isEditorFullScreen() ? 'Exit Full Screen' : 'Full Screen View'">
               <mat-icon class="scale-75">{{ isEditorFullScreen() ? 'fullscreen_exit' : 'fullscreen' }}</mat-icon>
               {{ isEditorFullScreen() ? 'EXIT' : 'FULL' }}
@@ -125,7 +126,7 @@ export interface TreeChangePayload {
       <!-- TAB 1: INTERACTIVE EDITOR -->
         <div class="space-y-4">
           <!-- Sub-view choices layout selector -->
-          <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
             <div class="flex items-center gap-2 flex-wrap">
               <!-- Formatting & Expansion Controls -->
               <ng-container *ngTemplateOutlet="formatToolbar"></ng-container>

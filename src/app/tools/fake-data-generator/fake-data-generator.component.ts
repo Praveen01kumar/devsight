@@ -15,20 +15,20 @@ import loader from '@monaco-editor/loader';
         <!-- Toolbar Section -->
         <div id="toolbar_card" class="bg-zinc-900 dark:bg-zinc-900 bg-zinc-50 border border-zinc-800 dark:border-zinc-800 border-zinc-200 rounded-2xl p-4 flex flex-wrap justify-between items-center gap-3">
           <div class="flex flex-wrap gap-2">
-            <button (click)="newProject()" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
+            <button (click)="newProject()" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
               <mat-icon class="text-sm">add_box</mat-icon> New Project
             </button>
-            <button (click)="showProjectManager.set(!showProjectManager())" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
+            <button (click)="showProjectManager.set(!showProjectManager())" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
               <mat-icon class="text-xs">folder_open</mat-icon> Projects ({{ service.recentProjects().length }})
             </button>
-            <button (click)="showTemplateLibrary.set(!showTemplateLibrary())" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
+            <button (click)="showTemplateLibrary.set(!showTemplateLibrary())" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
               <mat-icon class="text-xs">library_books</mat-icon> Templates
             </button>
-            <div class="h-6 w-px bg-zinc-800 dark:bg-zinc-800 bg-zinc-300 mx-1"></div>
-            <button (click)="triggerImportSchemaInput()" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
+            <div class="h-6 w-px bg-zinc-950 dark:bg-zinc-800 bg-zinc-300 mx-1"></div>
+            <button (click)="triggerImportSchemaInput()" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
               <mat-icon class="text-xs">file_upload</mat-icon> Import Schema
             </button>
-            <button (click)="exportSchema()" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
+            <button (click)="exportSchema()" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 text-xs rounded-xl flex items-center gap-2 border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm">
               <mat-icon class="text-xs">file_download</mat-icon> Export Schema
             </button>
           </div>
@@ -37,7 +37,7 @@ import loader from '@monaco-editor/loader';
             <!-- Records Count Select -->
             <div class="flex items-center gap-1.5 bg-zinc-950 dark:bg-zinc-950 bg-zinc-100 border border-zinc-800 dark:border-zinc-800 border-zinc-300 px-3 py-1 rounded-xl">
               <span class="text-xs font-mono text-zinc-400 dark:text-zinc-400 text-zinc-600">Rows:</span>
-              <select [formControl]="recordsControl" class="bg-transparent border-none text-xs font-mono text-zinc-200 dark:text-zinc-200 text-zinc-800 focus:outline-none">
+              <select [formControl]="recordsControl" class="h-7 bg-transparent border-none text-xs font-mono text-zinc-200 dark:text-zinc-200 text-zinc-800 focus:outline-none">
                 <option value="10" class="dark:bg-zinc-900 bg-white text-zinc-800 dark:text-zinc-200">10</option>
                 <option value="100" class="dark:bg-zinc-900 bg-white text-zinc-800 dark:text-zinc-200">100</option>
                 <option value="1000" class="dark:bg-zinc-900 bg-white text-zinc-800 dark:text-zinc-200">1,000</option>
@@ -48,28 +48,28 @@ import loader from '@monaco-editor/loader';
             </div>
 
             <!-- Undo / Redo -->
-            <button (click)="service.undo()" [disabled]="false" class="p-2 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Undo">
+            <button (click)="service.undo()" [disabled]="false" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 disabled:opacity-40 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Undo">
               <mat-icon class="text-sm">undo</mat-icon>
             </button>
-            <button (click)="service.redo()" [disabled]="false" class="p-2 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Redo">
+            <button (click)="service.redo()" [disabled]="false" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 disabled:opacity-40 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Redo">
               <mat-icon class="text-sm">redo</mat-icon>
             </button>
 
             <!-- Generate / Cancel -->
             @if (service.isGenerating()) {
-              <button (click)="service.cancelGeneration()" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-xs font-semibold rounded-xl flex items-center gap-2 cursor-pointer text-white animate-pulse">
+              <button (click)="service.cancelGeneration()" class="h-8 px-2 py-1 bg-rose-600 hover:bg-rose-500 text-xs font-semibold rounded-xl flex items-center gap-2 cursor-pointer text-white animate-pulse">
                 <mat-icon class="text-sm">stop</mat-icon> Cancel
               </button>
             } @else {
-              <button (click)="service.generateData()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold rounded-xl flex items-center gap-2 cursor-pointer text-white">
+              <button (click)="service.generateData()" class="h-8 px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold rounded-xl flex items-center gap-2 cursor-pointer text-white">
                 <mat-icon class="text-sm">play_arrow</mat-icon> Generate
               </button>
             }
 
-            <button (click)="copyOutput()" class="p-2 bg-zinc-800 hover:bg-zinc-700 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Copy dataset">
+            <button (click)="copyOutput()" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Copy dataset">
               <mat-icon class="text-sm">content_copy</mat-icon>
             </button>
-            <button (click)="downloadOutputFile()" class="p-2 bg-zinc-800 hover:bg-zinc-700 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Download dataset">
+            <button (click)="downloadOutputFile()" class="h-8 px-2 py-1 bg-zinc-950 hover:bg-zinc-700 text-xs rounded-xl border border-zinc-700 text-zinc-200 cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300" title="Download dataset">
               <mat-icon class="text-sm">download</mat-icon>
             </button>
           </div>
@@ -83,12 +83,11 @@ import loader from '@monaco-editor/loader';
           <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-col gap-3">
             <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
               <span class="text-sm font-medium flex items-center gap-2"><mat-icon>folder</mat-icon> Project Manager</span>
-              <button (click)="showProjectManager.set(false)" class="text-xs text-zinc-400 hover:text-white"><mat-icon>close</mat-icon></button>
+              <button (click)="showProjectManager.set(false)" class="text-xs text-zinc-400 hover:text-white cursor-pointer"><mat-icon>close</mat-icon></button>
             </div>
-            
             <div class="flex gap-2">
               <input type="text" #projectNameInput [value]="service.currentProjectName()" class="bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-emerald-500 w-full" placeholder="Enter Project Name" />
-              <button (click)="service.saveProject(projectNameInput.value)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold rounded-xl text-white">Save Current</button>
+              <button (click)="service.saveProject(projectNameInput.value)" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold rounded-xl text-white cursor-pointer">Save Current</button>
             </div>
 
             @if (service.recentProjects().length === 0) {
@@ -101,7 +100,7 @@ import loader from '@monaco-editor/loader';
                       <span class="text-xs font-semibold text-emerald-400 block truncate">{{ p.name }}</span>
                       <span class="text-[10px] text-zinc-500 block">Saved: {{ p.updatedAt | date:'short' }}</span>
                     </button>
-                    <button (click)="service.deleteProject(p.id)" class="text-zinc-500 hover:text-rose-400 p-1 rounded"><mat-icon class="text-xs">delete</mat-icon></button>
+                    <button (click)="service.deleteProject(p.id)" class="text-zinc-500 hover:text-rose-400 p-1 rounded cursor-pointer"><mat-icon class="text-xs">delete</mat-icon></button>
                   </div>
                 }
               </div>
@@ -113,7 +112,7 @@ import loader from '@monaco-editor/loader';
           <div class="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 flex flex-col gap-3">
             <div class="flex justify-between items-center border-b border-zinc-800 pb-2">
               <span class="text-sm font-medium flex items-center gap-2"><mat-icon>library_books</mat-icon> Predefined Templates Library</span>
-              <button (click)="showTemplateLibrary.set(false)" class="text-xs text-zinc-400 hover:text-white"><mat-icon>close</mat-icon></button>
+              <button (click)="showTemplateLibrary.set(false)" class="text-xs text-zinc-400 hover:text-white cursor-pointer"><mat-icon>close</mat-icon></button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               @for (tpl of templates; track tpl.name) {
@@ -125,7 +124,7 @@ import loader from '@monaco-editor/loader';
                     </div>
                     <p class="text-[11px] text-zinc-400 mt-2">{{ tpl.description }}</p>
                   </div>
-                  <button (click)="service.loadTemplate(tpl.name); showTemplateLibrary.set(false)" class="w-full py-1 bg-zinc-800 hover:bg-emerald-600 hover:text-white text-[11px] font-semibold rounded-lg text-zinc-300 border border-zinc-700">
+                  <button (click)="service.loadTemplate(tpl.name); showTemplateLibrary.set(false)" class="w-full py-1 bg-zinc-800 hover:bg-emerald-600 hover:text-white text-[11px] font-semibold rounded-lg text-zinc-300 border border-zinc-700 cursor-pointer">
                     Use Template
                   </button>
                 </div>
@@ -136,14 +135,13 @@ import loader from '@monaco-editor/loader';
 
         <!-- Workspace Section -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 flex-1 items-stretch">
-          
           <!-- LEFT PANEL: Schema Builder -->
           <div id="left_panel" class="lg:col-span-4 bg-zinc-900 dark:bg-zinc-900 bg-zinc-50 border border-zinc-800 dark:border-zinc-800 border-zinc-200 rounded-2xl p-4 flex flex-col gap-3 h-[700px] lg:h-auto overflow-hidden">
             <div class="flex justify-between items-center pb-2 border-b border-zinc-800 dark:border-zinc-800 border-zinc-200">
               <span class="text-sm font-medium tracking-wide text-zinc-300 dark:text-zinc-300 text-zinc-800 flex items-center gap-1.5">
                 <mat-icon>view_list</mat-icon> Schema Fields Builder ({{ service.schema().fields.length }})
               </span>
-              <button (click)="service.clearSchema()" class="text-[11px] font-mono text-zinc-400 hover:text-rose-400 flex items-center gap-1">
+              <button (click)="service.clearSchema()" class="text-[11px] font-mono text-zinc-400 hover:text-rose-400 flex items-center gap-1 cursor-pointer">
                 <mat-icon class="text-xs">delete_sweep</mat-icon> Clear Schema
               </button>
             </div>
@@ -189,7 +187,6 @@ import loader from '@monaco-editor/loader';
               @for (field of filteredFields(); track field.id; let idx = $index) {
                 <div class="group relative flex flex-col bg-zinc-950 dark:bg-zinc-950 bg-white border border-zinc-800 dark:border-zinc-800 border-zinc-200 hover:border-zinc-700 dark:hover:border-zinc-700 rounded-xl p-3 transition-all duration-150"
                   [class.border-emerald-500]="service.selectedFieldId() === field.id">
-                  
                   <div class="flex justify-between items-center gap-2">
                     <button (click)="service.selectedFieldId.set(field.id)" class="text-left flex-1 cursor-pointer">
                       <div class="flex items-center gap-2">
@@ -201,12 +198,11 @@ import loader from '@monaco-editor/loader';
 
                     <div class="flex items-center gap-1">
                       <!-- Reorder Buttons -->
-                      <button (click)="moveField(idx, -1)" [disabled]="idx === 0" class="p-1 hover:text-zinc-200 disabled:opacity-30 text-zinc-500" title="Move Up"><mat-icon class="text-xs">arrow_upward</mat-icon></button>
-                      <button (click)="moveField(idx, 1)" [disabled]="idx === filteredFields().length - 1" class="p-1 hover:text-zinc-200 disabled:opacity-30 text-zinc-500" title="Move Down"><mat-icon class="text-xs">arrow_downward</mat-icon></button>
-                      
+                      <button (click)="moveField(idx, -1)" [disabled]="idx === 0" class="cursor-pointer p-1 hover:text-zinc-200 disabled:opacity-30 text-zinc-500" title="Move Up"><mat-icon class="text-xs">arrow_upward</mat-icon></button>
+                      <button (click)="moveField(idx, 1)" [disabled]="idx === filteredFields().length - 1" class="cursor-pointer p-1 hover:text-zinc-200 disabled:opacity-30 text-zinc-500" title="Move Down"><mat-icon class="text-xs">arrow_downward</mat-icon></button>
                       <!-- Clone & Delete -->
-                      <button (click)="service.duplicateField(field.id)" class="p-1 hover:text-emerald-400 text-zinc-500" title="Clone Field"><mat-icon class="text-xs">content_copy</mat-icon></button>
-                      <button (click)="service.deleteField(field.id)" class="p-1 hover:text-rose-400 text-zinc-500" title="Delete Field"><mat-icon class="text-xs">delete</mat-icon></button>
+                      <button (click)="service.duplicateField(field.id)" class="cursor-pointer p-1 hover:text-emerald-400 text-zinc-500" title="Clone Field"><mat-icon class="text-xs">content_copy</mat-icon></button>
+                      <button (click)="service.deleteField(field.id)" class="cursor-pointer p-1 hover:text-rose-400 text-zinc-500" title="Delete Field"><mat-icon class="text-xs">delete</mat-icon></button>
                     </div>
                   </div>
                 </div>
@@ -218,7 +214,7 @@ import loader from '@monaco-editor/loader';
               <span class="text-[10px] text-zinc-500 font-mono block mb-1.5">QUICK ADD FIELD TYPE:</span>
               <div class="grid grid-cols-4 gap-1.5">
                 @for (t of quickAddTypes; track t) {
-                  <button (click)="service.addField(t)" class="py-1 bg-zinc-800 hover:bg-emerald-600 text-zinc-200 hover:text-white border border-zinc-700 rounded-lg text-[10px] font-semibold cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm text-center truncate">
+                  <button (click)="service.addField(t)" class="py-1 bg-zinc-950 dark:bg-zinc-800 hover:bg-emerald-600 text-zinc-200 hover:text-white border border-zinc-700 rounded-lg text-[10px] font-semibold cursor-pointer dark:bg-zinc-800 dark:text-zinc-200 bg-white text-zinc-800 border-zinc-300 shadow-sm text-center truncate">
                     + {{ t }}
                   </button>
                 }
@@ -336,12 +332,12 @@ import loader from '@monaco-editor/loader';
             <div class="flex justify-between items-center pt-2">
               <span class="text-[10px] text-zinc-500 font-mono">EXPORT SPEC / DIALECT SCHEMA:</span>
               <div class="flex gap-2">
-                <button (click)="setDialectFormat('JSON')" [class]="service.outputFormat() === 'JSON' ? 'text-emerald-400 font-bold' : 'text-zinc-500'" class="text-[10px] font-mono">JSON</button>
-                <button (click)="setDialectFormat('CSV')" [class]="service.outputFormat() === 'CSV' ? 'text-emerald-400 font-bold' : 'text-zinc-500'" class="text-[10px] font-mono">CSV</button>
-                <button (click)="setDialectFormat('SQL_INSERT')" [class]="service.outputFormat() === 'SQL_INSERT' ? 'text-emerald-400 font-bold' : 'text-zinc-500'" class="text-[10px] font-mono">SQL</button>
-                <button (click)="setDialectFormat('YAML')" [class]="service.outputFormat() === 'YAML' ? 'text-emerald-400 font-bold' : 'text-zinc-500'" class="text-[10px] font-mono">YAML</button>
-                <button (click)="setDialectFormat('TSInterface')" [class]="service.outputFormat() === 'TSInterface' ? 'text-emerald-400 font-bold' : 'text-zinc-500'" class="text-[10px] font-mono">TYPESCRIPT</button>
-                <button (click)="setDialectFormat('OpenAPI')" [class]="service.outputFormat() === 'OpenAPI' ? 'text-emerald-400 font-bold' : 'text-zinc-500'" class="text-[10px] font-mono">OPENAPI</button>
+                <button (click)="setDialectFormat('JSON')" [class]="service.outputFormat() === 'JSON' ? 'text-emerald-400 font-bold cursor-pointer' : 'text-zinc-500 cursor-pointer'" class="text-[10px] font-mono">JSON</button>
+                <button (click)="setDialectFormat('CSV')" [class]="service.outputFormat() === 'CSV' ? 'text-emerald-400 font-bold cursor-pointer' : 'text-zinc-500 cursor-pointer'" class="text-[10px] font-mono">CSV</button>
+                <button (click)="setDialectFormat('SQL_INSERT')" [class]="service.outputFormat() === 'SQL_INSERT' ? 'text-emerald-400 font-bold cursor-pointer' : 'text-zinc-500 cursor-pointer'" class="text-[10px] font-mono">SQL</button>
+                <button (click)="setDialectFormat('YAML')" [class]="service.outputFormat() === 'YAML' ? 'text-emerald-400 font-bold cursor-pointer' : 'text-zinc-500 cursor-pointer'" class="text-[10px] font-mono">YAML</button>
+                <button (click)="setDialectFormat('TSInterface')" [class]="service.outputFormat() === 'TSInterface' ? 'text-emerald-400 font-bold cursor-pointer' : 'text-zinc-500 cursor-pointer'" class="text-[10px] font-mono">TYPESCRIPT</button>
+                <button (click)="setDialectFormat('OpenAPI')" [class]="service.outputFormat() === 'OpenAPI' ? 'text-emerald-400 font-bold cursor-pointer' : 'text-zinc-500 cursor-pointer'" class="text-[10px] font-mono">OPENAPI</button>
               </div>
             </div>
           </div>
@@ -447,7 +443,6 @@ import loader from '@monaco-editor/loader';
                       </label>
                     </div>
                   </div>
-                  
                   <div class="flex flex-col gap-1 mt-2">
                     <label class="text-[10px] text-zinc-400 font-mono block">
                       DISTRIBUTION
@@ -482,7 +477,6 @@ import loader from '@monaco-editor/loader';
             <!-- Global Configurations -->
             <div class="border-t border-zinc-800 dark:border-zinc-800 border-zinc-200 pt-3 mt-auto">
               <span class="text-[10px] text-zinc-500 font-mono block mb-2">GLOBAL OPTIONS:</span>
-              
               <div class="flex flex-col gap-2 bg-zinc-950 dark:bg-zinc-950 bg-zinc-100 border border-zinc-800 dark:border-zinc-800 border-zinc-300 p-3 rounded-xl">
                 <!-- Locale Select -->
                 <div class="flex justify-between items-center">
@@ -493,7 +487,6 @@ import loader from '@monaco-editor/loader';
                     }
                   </select>
                 </div>
-                
                 <!-- Global Seed -->
                 <div class="flex justify-between items-center mt-1">
                   <span class="text-xs text-zinc-400">Global Seed:</span>
@@ -526,7 +519,6 @@ import loader from '@monaco-editor/loader';
 
         <!-- BOTTOM PANELS: Validation, Statistics, & Logs -->
         <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-          
           <!-- Validation Warnings Panel -->
           <div id="validation_panel" class="md:col-span-4 bg-zinc-900 dark:bg-zinc-900 bg-zinc-50 border border-zinc-800 dark:border-zinc-800 border-zinc-200 rounded-2xl p-4 flex flex-col gap-2">
             <span class="text-xs font-semibold text-zinc-200 dark:text-zinc-200 text-zinc-800 flex items-center gap-1.5">
@@ -587,7 +579,7 @@ import loader from '@monaco-editor/loader';
               <span class="text-xs font-semibold text-zinc-200 dark:text-zinc-200 text-zinc-800 flex items-center gap-1.5">
                 <mat-icon>subject</mat-icon> Log Console
               </span>
-              <button (click)="service.clearLogs()" class="text-[9px] font-mono text-zinc-500 hover:text-white">Clear</button>
+              <button (click)="service.clearLogs()" class="text-[9px] font-mono text-zinc-500 hover:text-white cursor-pointer">Clear</button>
             </div>
             <div class="flex-1 overflow-y-auto max-h-[140px] text-[10px] font-mono flex flex-col gap-1 scrollbar-thin">
               @for (log of service.logs(); track log) {
