@@ -977,7 +977,7 @@ export class ValidationCardComponent {
   selector: 'app-navigation-toolbar',
   imports: [CommonModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `<div id="navigation-toolbar" class="bg-zinc-900 border border-zinc-800/80 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-md select-none">
+  template: `<div id="navigation-toolbar" class="bg-zinc-900 border border-zinc-800/80 rounded-2xl px-3 py-1 flex flex-wrap items-center justify-between gap-3 shadow-md select-none">
       <!-- Nav block left -->
       <div class="flex items-center gap-2">
         <button id="btn-prev-diff"
@@ -1017,7 +1017,7 @@ export class ValidationCardComponent {
 
       <!-- Path displays and value tools -->
       @if (currentDiff(); as diff) {
-        <div id="diff-path-indicator" class="flex-1 min-w-[200px] max-w-md  bg-zinc-950 dark:bg-zinc-800 border border-zinc-800/40 rounded-xl px-3 py-1.5 flex items-center justify-between gap-2 overflow-hidden">
+        <div id="diff-path-indicator" class="flex-1 min-w-[200px] max-w-md h-10 bg-zinc-950 dark:bg-zinc-800 border border-zinc-800/40 rounded-xl px-3 py-1.5 flex items-center justify-between gap-2 overflow-hidden">
           <div class="flex items-center gap-2 overflow-hidden">
             <mat-icon [class]="getTypeColorClass(diff.type) + ' text-[15px] w-3.5 h-3.5 leading-none'">
               {{ getTypeIcon(diff.type) }}

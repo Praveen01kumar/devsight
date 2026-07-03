@@ -51,6 +51,8 @@ import { PdfMerge } from '../../tools/pdf/pdf-merge/pdf-merge';
 import { PdfRotate } from '../../tools/pdf/pdf-rotate/pdf-rotate';
 import { PdfViewer } from '../../tools/pdf/pdf-viewer/pdf-viewer';
 import { PdfExtractor } from '../../tools/pdf/pdf-extractor/pdf-extractor';
+import { LoanCalculator } from '../../tools/loan-calculator/loan-calculator';
+import { PdfEditor } from '../../tools/pdf/pdf-editor/pdf-editor';
 
 @Component({
   selector: 'app-tool-wrapper',
@@ -108,7 +110,9 @@ import { PdfExtractor } from '../../tools/pdf/pdf-extractor/pdf-extractor';
     PdfMerge,
     PdfRotate,
     PdfViewer,
-    PdfExtractor
+    PdfExtractor,
+    LoanCalculator,
+    PdfEditor
 ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -232,7 +236,11 @@ import { PdfExtractor } from '../../tools/pdf/pdf-extractor/pdf-extractor';
                 <app-unix-timestamp />
               } @else if (currentTool()?.id === 'unit-converter') {
                 <app-unit-converter />
-              }@else if (currentTool()?.id === 'image-filter') {
+              } @else if (currentTool()?.id === 'loan-calculator') {
+                <app-loan-calculator />
+              } @else if (currentTool()?.id === 'pdf-editor') {
+                <app-pdf-editor />
+              } @else if (currentTool()?.id === 'image-filter') {
                 <app-image-filter />
               } @else if (currentTool()?.id === 'image-compressor') {
                 <app-image-compressor />

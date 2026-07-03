@@ -176,9 +176,8 @@ import { ConversionService, HistoryItem, UnitCategory } from './conversion.servi
                         <!-- Clear trigger -->
                         <button id="clear-workspace-btn"
                                 (click)="clearValues()"
-                                class="px-4 py-2 bg-slate-50 hover:bg-slate-100 dark:bg-slate-850 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer">
-                        <mat-icon class="text-base">clear_all</mat-icon>
-                        <span>Reset</span>
+                                class="px-4 py-2 border border-red-200 bg-red-50/10 text-red-500 hover:text-red-600 text-xs font-bold rounded-xl active:scale-95 transition-all flex items-center space-x-1.5 cursor-pointer">
+                        <mat-icon class="text-base">clear_all</mat-icon>Reset
                         </button>
 
                         <!-- Copy result -->

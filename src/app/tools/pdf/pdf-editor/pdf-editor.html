@@ -1,0 +1,579 @@
+<!-- Loading overlay -->
+@if (isLoading()) {
+  <div id="loading-spinner" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center z-50 transition-all duration-300">
+    <div class="bg-white px-8 py-6 rounded-2xl shadow-2xl flex flex-col items-center max-w-sm w-full border border-slate-100">
+      <!-- Spinner -->
+      <div class="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+      <h3 class="font-display font-medium text-lg text-slate-900 mb-1">Processing Document</h3>
+      <p class="text-slate-500 text-sm text-center font-mono">{{ loadingStatus() }}</p>
+    </div>
+  </div>
+}
+
+<!-- Header -->
+<header id="header" class="h-16 bg-slate-950 text-white flex items-center justify-between px-6 border-b border-white/5 shadow-md">
+  <div class="flex items-center space-x-3">
+    <div class="bg-indigo-600 p-1.5 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-600/30 animate-pulse">
+      <span class="material-icons text-white text-xl">edit_document</span>
+    </div>
+    <div>
+      <h1 class="font-display font-semibold text-base leading-tight tracking-tight">Advanced PDF Editor</h1>
+      <p class="text-xs text-indigo-400 font-mono font-medium">Local Browser-Only • Zero Cloud</p>
+    </div>
+  </div>
+
+  @if (hasPdfLoaded()) {
+    <div class="flex items-center space-x-3">
+      <span class="text-slate-400 text-xs truncate max-w-xs font-mono bg-slate-900 px-3 py-1.5 rounded-md border border-white/5">{{ pdfFileName() }}</span>
+      <button (click)="closePdf()" id="close-pdf-btn" class="flex items-center space-x-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg text-sm border border-slate-700/50 transition-all">
+        <span class="material-icons text-sm">close</span>
+        <span>Close</span>
+      </button>
+      <button (click)="exportPdf()" id="export-pdf-btn" class="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 hover:shadow-lg hover:shadow-emerald-600/20 text-white px-4 py-2 rounded-lg text-sm font-medium tracking-wide shadow-md transition-all">
+        <span class="material-icons text-sm font-bold">cloud_download</span>
+        <span>Export PDF</span>
+      </button>
+    </div>
+  }
+</header>
+
+<!-- Main Workspace -->
+<main id="workspace" class="h-[calc(100vh-4rem)] flex overflow-hidden">
+  
+  <!-- Upload State (Landing Screen) -->
+  @if (!hasPdfLoaded()) {
+    <div id="upload-state" class="flex-1 flex flex-col items-center justify-center p-8 bg-slate-50 relative overflow-hidden" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+      
+      <!-- Background visual assets -->
+      <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-60"></div>
+      
+      <div class="max-w-xl w-full text-center relative z-10 bg-white p-10 rounded-2xl shadow-xl border border-slate-100 flex flex-col items-center">
+        <!-- Icon Wrapper -->
+        <div class="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 mb-6 shadow-xs border border-indigo-100/50">
+          <span class="material-icons text-3xl">upload_file</span>
+        </div>
+
+        <h2 class="font-display font-semibold text-2xl text-slate-900 tracking-tight mb-2">Upload or Drop your PDF</h2>
+        <p class="text-slate-500 text-sm max-w-sm mb-6 leading-relaxed">Select any PDF to analyze, edit, OCR, and export. All processing runs 100% locally in your browser.</p>
+
+        <!-- Drag & Drop Button -->
+        <label id="upload-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm tracking-wide px-6 py-3 rounded-xl shadow-lg shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all cursor-pointer inline-flex items-center space-x-2 mb-8">
+          <span class="material-icons text-sm font-bold">folder_open</span>
+          <span>Choose PDF File</span>
+          <input #fileInput type="file" class="hidden" accept="application/pdf" (change)="onFileSelected($event)" />
+        </label>
+
+        <!-- Features Matrix -->
+        <div class="grid grid-cols-2 gap-4 w-full text-left border-t border-slate-100 pt-6 font-sans">
+          <div class="flex items-start space-x-2.5">
+            <span class="material-icons text-indigo-500 text-base mt-0.5">check_circle</span>
+            <div>
+              <h4 class="text-xs font-semibold text-slate-800">Digital PDFs</h4>
+              <p class="text-[10px] text-slate-500 leading-tight">Extract and edit text streams natively.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="material-icons text-indigo-500 text-base mt-0.5">check_circle</span>
+            <div>
+              <h4 class="text-xs font-semibold text-slate-800">Scanned PDFs</h4>
+              <p class="text-[10px] text-slate-500 leading-tight">In-browser local Tesseract.js OCR.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="material-icons text-indigo-500 text-base mt-0.5">check_circle</span>
+            <div>
+              <h4 class="text-xs font-semibold text-slate-800">Smart Covers</h4>
+              <p class="text-[10px] text-slate-500 leading-tight">Surrounding pixel canvas auto-sampling.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-2.5">
+            <span class="material-icons text-indigo-500 text-base mt-0.5">check_circle</span>
+            <div>
+              <h4 class="text-xs font-semibold text-slate-800">Deskew & rotate</h4>
+              <p class="text-[10px] text-slate-500 leading-tight">Fix alignment with grid guidelines.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Loaded State (Active Editor Workspace) -->
+  @if (hasPdfLoaded()) {
+    <div id="editor-state" class="flex-1 flex overflow-hidden w-full">
+      
+      <!-- LEFT SIDEBAR: Page Navigator -->
+      <aside id="left-sidebar" class="w-64 bg-slate-900 text-slate-300 border-r border-slate-800 flex flex-col select-none shrink-0">
+        <div class="p-4 border-b border-slate-800">
+          <h3 class="font-display font-semibold text-xs text-slate-400 uppercase tracking-wider mb-2">Document Pages</h3>
+          <p class="text-[10px] text-slate-500 font-mono">{{ pages().length }} total pages analyzed</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-3 space-y-2.5">
+          @for (page of pages(); track page.pageNumber) {
+            <button (click)="setActivePage(page.pageNumber)"
+                    class="w-full text-left p-3.5 rounded-xl border transition-all flex flex-col space-y-2 group cursor-pointer relative overflow-hidden"
+                    [class.bg-slate-850]="activePageNumber() === page.pageNumber"
+                    [class.border-indigo-500]="activePageNumber() === page.pageNumber"
+                    [class.border-slate-800]="activePageNumber() !== page.pageNumber"
+                    [class.hover:bg-slate-800/50]="activePageNumber() !== page.pageNumber">
+              
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-semibold" [class.text-indigo-400]="activePageNumber() === page.pageNumber">Page {{ page.pageNumber }}</span>
+                
+                <!-- Type Badges -->
+                @if (page.type === 'digital') {
+                  <span class="text-[9px] bg-sky-500/10 text-sky-400 border border-sky-500/20 px-1.5 py-0.5 rounded font-mono uppercase font-bold tracking-wider">Digital</span>
+                }
+                @if (page.type === 'scanned' && page.ocrTextItems.length === 0) {
+                  <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.5 rounded font-mono uppercase font-bold tracking-wider">Scanned</span>
+                }
+                @if (page.type === 'scanned' && page.ocrTextItems.length > 0) {
+                  <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-mono uppercase font-bold tracking-wider">OCR ready</span>
+                }
+              </div>
+
+              <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono">
+                <span>{{ Math.round(page.width) }} x {{ Math.round(page.height) }} px</span>
+                @if (page.ocrConfidence > 0) {
+                  <span class="text-emerald-400 font-bold">{{ page.ocrConfidence }}% Acc</span>
+                }
+              </div>
+
+              <!-- Progress loading bar for OCR -->
+              @if (page.isOcrRunning) {
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
+                  <div class="bg-indigo-500 h-full transition-all duration-300" [style.width.%]="page.ocrProgress * 100"></div>
+                </div>
+                <span class="text-[9px] text-indigo-400 font-mono italic animate-pulse">{{ page.ocrStatus }}</span>
+              }
+            </button>
+          }
+        </div>
+      </aside>
+
+      <!-- CENTER STAGE: Visual Canvas Board -->
+      <section id="center-stage" class="flex-1 bg-slate-100 flex flex-col overflow-hidden relative">
+        <!-- Toolbar controls overlay -->
+        <div class="h-12 bg-white border-b border-slate-200/80 px-4 flex items-center justify-between shadow-xs select-none relative z-20">
+          <div class="flex items-center space-x-2.5">
+            <button (click)="zoomOut()" class="p-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all cursor-pointer" title="Zoom Out">
+              <span class="material-icons text-lg">zoom_out</span>
+            </button>
+            <span class="text-xs font-mono text-slate-700 font-medium min-w-[3rem] text-center">{{ zoomLevel() }}%</span>
+            <button (click)="zoomIn()" class="p-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all cursor-pointer" title="Zoom In">
+              <span class="material-icons text-lg">zoom_in</span>
+            </button>
+            <button (click)="resetZoom()" class="text-xs text-slate-500 hover:text-slate-900 hover:bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200 transition-all cursor-pointer">Reset</button>
+            
+            <div class="h-4 w-[1px] bg-slate-200 mx-1"></div>
+
+            <button (click)="undo()" [disabled]="!canUndo()" class="p-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed flex items-center" title="Undo (Ctrl+Z)">
+              <span class="material-icons text-lg">undo</span>
+            </button>
+            <button (click)="redo()" [disabled]="!canRedo()" class="p-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed flex items-center" title="Redo (Ctrl+Y)">
+              <span class="material-icons text-lg">redo</span>
+            </button>
+          </div>
+
+          <div class="flex items-center space-x-2.5">
+            <!-- Quick toggles -->
+            <button (click)="showDeskewGrid.set(!showDeskewGrid())" 
+                    class="flex items-center space-x-1 px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer"
+                    [class.bg-indigo-50]="showDeskewGrid()"
+                    [class.text-indigo-600]="showDeskewGrid()"
+                    [class.border-indigo-200]="showDeskewGrid()"
+                    [class.bg-white]="!showDeskewGrid()"
+                    [class.text-slate-600]="!showDeskewGrid()"
+                    [class.border-slate-200]="!showDeskewGrid()">
+              <span class="material-icons text-sm">grid_on</span>
+              <span>Guides Grid</span>
+            </button>
+
+            <button (click)="highlightOcrConfidence.set(!highlightOcrConfidence())" 
+                    class="flex items-center space-x-1 px-2.5 py-1 rounded-lg border text-xs font-medium transition-all cursor-pointer"
+                    [class.bg-indigo-50]="highlightOcrConfidence()"
+                    [class.text-indigo-600]="highlightOcrConfidence()"
+                    [class.border-indigo-200]="highlightOcrConfidence()"
+                    [class.bg-white]="!highlightOcrConfidence()"
+                    [class.text-slate-600]="!highlightOcrConfidence()"
+                    [class.border-slate-200]="!highlightOcrConfidence()">
+              <span class="material-icons text-sm">insights</span>
+              <span>Confidence Highlights</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Stage Frame -->
+        <div class="flex-1 overflow-auto p-8 flex items-start justify-center relative">
+          <div class="relative origin-top transition-all duration-200" [style.transform]="'scale(' + (zoomLevel() / 100) + ')'">
+            
+            <!-- PDF Canvas Rendering layer -->
+            <canvas #pdfCanvas class="shadow-xl border border-slate-300/80 bg-white transition-all origin-center z-0"></canvas>
+            
+            <!-- Deskew helper guidelines overlays -->
+            @if (showDeskewGrid()) {
+              <div class="absolute inset-0 grid grid-cols-1 grid-rows-12 pointer-events-none z-10 opacity-40">
+                @for (i of [1,2,3,4,5,6,7,8,9,10,11,12]; track i) {
+                  <div class="border-b border-indigo-400 w-full h-full"></div>
+                }
+              </div>
+            }
+
+            <!-- INTERACTIVE EDITABLE OVERLAY LAYER -->
+            <div [style.width.px]="canvasWidth()" [style.height.px]="canvasHeight()" class="absolute top-0 left-0 overflow-hidden select-none pointer-events-none z-20">
+              
+              <!-- VISUAL SMART COVER-UPS FOR MODIFIED/DELETED ORIGINAL TEXT BLOCKS -->
+              @for (block of originalTextCovers(); track 'cover-' + block.id) {
+                <div class="absolute z-10 pointer-events-none animate-fade-in"
+                     [style.left.px]="((block.originalX !== undefined ? block.originalX : block.x) * renderScale()) - 3"
+                     [style.top.px]="((block.originalY !== undefined ? block.originalY : block.y) * renderScale()) - 1.5"
+                     [style.width.px]="((block.originalWidth !== undefined ? block.originalWidth : block.width) * renderScale()) + 6"
+                     [style.height.px]="((block.originalHeight !== undefined ? block.originalHeight : block.height) * renderScale()) + 3"
+                     [style.transform]="'rotate(' + (block.originalRotation !== undefined ? block.originalRotation : block.rotation) + 'deg)'"
+                     [style.backgroundColor]="'rgb(' + (block.coverColor?.r ?? 255) + ',' + (block.coverColor?.g ?? 255) + ',' + (block.coverColor?.b ?? 255) + ')'"
+                ></div>
+              }
+              
+              @for (block of activeTextBlocks(); track block.id) {
+                @if (!block.isDeleted) {
+                  <div [id]="block.id"
+                       [style.left.px]="block.x * renderScale()"
+                       [style.top.px]="block.y * renderScale()"
+                       [style.width.px]="block.width * renderScale()"
+                       [style.height.px]="block.height * renderScale()"
+                       [style.transform]="'rotate(' + block.rotation + 'deg)'"
+                       [style.fontSize.px]="block.fontSize * renderScale()"
+                       [style.fontFamily]="block.fontFamily"
+                       [style.color]="(block.id.startsWith('user-') || block.isModified || selectedBlock()?.id === block.id || editingBlockId() === block.id) ? block.color : 'transparent'"
+                       [style.opacity]="block.opacity"
+                       [style.fontWeight]="block.fontWeight"
+                       [style.fontStyle]="block.fontStyle"
+                       [style.textAlign]="block.textAlign"
+                       [style.letterSpacing.px]="block.letterSpacing * renderScale()"
+                       [style.lineHeight]="block.lineHeight"
+                       (mousedown)="onBlockMouseDown($event, block)"
+                       (dblclick)="onBlockDoubleClick(block)"
+                       class="absolute border border-dashed border-transparent hover:border-indigo-500 hover:bg-indigo-50/10 cursor-move pointer-events-auto group select-none flex items-center transition-shadow"
+                       [class.border-indigo-600]="selectedBlock()?.id === block.id"
+                       [class.border-solid]="selectedBlock()?.id === block.id"
+                       [class.bg-indigo-100/10]="selectedBlock()?.id === block.id"
+                       [class.shadow-md]="selectedBlock()?.id === block.id"
+                       [class.border-emerald-500/30]="highlightOcrConfidence() && block.isOcr && (block.confidence ?? 0) >= 80"
+                       [class.bg-emerald-50/5]="highlightOcrConfidence() && block.isOcr && (block.confidence ?? 0) >= 80"
+                       [class.border-amber-500/30]="highlightOcrConfidence() && block.isOcr && (block.confidence ?? 0) >= 50 && (block.confidence ?? 0) < 80"
+                       [class.bg-amber-50/5]="highlightOcrConfidence() && block.isOcr && (block.confidence ?? 0) >= 50 && (block.confidence ?? 0) < 80"
+                       [class.border-rose-500/40]="highlightOcrConfidence() && block.isOcr && (block.confidence ?? 0) < 50"
+                       [class.bg-rose-50/5]="highlightOcrConfidence() && block.isOcr && (block.confidence ?? 0) < 50"
+                  >
+                    
+                    <!-- Inline active text edit textarea -->
+                    @if (editingBlockId() === block.id) {
+                      <textarea [value]="block.text"
+                                (input)="block.text = $any($event.target).value"
+                                (blur)="onEditBlur(block)"
+                                (keydown.escape)="editingBlockId.set(null)"
+                                class="w-full h-full p-0 bg-transparent border-0 outline-hidden resize-none focus:ring-0 select-text leading-inherit"
+                                [style.color]="block.color"
+                                [style.textAlign]="block.textAlign"
+                                [style.fontFamily]="block.fontFamily">
+                      </textarea>
+                    } @else {
+                      <div class="w-full h-full truncate pr-1 flex items-center">
+                        <span class="w-full break-all leading-normal">{{ block.text || ' ' }}</span>
+                      </div>
+                    }
+
+                    <!-- Hover Confidence score pill tooltip -->
+                    @if (block.isOcr && block.confidence !== undefined) {
+                      <div class="absolute top-full left-0 mt-1 hidden group-hover:flex bg-slate-950 text-white text-[9px] px-1.5 py-0.5 rounded font-mono font-medium shadow-md z-40 space-x-1">
+                        <span>Confidence:</span>
+                        <span [class.text-emerald-400]="block.confidence >= 80"
+                              [class.text-amber-400]="block.confidence >= 50 && block.confidence < 80"
+                              [class.text-rose-400]="block.confidence < 50">{{ block.confidence }}%</span>
+                      </div>
+                    }
+
+                    <!-- Move/Resize handles (Visible only when block is active) -->
+                    @if (selectedBlock()?.id === block.id && editingBlockId() !== block.id) {
+                      <!-- Bottom-Right Resize Handle -->
+                      <div (mousedown)="onResizeMouseDown($event, block)" class="absolute bottom-[-4px] right-[-4px] w-2.5 h-2.5 bg-indigo-600 border border-white rounded-full cursor-se-resize z-30 shadow-xs pointer-events-auto"></div>
+                      
+                      <!-- Top Rotating Handle -->
+                      <div (mousedown)="onRotateMouseDown($event, block)" class="absolute top-[-22px] left-[50%] translate-x-[-50%] flex flex-col items-center cursor-alias z-30 pointer-events-auto group/rot">
+                        <div class="w-0.5 h-3 bg-indigo-600"></div>
+                        <div class="w-4 h-4 bg-indigo-600 border border-white rounded-full flex items-center justify-center shadow-md hover:bg-indigo-500">
+                          <span class="material-icons text-[9px] text-white font-bold">sync</span>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
+              }
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT SIDEBAR: Text Properties & OCR Panel -->
+      <aside id="right-sidebar" class="w-80 bg-white border-l border-slate-200/80 flex flex-col select-none shrink-0 font-sans shadow-sm overflow-y-auto">
+        
+        <!-- Panel Header -->
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+          <h3 class="font-display font-semibold text-xs text-slate-400 uppercase tracking-wider">Editor Panel</h3>
+          <button (click)="addTextBlock()" class="flex items-center space-x-1 text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-2.5 py-1.5 rounded-lg border border-indigo-100 transition-all font-medium cursor-pointer">
+            <span class="material-icons text-sm">add</span>
+            <span>Add Text</span>
+          </button>
+        </div>
+
+        <!-- SELECTION SPECIFIC PROPERTIES -->
+        @if (selectedBlock(); as block) {
+          <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-xs font-bold text-slate-800 flex items-center space-x-1.5">
+                <span class="material-icons text-slate-400 text-base">palette</span>
+                <span>Selection Properties</span>
+              </h4>
+              <div class="flex items-center space-x-1">
+                <button (click)="duplicateBlock(block)" class="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded transition-all cursor-pointer" title="Duplicate">
+                  <span class="material-icons text-base">content_copy</span>
+                </button>
+                <button (click)="deleteBlock(block)" class="p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded transition-all cursor-pointer" title="Delete">
+                  <span class="material-icons text-base">delete</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Property bindings container -->
+            <form [formGroup]="textPropertiesForm" class="space-y-3.5">
+              <!-- Text string -->
+              <div>
+                <label for="prop-text-input" class="text-[10px] text-slate-400 font-semibold uppercase block mb-1">Text Value</label>
+                <input id="prop-text-input" type="text" formControlName="text" class="w-full px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg outline-hidden focus:border-indigo-500 font-medium" />
+              </div>
+
+              <!-- Font families & Size -->
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label for="prop-font-family" class="text-[10px] text-slate-400 font-semibold uppercase block mb-1">Font Family</label>
+                  <select id="prop-font-family" formControlName="fontFamily" class="w-full px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg outline-hidden">
+                    <option value="Helvetica">Helvetica</option>
+                    <option value="Times Roman">Times New Roman</option>
+                    <option value="Courier">Courier Mono</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="prop-font-size" class="text-[10px] text-slate-400 font-semibold uppercase block mb-1">Font Size (px)</label>
+                  <input id="prop-font-size" type="number" formControlName="fontSize" class="w-full px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg outline-hidden" min="4" max="100" />
+                </div>
+              </div>
+
+              <!-- Typography modifiers -->
+              <div>
+                <span class="text-[10px] text-slate-400 font-semibold uppercase block mb-1.5">Text Styles</span>
+                <div class="flex items-center space-x-1.5">
+                  <button type="button" (click)="toggleFontWeight()" 
+                          class="flex-1 py-1 px-2 text-xs font-semibold rounded-lg border transition-all cursor-pointer"
+                          [class.bg-indigo-50]="textPropertiesForm.get('fontWeight')?.value === 'bold'"
+                          [class.text-indigo-600]="textPropertiesForm.get('fontWeight')?.value === 'bold'"
+                          [class.border-indigo-200]="textPropertiesForm.get('fontWeight')?.value === 'bold'"
+                          [class.bg-white]="textPropertiesForm.get('fontWeight')?.value !== 'bold'"
+                          [class.border-slate-200]="textPropertiesForm.get('fontWeight')?.value !== 'bold'"
+                          [class.text-slate-600]="textPropertiesForm.get('fontWeight')?.value !== 'bold'">
+                    Bold
+                  </button>
+                  <button type="button" (click)="toggleFontStyle()" 
+                          class="flex-1 py-1 px-2 text-xs font-semibold rounded-lg border transition-all cursor-pointer"
+                          [class.bg-indigo-50]="textPropertiesForm.get('fontStyle')?.value === 'italic'"
+                          [class.text-indigo-600]="textPropertiesForm.get('fontStyle')?.value === 'italic'"
+                          [class.border-indigo-200]="textPropertiesForm.get('fontStyle')?.value === 'italic'"
+                          [class.bg-white]="textPropertiesForm.get('fontStyle')?.value !== 'italic'"
+                          [class.border-slate-200]="textPropertiesForm.get('fontStyle')?.value !== 'italic'"
+                          [class.text-slate-600]="textPropertiesForm.get('fontStyle')?.value !== 'italic'">
+                    Italic
+                  </button>
+                </div>
+              </div>
+
+              <!-- Alignment -->
+              <div>
+                <span class="text-[10px] text-slate-400 font-semibold uppercase block mb-1.5">Alignment</span>
+                <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/50">
+                  <button type="button" (click)="setTextAlign('left')" class="flex-1 text-center py-1 rounded transition-all flex items-center justify-center text-slate-600 cursor-pointer" [class.bg-white]="textPropertiesForm.get('textAlign')?.value === 'left'" [class.shadow-xs]="textPropertiesForm.get('textAlign')?.value === 'left'">
+                    <span class="material-icons text-base">format_align_left</span>
+                  </button>
+                  <button type="button" (click)="setTextAlign('center')" class="flex-1 text-center py-1 rounded transition-all flex items-center justify-center text-slate-600 cursor-pointer" [class.bg-white]="textPropertiesForm.get('textAlign')?.value === 'center'" [class.shadow-xs]="textPropertiesForm.get('textAlign')?.value === 'center'">
+                    <span class="material-icons text-base">format_align_center</span>
+                  </button>
+                  <button type="button" (click)="setTextAlign('right')" class="flex-1 text-center py-1 rounded transition-all flex items-center justify-center text-slate-600 cursor-pointer" [class.bg-white]="textPropertiesForm.get('textAlign')?.value === 'right'" [class.shadow-xs]="textPropertiesForm.get('textAlign')?.value === 'right'">
+                    <span class="material-icons text-base">format_align_right</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Letter Spacing & Line Height -->
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label for="prop-letter-spacing" class="text-[10px] text-slate-400 font-semibold uppercase block mb-1">Letter Spacing</label>
+                  <input id="prop-letter-spacing" type="number" formControlName="letterSpacing" class="w-full px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg outline-hidden" min="-5" max="15" step="0.5" />
+                </div>
+                <div>
+                  <label for="prop-line-height" class="text-[10px] text-slate-400 font-semibold uppercase block mb-1">Line Height</label>
+                  <input id="prop-line-height" type="number" formControlName="lineHeight" class="w-full px-2 py-1.5 text-xs bg-white border border-slate-200 rounded-lg outline-hidden" min="0.5" max="3" step="0.1" />
+                </div>
+              </div>
+
+              <!-- Opacity Slider -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label for="prop-opacity" class="text-[10px] text-slate-400 font-semibold uppercase">Opacity</label>
+                  <span class="text-[10px] font-mono text-slate-500 font-bold">{{ Math.round((textPropertiesForm.get('opacity')?.value || 1) * 100) }}%</span>
+                </div>
+                <input id="prop-opacity" type="range" formControlName="opacity" min="0" max="1" step="0.05" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+              </div>
+
+              <!-- Text colors color grid -->
+              <div>
+                <label for="prop-color-picker" class="text-[10px] text-slate-400 font-semibold uppercase block mb-1.5">Text Color</label>
+                <div class="flex items-center space-x-2">
+                  <input id="prop-color-picker" type="color" formControlName="color" class="w-8 h-8 rounded border border-slate-200 cursor-pointer overflow-hidden p-0" />
+                  <div class="grid grid-cols-6 gap-1 flex-1">
+                    @for (palColor of colorPalette; track palColor) {
+                      <button type="button" 
+                              [style.backgroundColor]="palColor"
+                              (click)="setColor(palColor)"
+                              class="w-5 h-5 rounded border border-slate-300/30 hover:scale-110 active:scale-95 transition-all cursor-pointer">
+                      </button>
+                    }
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        } @else {
+          <div class="p-8 text-center text-slate-400 border-b border-slate-100 flex flex-col items-center justify-center bg-slate-50/20">
+            <span class="material-icons text-slate-300 text-3xl mb-2">touch_app</span>
+            <p class="text-xs font-semibold">No text block selected</p>
+            <p class="text-[10px] text-slate-400 max-w-[12rem] mt-1 leading-relaxed">Click any text box on the page to adjust properties, duplicate, or delete.</p>
+          </div>
+        }
+
+        <!-- PAGE CONTROLS (Always Visible) -->
+        @if (pages()[activePageNumber() - 1]; as page) {
+          <div class="p-4 border-b border-slate-100">
+            <h4 class="text-xs font-bold text-slate-800 mb-3 flex items-center space-x-1.5">
+              <span class="material-icons text-slate-400 text-base">pageview</span>
+              <span>Page Adjustments</span>
+            </h4>
+
+            <div class="space-y-4">
+              <!-- Page rotations -->
+              <div>
+                <span class="text-[10px] text-slate-400 font-semibold uppercase block mb-1.5">Rotate Orientation</span>
+                <div class="flex items-center space-x-2">
+                  <button (click)="rotatePage('ccw')" class="flex-1 flex items-center justify-center space-x-1 py-1.5 border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium rounded-lg transition-all cursor-pointer">
+                    <span class="material-icons text-sm">rotate_left</span>
+                    <span>90° CCW</span>
+                  </button>
+                  <button (click)="rotatePage('cw')" class="flex-1 flex items-center justify-center space-x-1 py-1.5 border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium rounded-lg transition-all cursor-pointer">
+                    <span class="material-icons text-sm">rotate_right</span>
+                    <span>90° CW</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Page Deskewing slider -->
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label for="prop-skew-slider" class="text-[10px] text-slate-400 font-semibold uppercase flex items-center space-x-1">
+                    <span class="material-icons text-xs">straighten</span>
+                    <span>Manual Deskew Angle</span>
+                  </label>
+                  <span class="text-[10px] font-mono text-slate-600 font-bold bg-slate-100 px-1.5 py-0.5 rounded">{{ page.skew }}°</span>
+                </div>
+                <input id="prop-skew-slider" type="range" min="-30" max="30" step="0.5" [value]="page.skew" (input)="onSkewChange($event)" class="w-full h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+                <p class="text-[9px] text-slate-400 leading-tight mt-1">Use with Grid Guidelines to align crooked phone-scanned pages.</p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- LOCAL OCR CENTER -->
+        @if (pages()[activePageNumber() - 1]; as page) {
+          <div class="p-4">
+            <h4 class="text-xs font-bold text-slate-800 mb-3 flex items-center space-x-1.5">
+              <span class="material-icons text-slate-400 text-base">center_focus_weak</span>
+              <span>Local OCR Center</span>
+            </h4>
+
+            <div class="space-y-4">
+              <!-- Language selector -->
+              <div>
+                <label for="prop-ocr-lang" class="text-[10px] text-slate-400 font-semibold uppercase block mb-1">OCR Processing Language</label>
+                <select id="prop-ocr-lang" (change)="changeOcrLanguage($event)" [value]="page.ocrLanguage" class="w-full px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg outline-hidden">
+                  @for (lang of ocrLanguages; track lang.code) {
+                    <option [value]="lang.code">{{ lang.name }}</option>
+                  }
+                </select>
+              </div>
+
+              <!-- Run OCR Trigger -->
+              <button (click)="runOcrOnActivePage()" 
+                      [disabled]="page.isOcrRunning"
+                      class="w-full flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-200 disabled:text-slate-400 text-white py-2.5 rounded-xl text-xs font-semibold tracking-wide shadow-md hover:shadow-lg hover:shadow-indigo-600/10 transition-all cursor-pointer">
+                <span class="material-icons text-sm">psychology</span>
+                <span>{{ page.ocrTextItems.length > 0 ? 'Re-run Local OCR' : 'Run Local OCR on Page' }}</span>
+              </button>
+
+              <!-- Current page OCR status logs -->
+              @if (page.ocrStatus || page.ocrConfidence > 0) {
+                <div class="bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                  <h5 class="text-[10px] text-slate-400 font-bold uppercase mb-1.5">OCR Results / Status</h5>
+                  
+                  <div class="space-y-2">
+                    @if (page.ocrStatus) {
+                      <p class="text-[11px] text-slate-600 font-mono leading-tight flex items-center space-x-1">
+                        @if (page.isOcrRunning) {
+                          <span class="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-ping"></span>
+                        }
+                        <span>{{ page.ocrStatus }}</span>
+                      </p>
+                    }
+                    
+                    <!-- Confidence score card -->
+                    @if (page.ocrConfidence > 0) {
+                      <div class="flex items-center justify-between text-xs">
+                        <span class="text-slate-500">Overall Accuracy:</span>
+                        <span class="font-mono font-bold"
+                              [class.text-emerald-600]="page.ocrConfidence >= 80"
+                              [class.text-amber-600]="page.ocrConfidence >= 50 && page.ocrConfidence < 80"
+                              [class.text-rose-600]="page.ocrConfidence < 50">
+                          {{ page.ocrConfidence }}%
+                        </span>
+                      </div>
+
+                      <!-- Confidence explanation bar -->
+                      <div class="w-full bg-slate-250 h-1.5 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-300" 
+                             [style.width.%]="page.ocrConfidence"
+                             [class.bg-emerald-500]="page.ocrConfidence >= 80"
+                             [class.bg-amber-500]="page.ocrConfidence >= 50 && page.ocrConfidence < 80"
+                             [class.bg-rose-500]="page.ocrConfidence < 50">
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+      </aside>
+
+    </div>
+  }
+</main>

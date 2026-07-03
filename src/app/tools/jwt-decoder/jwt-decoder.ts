@@ -115,7 +115,7 @@ import { MatIconModule } from '@angular/material/icon';
         }
       } @else {
         <!-- Helper view -->
-        <div class="p-12 border border-zinc-850/60 rounded-2xl bg-zinc-950/20 text-center space-y-3 max-w-sm mx-auto">
+        <div class="p-12 border border-zinc-850/60 rounded-2xl bg-zinc-900 text-center space-y-3 max-w-sm mx-auto">
           <mat-icon class="text-4xl text-zinc-700 animate-pulse">lock_open</mat-icon>
           <div class="space-y-1">
             <p class="text-xs font-mono font-bold text-zinc-400 uppercase">Input Token Required</p>

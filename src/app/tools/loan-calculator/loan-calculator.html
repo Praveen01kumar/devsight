@@ -1,0 +1,1618 @@
+  <div class="max-w-[1400px] mx-auto flex flex-col md:flex-row md:items-center md:justify-center gap-4 p-2">
+    <!-- SEARCH CALCULATORS BAR -->
+    <div class="relative w-full md:w-80">
+      <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+        <mat-icon class="text-xl">search</mat-icon>
+      </span>
+      <input type="text" placeholder="Search calculators..."
+        class="w-full bg-zinc-50/10 dark:bg-zinc-900 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:border-primary focus:bg-white transition-all duration-200"
+        [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)" />
+      @if (searchQuery()) {
+      <button (click)="searchQuery.set('')"
+        class="absolute bg-zinc-50/10 dark:bg-zinc-900 nset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+        <mat-icon class="text-lg">close</mat-icon>
+      </button>
+      }
+    </div>
+  </div>
+  <!-- MAIN SUITE CONTAINER -->
+  <main class="max-w-[1400px] mx-auto">
+
+    <!-- HORIZONTAL SCROLLABLE CALCULATOR SELECTOR -->
+    <div class="relative mb-4">
+      <div class="flex gap-2 overflow-x-auto pb-3 pt-1 scroll-smooth no-scrollbar" id="calculator-tabs">
+        @for (calc of filteredCalculators(); track calc.id) {
+        <button (click)="selectCalculator(calc.id)"
+          class="flex-shrink-0 flex items-center gap-2.5 px-4 py-2 rounded-xl border text-sm font-medium transition-all duration-250 cursor-pointer"
+          [class.bg-emerald-500/10]="activeTab() === calc.id"
+          [class.dark:bg-zinc-900]="activeTab() === calc.id"
+          [class.text-emerald-400]="activeTab() === calc.id"
+          [class.text-slate-500]="activeTab() !== calc.id">
+          <mat-icon class="text-xl leading-none" [class.text-primary-light]="activeTab() === calc.id">{{ calc.icon
+            }}</mat-icon>
+          <span>{{ calc.name }}</span>
+        </button>
+        } @empty {
+        <div
+          class="w-full text-center py-6 bg-zinc-50/10 dark:bg-zinc-900 rounded-xl border border-dashed border-slate-200 text-slate-400 text-sm">
+          No calculators found matching "{{ searchQuery() }}"
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- MAIN TWO-COLUMN WORKSPACE GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
+
+      <!-- LEFT HAND COLUMN: INPUT CONTROLS -->
+      <section class="lg:col-span-7 flex flex-col gap-2">
+        <div class="bg-zinc-90 border border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 rounded-3xl p-6 shadow-sm">
+          <h3 class="font-display text-base font-bold text-white mb-6 flex items-center gap-2">Configure Parameters</h3>
+          <!-- EMI CALCULATOR INPUTS -->
+          @if (activeTab() === 'emi') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Loan Principal Amount</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400 font-medium">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="loanAmount()" (ngModelChange)="loanAmount.set($event)" step="5000" min="1000"
+                    max="100000000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="loanAmount()" (ngModelChange)="loanAmount.set($event)" min="50000" max="50000000"
+                step="50000">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                <span>₹50,000</span>
+                <span>₹5 Crores</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Annual Interest Rate</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="interestRate()" (ngModelChange)="interestRate.set($event)" step="0.1" min="0.1"
+                      max="30">
+                    <span class="text-xs text-slate-400 font-semibold">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="interestRate()" (ngModelChange)="interestRate.set($event)" min="1" max="25" step="0.1">
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                  <span>1%</span>
+                  <span>25%</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Loan Tenure</span>
+                  <div class="flex items-center gap-2">
+                    <div class="flex bg-slate-100 dark:bg-zinc-900 rounded-lg p-0.5 border border-slate-200">
+                      <button (click)="tenureType.set('years')"
+                        class="px-2 py-0.5 text-[10px] font-semibold rounded cursor-pointer"
+                        [class.bg-white]="tenureType() === 'years'" [class.dark:bg-zinc-600]="tenureType() === 'years'" [class.text-emerald-400]="tenureType() === 'years'"
+                        [class.text-slate-500]="tenureType() !== 'years'">Yr</button>
+                      <button (click)="tenureType.set('months')"
+                        class="px-2 py-0.5 text-[10px] font-semibold rounded cursor-pointer"
+                        [class.bg-white]="tenureType() === 'months'" [class.dark:bg-zinc-600]="tenureType() === 'months'" [class.text-emerald-400]="tenureType() === 'months'"
+                        [class.text-slate-500]="tenureType() !== 'months'">Mo</button>
+                    </div>
+                    <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                      <input type="number"
+                        class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                        [ngModel]="loanTenure()" (ngModelChange)="loanTenure.set($event)" min="1" max="360">
+                      <span class="text-xs text-slate-400 font-semibold">{{ tenureType() === 'years' ? 'Yrs' : 'Mos'
+                        }}</span>
+                    </div>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="loanTenure()" (ngModelChange)="loanTenure.set($event)"
+                  [min]="tenureType() === 'years' ? 1 : 12" [max]="tenureType() === 'years' ? 30 : 360" step="1">
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                  <span>{{ tenureType() === 'years' ? '1 Year' : '12 Months' }}</span>
+                  <span>{{ tenureType() === 'years' ? '30 Years' : '360 Months' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- ELIGIBILITY CALCULATOR INPUTS -->
+          @if (activeTab() === 'eligibility') {
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Gross Monthly Income</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <span class="text-xs text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-24 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="eligMonthlyIncome()" (ngModelChange)="eligMonthlyIncome.set($event)" step="5000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="eligMonthlyIncome()" (ngModelChange)="eligMonthlyIncome.set($event)" min="10000"
+                  max="500000" step="5000">
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                  <span>₹10,000</span>
+                  <span>₹5 Lakhs</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Existing EMIs</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <span class="text-xs text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="eligExistingEmis()" (ngModelChange)="eligExistingEmis.set($event)" step="1000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="eligExistingEmis()" (ngModelChange)="eligExistingEmis.set($event)" min="0" max="200000"
+                  step="1000">
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                  <span>₹0</span>
+                  <span>₹2 Lakhs</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Interest Rate Offered</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="eligInterestRate()" (ngModelChange)="eligInterestRate.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="eligInterestRate()" (ngModelChange)="eligInterestRate.set($event)" min="4" max="25"
+                  step="0.1">
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                  <span>4%</span>
+                  <span>25%</span>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tenure Requested</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="eligTenure()" (ngModelChange)="eligTenure.set($event)" min="1" max="40">
+                    <span class="text-xs text-slate-400">Yrs</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="eligTenure()" (ngModelChange)="eligTenure.set($event)" min="1" max="30" step="1">
+                <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                  <span>1 Yr</span>
+                  <span>30 Yrs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- AFFORDABILITY CALCULATOR INPUTS -->
+          @if (activeTab() === 'affordability') {
+          <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Income</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-2 py-1 rounded-lg border border-slate-100">
+                    <span class="text-[10px] text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-xs font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="affMonthlyIncome()" (ngModelChange)="affMonthlyIncome.set($event)" step="5000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="affMonthlyIncome()" (ngModelChange)="affMonthlyIncome.set($event)" min="20000" max="500000"
+                  step="5000">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Living Expenses</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-2 py-1 rounded-lg border border-slate-100">
+                    <span class="text-[10px] text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-xs font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="affExpenses()" (ngModelChange)="affExpenses.set($event)" step="2000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="affExpenses()" (ngModelChange)="affExpenses.set($event)" min="0" max="300000" step="2000">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Savings Goal</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-2 py-1 rounded-lg border border-slate-100">
+                    <span class="text-[10px] text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-xs font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="affSavingsGoal()" (ngModelChange)="affSavingsGoal.set($event)" step="2000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="affSavingsGoal()" (ngModelChange)="affSavingsGoal.set($event)" min="0" max="200000"
+                  step="2000">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Interest Rate</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="affInterestRate()" (ngModelChange)="affInterestRate.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="affInterestRate()" (ngModelChange)="affInterestRate.set($event)" min="4" max="25"
+                  step="0.1">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tenure Requested</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="affTenure()" (ngModelChange)="affTenure.set($event)" min="1" max="40">
+                    <span class="text-xs text-slate-400">Yrs</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="affTenure()" (ngModelChange)="affTenure.set($event)" min="1" max="30" step="1">
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- LOAN AMOUNT CALCULATOR INPUTS -->
+          @if (activeTab() === 'loan_amount') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Desired Monthly EMI</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-24 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="amtDesiredEmi()" (ngModelChange)="amtDesiredEmi.set($event)" step="1000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="amtDesiredEmi()" (ngModelChange)="amtDesiredEmi.set($event)" min="5000" max="500000"
+                step="2500">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono mt-1">
+                <span>₹5,000</span>
+                <span>₹5 Lakhs</span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Interest Rate</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="amtInterestRate()" (ngModelChange)="amtInterestRate.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="amtInterestRate()" (ngModelChange)="amtInterestRate.set($event)" min="4" max="25"
+                  step="0.1">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Loan Tenure</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="amtTenure()" (ngModelChange)="amtTenure.set($event)" min="1" max="40">
+                    <span class="text-xs text-slate-400">Yrs</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="amtTenure()" (ngModelChange)="amtTenure.set($event)" min="1" max="30" step="1">
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- LOAN TENURE CALCULATOR INPUTS -->
+          @if (activeTab() === 'tenure') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Loan Amount</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="tenAmount()" (ngModelChange)="tenAmount.set($event)" step="10000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="tenAmount()" (ngModelChange)="tenAmount.set($event)" min="50000" max="30000000" step="50000">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Interest Rate</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="tenInterestRate()" (ngModelChange)="tenInterestRate.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="tenInterestRate()" (ngModelChange)="tenInterestRate.set($event)" min="4" max="25"
+                  step="0.1">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Desired EMI Payment</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <span class="text-xs text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="tenDesiredEmi()" (ngModelChange)="tenDesiredEmi.set($event)" step="1000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="tenDesiredEmi()" (ngModelChange)="tenDesiredEmi.set($event)" min="2000" max="250000"
+                  step="1000">
+              </div>
+            </div>
+
+            @if (calculatedResults().errorMsg) {
+            <div class="bg-red-50 border border-red-100 rounded-xl p-4 text-red-600 text-xs flex items-center gap-2">
+              <mat-icon class="text-lg">error_outline</mat-icon>
+              <span>{{ calculatedResults().errorMsg }}</span>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- INTEREST RATE CALCULATOR INPUTS -->
+          @if (activeTab() === 'interest_rate') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Loan Amount</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="rateAmount()" (ngModelChange)="rateAmount.set($event)" step="10000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="rateAmount()" (ngModelChange)="rateAmount.set($event)" min="50000" max="30000000"
+                step="50000">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Monthly EMI Paid</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <span class="text-xs text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="rateEmi()" (ngModelChange)="rateEmi.set($event)" step="1000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="rateEmi()" (ngModelChange)="rateEmi.set($event)" min="1000" max="300000" step="1000">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Loan Tenure</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="rateTenure()" (ngModelChange)="rateTenure.set($event)" min="1" max="40">
+                    <span class="text-xs text-slate-400">Yrs</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="rateTenure()" (ngModelChange)="rateTenure.set($event)" min="1" max="30" step="1">
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- PART PREPAYMENT CALCULATOR INPUTS -->
+          @if (activeTab() === 'prepayment') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Current Outstanding
+                  Principal</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="prepCurrentLoan()" (ngModelChange)="prepCurrentLoan.set($event)" step="10000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="prepCurrentLoan()" (ngModelChange)="prepCurrentLoan.set($event)" min="50000" max="30000000"
+                step="50000">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Remaining Tenure</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="prepRemainingTenure()" (ngModelChange)="prepRemainingTenure.set($event)" step="6">
+                    <span class="text-xs text-slate-400">Mos</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="prepRemainingTenure()" (ngModelChange)="prepRemainingTenure.set($event)" min="12" max="360"
+                  step="6">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Interest Rate</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="prepInterestRate()" (ngModelChange)="prepInterestRate.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="prepInterestRate()" (ngModelChange)="prepInterestRate.set($event)" min="4" max="25"
+                  step="0.1">
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Lump Sum Prepayment
+                  Amount</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-24 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="prepOneTimeAmount()" (ngModelChange)="prepOneTimeAmount.set($event)" step="5000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="prepOneTimeAmount()" (ngModelChange)="prepOneTimeAmount.set($event)" min="5000"
+                [max]="prepCurrentLoan() - 10000" step="5000">
+            </div>
+          </div>
+          }
+
+          <!-- EMI REDUCTION CALCULATOR INPUTS -->
+          @if (activeTab() === 'emi_reduction') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Outstanding Loan
+                  Principal</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="redEmiOutstanding()" (ngModelChange)="redEmiOutstanding.set($event)" step="10000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="redEmiOutstanding()" (ngModelChange)="redEmiOutstanding.set($event)" min="100000"
+                max="30000000" step="100000">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Current EMI</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <span class="text-xs text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="redEmiCurrentEmi()" (ngModelChange)="redEmiCurrentEmi.set($event)" step="1000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="redEmiCurrentEmi()" (ngModelChange)="redEmiCurrentEmi.set($event)" min="1000" max="150000"
+                  step="1000">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Interest Rate (%)</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="redEmiInterest()" (ngModelChange)="redEmiInterest.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="redEmiInterest()" (ngModelChange)="redEmiInterest.set($event)" min="4" max="25" step="0.1">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Remaining Tenure (Yrs)</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="redEmiTenure()" (ngModelChange)="redEmiTenure.set($event)" min="1" max="30">
+                    <span class="text-xs text-slate-400">Yrs</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="redEmiTenure()" (ngModelChange)="redEmiTenure.set($event)" min="1" max="30" step="1">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Lump Sum Prepayment</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <span class="text-xs text-slate-400">₹</span>
+                    <input type="number"
+                      class="w-20 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="redEmiExtraPayment()" (ngModelChange)="redEmiExtraPayment.set($event)" step="10000">
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="redEmiExtraPayment()" (ngModelChange)="redEmiExtraPayment.set($event)" min="10000"
+                  [max]="redEmiOutstanding() - 50000" step="10000">
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- TENURE REDUCTION CALCULATOR INPUTS -->
+          @if (activeTab() === 'tenure_reduction') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Outstanding Balance</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="redTenOutstanding()" (ngModelChange)="redTenOutstanding.set($event)" step="10000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="redTenOutstanding()" (ngModelChange)="redTenOutstanding.set($event)" min="100000"
+                max="30000000" step="100000">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Remaining Tenure (Mos)</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="redTenTenure()" (ngModelChange)="redTenTenure.set($event)" step="6">
+                    <span class="text-xs text-slate-400">Mos</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="redTenTenure()" (ngModelChange)="redTenTenure.set($event)" min="12" max="360" step="6">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Interest Rate (%)</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="redTenInterest()" (ngModelChange)="redTenInterest.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="redTenInterest()" (ngModelChange)="redTenInterest.set($event)" min="4" max="25" step="0.1">
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Extra Monthly Payment Added to
+                  EMI</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-20 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="redTenExtraMonthly()" (ngModelChange)="redTenExtraMonthly.set($event)" step="500">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="redTenExtraMonthly()" (ngModelChange)="redTenExtraMonthly.set($event)" min="500" max="50000"
+                step="500">
+            </div>
+          </div>
+          }
+
+          <!-- FORECLOSURE CALCULATOR INPUTS -->
+          @if (activeTab() === 'foreclosure') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Outstanding Balance</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="foreOutstanding()" (ngModelChange)="foreOutstanding.set($event)" step="10000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="foreOutstanding()" (ngModelChange)="foreOutstanding.set($event)" min="50000" max="30000000"
+                step="50000">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="md:col-span-2">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Remaining Tenure (Mos)</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="foreRemainingMonths()" (ngModelChange)="foreRemainingMonths.set($event)" step="6">
+                    <span class="text-xs text-slate-400">Mos</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="foreRemainingMonths()" (ngModelChange)="foreRemainingMonths.set($event)" min="12" max="360"
+                  step="6">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Foreclosure Fee</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="foreCharges()" (ngModelChange)="foreCharges.set($event)" step="0.5">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="foreCharges()" (ngModelChange)="foreCharges.set($event)" min="0" max="5" step="0.5">
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Current Interest Rate (%)</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <input type="number"
+                    class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="foreInterest()" (ngModelChange)="foreInterest.set($event)" step="0.1">
+                  <span class="text-xs text-slate-400">%</span>
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="foreInterest()" (ngModelChange)="foreInterest.set($event)" min="4" max="25" step="0.1">
+            </div>
+          </div>
+          }
+
+          <!-- BALANCE TRANSFER CALCULATOR INPUTS -->
+          @if (activeTab() === 'balance_transfer') {
+          <div class="space-y-6">
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Outstanding Loan Balance</span>
+                <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                  <span class="text-xs text-slate-400">₹</span>
+                  <input type="number"
+                    class="w-28 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="btCurrentLoan()" (ngModelChange)="btCurrentLoan.set($event)" step="10000">
+                </div>
+              </div>
+              <input type="range"
+                class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                [ngModel]="btCurrentLoan()" (ngModelChange)="btCurrentLoan.set($event)" min="100000" max="30000000"
+                step="100000">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Current Bank Interest
+                    Rate</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="btCurrentInterest()" (ngModelChange)="btCurrentInterest.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="btCurrentInterest()" (ngModelChange)="btCurrentInterest.set($event)" min="4" max="25"
+                  step="0.1">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">New Bank Interest
+                    Offered</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="btNewInterest()" (ngModelChange)="btNewInterest.set($event)" step="0.1">
+                    <span class="text-xs text-slate-400">%</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="btNewInterest()" (ngModelChange)="btNewInterest.set($event)" min="4" max="25" step="0.1">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Remaining Tenure (Yrs)</span>
+                  <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                    <input type="number"
+                      class="w-12 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                      [ngModel]="btRemainingTenure()" (ngModelChange)="btRemainingTenure.set($event)" min="1" max="30">
+                    <span class="text-xs text-slate-400">Yrs</span>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="btRemainingTenure()" (ngModelChange)="btRemainingTenure.set($event)" min="1" max="30"
+                  step="1">
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Transfer Fee & Charges</span>
+                  <div class="flex items-center gap-2">
+                    <div class="flex bg-slate-100 dark:bg-zinc-900 rounded-lg p-0.5 border border-slate-200">
+                      <button (click)="btTransferFeeType.set('percent')"
+                        class="px-2 py-0.5 text-[10px] font-semibold rounded cursor-pointer"
+                        [class.bg-white]="btTransferFeeType() === 'percent'"
+                        [class.dark:bg-zinc-600]="btTransferFeeType() === 'percent'"
+                        [class.text-emerald-400]="btTransferFeeType() === 'percent'"
+                        [class.text-slate-500]="btTransferFeeType() !== 'percent'">%</button>
+                      <button (click)="btTransferFeeType.set('flat')"
+                        class="px-2 py-0.5 text-[10px] font-semibold rounded cursor-pointer"
+                        [class.bg-white]="btTransferFeeType() === 'flat'"
+                        [class.dark:bg-zinc-600]="btTransferFeeType() === 'flat'"
+                        [class.text-emerald-400]="btTransferFeeType() === 'flat'"
+                        [class.text-slate-500]="btTransferFeeType() !== 'flat'">₹</button>
+                    </div>
+                    <div class="flex items-center gap-1 bg-zinc-50 dark:bg-zinc-900 px-3 py-1 rounded-lg border border-slate-100">
+                      <input type="number"
+                        class="w-16 text-right bg-transparent text-sm font-bold text-emerald-400 focus:outline-none"
+                        [ngModel]="btTransferFee()" (ngModelChange)="btTransferFee.set($event)" step="0.1">
+                      <span class="text-xs text-slate-400 font-semibold">{{ btTransferFeeType() === 'percent' ? '%' :
+                        '₹'
+                        }}</span>
+                    </div>
+                  </div>
+                </div>
+                <input type="range"
+                  class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-800 cursor-pointer rounded-lg appearance-auto accent-emerald-500"
+                  [ngModel]="btTransferFee()" (ngModelChange)="btTransferFee.set($event)"
+                  [min]="btTransferFeeType() === 'percent' ? 0.1 : 1000"
+                  [max]="btTransferFeeType() === 'percent' ? 5 : 100000"
+                  [step]="btTransferFeeType() === 'percent' ? 0.1 : 1000">
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- LOAN COMPARISON CALCULATOR INPUTS -->
+          @if (activeTab() === 'comparison') {
+          <div class="space-y-4">
+
+            <!-- LOAN A COLUMN -->
+            <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-slate-100 space-y-4">
+              <div class="flex items-center gap-2 text-white">
+                <mat-icon class="text-xl">filter_1</mat-icon>
+                <h4 class="text-xs font-bold uppercase tracking-wider">Loan Option A Parameters</h4>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Principal
+                    (A)</span>
+                  <input type="number"
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="compAmountA()" (ngModelChange)="compAmountA.set($event)" step="50000">
+                </div>
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Interest Rate
+                    (A)</span>
+                  <input type="number"
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="compInterestA()" (ngModelChange)="compInterestA.set($event)" step="0.1">
+                </div>
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Tenure
+                    (A)</span>
+                  <input type="number"
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="compTenureA()" (ngModelChange)="compTenureA.set($event)">
+                </div>
+              </div>
+            </div>
+
+            <!-- LOAN B COLUMN -->
+            <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-slate-100 space-y-4">
+              <div class="flex items-center gap-2 text-amber-500">
+                <mat-icon class="text-xl">filter_2</mat-icon>
+                <h4 class="text-xs font-bold uppercase tracking-wider">Loan Option B Parameters</h4>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Principal
+                    (B)</span>
+                  <input type="number"
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="compAmountB()" (ngModelChange)="compAmountB.set($event)" step="50000">
+                </div>
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Interest Rate
+                    (B)</span>
+                  <input type="number"
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="compInterestB()" (ngModelChange)="compInterestB.set($event)" step="0.1">
+                </div>
+                <div>
+                  <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Tenure
+                    (B)</span>
+                  <input type="number"
+                    class="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold text-emerald-400 focus:outline-none"
+                    [ngModel]="compTenureB()" (ngModelChange)="compTenureB.set($event)">
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+          <div class="flex items-center gap-2 mt-2 justify-center">
+            <button (click)="showAdvanced.set(!showAdvanced())"
+              class="px-4 py-2 bg-zinc-50/10 dark:bg-zinc-900 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 transition-all duration-200 flex items-center gap-1.5 cursor-pointer">
+              <mat-icon class="text-base leading-none">{{ showAdvanced() ? 'expand_less' : 'expand_more' }}</mat-icon>
+              {{ showAdvanced() ? 'Hide' : 'Show' }} Advanced Options
+            </button>
+            <button (click)="resetAllInputs()"
+              class="px-4 py-1.5 border border-red-200 bg-red-50/10 text-red-600 rounded-lg text-xs font-semibold transition-colors duration-200 cursor-pointer flex items-center gap-1">
+              <mat-icon class="text-sm leading-none">restart_alt</mat-icon> Reset Workspace
+            </button>
+          </div>
+          <!-- COLLAPSIBLE ADVANCED OPTIONS DRAWER -->
+          @if (showAdvanced()) {
+          <div class="border-t border-slate-100 pt-4 mt-3 space-y-6">
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5 mb-4">
+              <mat-icon class="text-lg">settings</mat-icon> Optional Loan Adjustments
+            </h4>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Processing Fee
+                  (%)</span>
+                <input type="number"
+                  class="w-full text-emerald-400 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                  [ngModel]="advProcessingFee()" (ngModelChange)="advProcessingFee.set($event)" step="0.1">
+              </div>
+
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Insurance Premium
+                  (₹)</span>
+                <input type="number"
+                  class="w-full text-emerald-400 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                  [ngModel]="advInsurance()" (ngModelChange)="advInsurance.set($event)" step="1000">
+              </div>
+
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">GST on Fee
+                  (%)</span>
+                <input type="number"
+                  class="w-full text-emerald-400 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                  [ngModel]="advGst()" (ngModelChange)="advGst.set($event)">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Moratorium Period
+                  (No EMIs)</span>
+                <div class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-200">
+                  <input type="number" class="w-full bg-transparent text-emerald-400 text-xs font-bold focus:outline-none"
+                    [ngModel]="advMoratorium()" (ngModelChange)="advMoratorium.set($event)" min="0" max="24">
+                  <span class="text-[10px] text-slate-400">Months</span>
+                </div>
+              </div>
+
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 block">Compounding
+                  Frequency</span>
+                <select
+                  class="w-full border border-slate-200 rounded-lg px-3 py-2.5 text-xs text-white font-bold focus:outline-none focus:border-primary"
+                  [ngModel]="advCompounding()" (ngModelChange)="advCompounding.set($event)">
+                  <option value="monthly">Monthly Compounding</option>
+                  <option value="quarterly">Quarterly Compounding</option>
+                  <option value="yearly">Yearly Compounding</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="border-t border-slate-100 pt-2 space-y-4">
+              <h5 class="text-[10px] font-bold text-white uppercase tracking-wider mb-2">Simulated Prepayment
+                Overrides</h5>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <span class="text-[10px] font-bold text-slate-500 mb-1 block">Recurring Extra Monthly</span>
+                  <input type="number"
+                    class="w-full text-emerald-400 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                    [ngModel]="advMonthlyExtraPayment()" (ngModelChange)="advMonthlyExtraPayment.set($event)"
+                    step="500">
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-bold text-slate-500 mb-1 block">Annual Prepayment (%)</span>
+                  <input type="number"
+                    class="w-full text-emerald-400 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                    [ngModel]="advAnnualPrepayment()" (ngModelChange)="advAnnualPrepayment.set($event)" step="0.5">
+                </div>
+
+                <div>
+                  <span class="text-[10px] font-bold text-slate-500 mb-1 block">One-time Extra (Lump Sum)</span>
+                  <input type="number"
+                    class="w-full text-emerald-400 border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold"
+                    [ngModel]="advOneTimePrepayment()" (ngModelChange)="advOneTimePrepayment.set($event)" step="5000">
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        <!-- DYNAMIC INSIGHTS PANEL -->
+        <div class="bg-zinc-90 border border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 rounded-3xl p-6 shadow-sm">
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-1.5">
+            <mat-icon class="text-primary text-lg">lightbulb</mat-icon> Smart Financial Insights
+          </h4>
+          <ul class="space-y-3">
+            @for (insight of insights(); track insight) {
+            <li class="text-xs text-slate-600 flex items-start gap-2.5 leading-relaxed">
+              <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0"></span>
+              <span>{{ insight }}</span>
+            </li>
+            } @empty {
+            <li class="text-xs text-slate-400 italic">Adjust inputs to generate real-time savings insights.</li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- RIGHT HAND COLUMN: REAL-TIME RESULTS PANEL -->
+      <section class="lg:col-span-5 space-y-2">
+        <div class="bg-emerald-50/50 dark:bg-emerald-950/20 rounded-2xl border-2 border-emerald-500/20 dark:border-emerald-500/10 p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h3 class="font-display text-sm font-bold tracking-wider text-white uppercase">Calculated Output Summary
+            </h3>
+            <button
+              (click)="copyToClipboard(formatINR(calculatedResults().baseEmi || calculatedResults().maxLoanEligibility), 'Primary Metric')"
+              class="text-white hover:text-white transition-colors duration-200" title="Copy output value">
+              <mat-icon class="text-xl">content_copy</mat-icon>
+            </button>
+          </div>
+
+          <!-- COMPARISON SPECIFIC DOUBLE LAYOUT -->
+          @if (activeTab() === 'comparison') {
+          <div class="space-y-6">
+            <div class="grid grid-cols-2 gap-4 border-b border-slate-800 pb-6">
+              <div>
+                <span class="text-[10px] text-white uppercase tracking-wider block">Option A Monthly EMI</span>
+                <span class="text-2xl font-bold font-display text-emerald-600 mt-1 block">{{
+                  formatINR(calculatedResults().loanA?.baseEmi) }}</span>
+              </div>
+              <div>
+                <span class="text-[10px] text-white uppercase tracking-wider block">Option B Monthly EMI</span>
+                <span class="text-2xl font-bold font-display text-amber-400 mt-1 block">{{
+                  formatINR(calculatedResults().loanB?.baseEmi) }}</span>
+              </div>
+            </div>
+
+            <div class="space-y-3.5 text-xs text-slate-300">
+              <div class="flex justify-between">
+                <span class="text-slate-500">Total Interest (A vs B)</span>
+                <span class="font-semibold">{{ formatINR(calculatedResults().loanA?.totalInterestPaid) }} vs {{
+                  formatINR(calculatedResults().loanB?.totalInterestPaid) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">Total Cost (A vs B)</span>
+                <span class="font-semibold">{{ formatINR(calculatedResults().loanA?.totalCostOfLoan) }} vs {{
+                  formatINR(calculatedResults().loanB?.totalCostOfLoan) }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-500">Repayment Date</span>
+                <span class="font-semibold">{{ calculatedResults().loanA?.completionDate }} vs {{
+                  calculatedResults().loanB?.completionDate }}</span>
+              </div>
+              <div class="pt-4 border-t border-slate-800 flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                <span>Option <strong class="text-emerald-400 font-bold font-display">{{ calculatedResults().betterLoan
+                    }}</strong> is better, saving you <strong class="text-emerald-400">{{
+                    formatINR(calculatedResults().totalCostSavings) }}</strong> in total charges!</span>
+              </div>
+            </div>
+          </div>
+          } @else {
+          <!-- STANDARD SINGLE CALCULATOR OUTPUTS -->
+          <div class="space-y-6">
+            <div class="mb-2">
+              <span class="text-[10px] text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+                @if (activeTab() === 'eligibility') { Max Loan Eligibility }
+                @else if (activeTab() === 'affordability') { Comfortable Loan Size }
+                @else if (activeTab() === 'loan_amount') { Loan Amount Approved }
+                @else if (activeTab() === 'tenure') { Required Tenure }
+                @else if (activeTab() === 'interest_rate') { Solved Interest Rate }
+                @else if (activeTab() === 'prepayment') { Recalculated Remaining Loan }
+                @else { Monthly EMI Instalment }
+              </span>
+
+              <span class="text-4xl font-extrabold font-display mt-1.5 tracking-tight text-emerald-600 dark:text-emerald-400 font-mono tracking-tight">
+                @if (activeTab() === 'eligibility') { {{ formatINR(calculatedResults().maxLoanEligibility) }} }
+                @else if (activeTab() === 'affordability') { {{ formatINR(calculatedResults().affordableLoan) }} }
+                @else if (activeTab() === 'loan_amount') { {{ formatINR(calculatedResults().maxLoanEligibility) }} }
+                @else if (activeTab() === 'tenure') { {{ calculatedResults().tenureMonths || 0 }} Months <span
+                  class="text-xs font-sans text-slate-400">({{ ((calculatedResults().tenureMonths || 0) / 12).toFixed(1)
+                  }} Yrs)</span> }
+                @else if (activeTab() === 'interest_rate') { {{ (calculatedResults().solvedRate || 0).toFixed(2) }}% }
+                @else { {{ formatINR(calculatedResults().baseEmi) }} }
+              </span>
+            </div>
+
+            <!-- DETAILED METRICS COLUMN -->
+            <div class="grid grid-cols-2 gap-y-4 gap-x-6 border-t border-slate-800 pt-6 text-xs text-slate-300">
+              <div>
+                <span class="text-slate-500 block mb-0.5">Total Interest Cost</span>
+                <span class="font-bold text-sm block text-emerald-400">{{ formatINR(calculatedResults().totalInterestPaid) }}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block mb-0.5">Total Cumulative Repayment</span>
+                <span class="font-bold text-sm block text-emerald-400">{{ formatINR(calculatedResults().totalRepayment) }}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block mb-0.5">Repayment Completion</span>
+                <span class="font-bold text-sm block text-emerald-400">{{ calculatedResults().completionDate }}</span>
+              </div>
+              <div>
+                <span class="text-slate-500 block mb-0.5">Upfront Fees & Taxes</span>
+                <span class="font-bold text-sm block text-emerald-400">{{
+                  formatINR(calculatedResults().totalUpfrontCharges) }}</span>
+              </div>
+            </div>
+
+            <!-- PREPAYMENT SAVINGS METRICS -->
+            @if (activeTab() === 'prepayment' || activeTab() === 'tenure_reduction' || activeTab() === 'emi_reduction'
+            || activeTab() === 'foreclosure' || activeTab() === 'balance_transfer') {
+            <div
+              class="bg-emerald-950 border border-emerald-900 rounded-2xl p-4 flex items-center justify-between gap-4 mt-6">
+              <div>
+                <span class="text-[10px] text-emerald-500 uppercase font-bold tracking-wider">Interest Savings</span>
+                <span class="text-xl font-bold font-display text-emerald-400 block mt-0.5">
+                  @if (activeTab() === 'balance_transfer' || activeTab() === 'foreclosure') {
+                  {{ formatINR(calculatedResults().netSavings) }}
+                  } @else {
+                  {{ formatINR(calculatedResults().interestSaved) }}
+                  }
+                </span>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] text-emerald-500 uppercase font-bold tracking-wider">
+                  @if (activeTab() === 'balance_transfer') { Break-even Period } @else { Time Saved }
+                </span>
+                <span class="text-xl font-bold font-display text-emerald-400 block mt-0.5">
+                  @if (activeTab() === 'balance_transfer') {
+                  {{ calculatedResults().breakEvenMonths }} Months
+                  } @else if (activeTab() === 'emi_reduction') {
+                  {{ formatINR(calculatedResults().emiSaved) }}/Mo
+                  } @else {
+                  {{ calculatedResults().monthsSaved }} Months
+                  }
+                </span>
+              </div>
+            </div>
+            }
+          </div>
+          }
+        </div>
+        <!-- SVG CHARTS PANEL -->
+        <div class="bg-zinc-90 border border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 rounded-3xl p-6 shadow-sm">
+          <div class="flex justify-between items-center mb-6">
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider">Visual Projections</h4>
+            <div class="flex bg-slate-100 dark:bg-zinc-900 rounded-lg p-0.5 border border-slate-200">
+              <button (click)="activeChartTab.set('balance')"
+                class="px-2.5 py-1 text-[10px] font-semibold rounded cursor-pointer"
+                [class.bg-white]="activeChartTab() === 'balance'"
+                [class.dark:bg-zinc-600]="activeChartTab() === 'balance'"
+                [class.text-emerald-400]="activeChartTab() === 'balance'"
+                [class.text-slate-500]="activeChartTab() !== 'balance'">Trend</button>
+              <button (click)="activeChartTab.set('donut')"
+                class="px-2.5 py-1 text-[10px] font-semibold rounded cursor-pointer"
+                [class.bg-white]="activeChartTab() === 'donut'"
+                [class.dark:bg-zinc-600]="activeChartTab() === 'donut'"
+                [class.text-emerald-400]="activeChartTab() === 'donut'"
+                [class.text-slate-500]="activeChartTab() !== 'donut'">Breakup</button>
+              <button (click)="activeChartTab.set('annual')"
+                class="px-2.5 py-1 text-[10px] font-semibold rounded cursor-pointer"
+                [class.bg-white]="activeChartTab() === 'annual'"
+                [class.dark:bg-zinc-600]="activeChartTab() === 'annual'"
+                [class.text-emerald-400]="activeChartTab() === 'annual'"
+                [class.text-slate-500]="activeChartTab() !== 'annual'">Annual</button>
+            </div>
+          </div>
+
+          <!-- CHART TAB 1: AREA BALANCE LINE TREND -->
+          @if (activeChartTab() === 'balance') {
+          <div class="relative w-full h-44 flex items-center justify-center">
+            <svg width="100%" height="100%" viewBox="0 0 450 180" class="w-full">
+              <defs>
+                <linearGradient id="lineGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#009966" stop-opacity="0.15" />
+                  <stop offset="100%" stop-color="#009966" stop-opacity="0.0" />
+                </linearGradient>
+              </defs>
+              <line x1="40" y1="20" x2="410" y2="20" stroke="#f8fafc" stroke-width="1" />
+              <line x1="40" y1="60" x2="410" y2="60" stroke="#f8fafc" stroke-width="1" />
+              <line x1="40" y1="100" x2="410" y2="100" stroke="#f8fafc" stroke-width="1" />
+              <line x1="40" y1="140" x2="410" y2="140" stroke="#f8fafc" stroke-width="1" />
+              <line x1="40" y1="160" x2="410" y2="160" stroke="#f1f5f9" stroke-width="1.5" />
+
+              @if (lineChartPoints().length > 0) {
+              <path [attr.d]="areaPathD()" fill="url(#lineGrad)" />
+              <path [attr.d]="linePathD()" fill="none" stroke="#009966" stroke-width="2.5" stroke-linecap="round" />
+
+              @for (pt of lineChartPoints(); track pt.label; let first = $first; let last = $last) {
+              @if (first || last || $index % 3 === 0) {
+              <circle [attr.cx]="pt.x" [attr.cy]="pt.y" r="4.5" fill="#009966" stroke="#ffffff" stroke-width="2" />
+              <text [attr.x]="pt.x" y="175" class="text-[9px] fill-slate-400 font-mono" text-anchor="middle">
+                {{ pt.label }}
+              </text>
+              }
+              }
+              }
+            </svg>
+          </div>
+          <div class="text-[10px] text-slate-400 text-center font-mono mt-2">Outstanding Principal Balance Over Time
+          </div>
+          }
+
+          <!-- CHART TAB 2: DONUT CHART -->
+          @if (activeChartTab() === 'donut') {
+          <div class="flex flex-col sm:flex-row items-center justify-around gap-6 py-4">
+            <div class="relative w-36 h-36">
+              <svg width="100%" height="100%" viewBox="0 0 100 100" class="transform -rotate-90">
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f8fafc" stroke-width="10" />
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#009966" stroke-width="10"
+                  [attr.stroke-dasharray]="principalDashArray()" stroke-linecap="round" />
+                <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f43f5e" stroke-width="10"
+                  [attr.stroke-dasharray]="interestDashArray()" [attr.stroke-dashoffset]="interestDashOffset()"
+                  stroke-linecap="round" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span class="text-[10px] text-slate-400 uppercase font-semibold">Interest</span>
+                <span class="text-base font-bold text-slate-800">{{ interestPercent() | number:'1.0-0' }}%</span>
+              </div>
+            </div>
+            <div class="space-y-3.5 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded bg-[#009966]"></span>
+                <span class="text-slate-500">Principal Paid:</span>
+                <strong class="text-slate-800">{{ principalPercent() | number:'1.0-0' }}%</strong>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded bg-[#f43f5e]"></span>
+                <span class="text-slate-500">Interest Paid:</span>
+                <strong class="text-slate-800">{{ interestPercent() | number:'1.0-0' }}%</strong>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- CHART TAB 3: ANNUAL STACKED BAR CHART -->
+          @if (activeChartTab() === 'annual') {
+          <div class="relative w-full h-44 flex items-center justify-center">
+            <svg width="100%" height="100%" viewBox="0 0 450 180" class="w-full">
+              <line x1="45" y1="20" x2="430" y2="20" stroke="#f8fafc" stroke-width="1" />
+              <line x1="45" y1="60" x2="430" y2="60" stroke="#f8fafc" stroke-width="1" />
+              <line x1="45" y1="100" x2="430" y2="100" stroke="#f8fafc" stroke-width="1" />
+              <line x1="45" y1="140" x2="430" y2="140" stroke="#f8fafc" stroke-width="1" />
+              <line x1="45" y1="160" x2="430" y2="160" stroke="#f1f5f9" stroke-width="1.5" />
+
+              @if (barChartData().length > 0) {
+              @for (bar of barChartData(); track bar.year) {
+              <rect [attr.x]="bar.x" [attr.y]="bar.pY" [attr.width]="bar.barWidth" [attr.height]="bar.pHeight"
+                fill="#009966" rx="2" />
+              <rect [attr.x]="bar.x" [attr.y]="bar.iY" [attr.width]="bar.barWidth" [attr.height]="bar.iHeight"
+                fill="#f43f5e" rx="2" />
+
+              @if (barChartData().length <= 7 || $index % 2===0) { <text [attr.x]="bar.x + bar.barWidth / 2" y="175"
+                class="text-[9px] fill-slate-400 font-mono" text-anchor="middle">
+                {{ bar.year }}
+                </text>
+                }
+                }
+                }
+            </svg>
+          </div>
+          <div class="flex justify-center gap-4 text-[10px] font-mono mt-2">
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-[#009966]"></span> Principal
+              Paid</div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-[#f43f5e]"></span> Interest
+              Paid</div>
+          </div>
+          }
+        </div>
+
+      </section>
+    </div>
+
+    <!-- AMORTIZATION PROJECTION CONTAINER -->
+    <section class="mt-4 bg-zinc-90 border border-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 rounded-3xl shadow-sm overflow-hidden">
+
+      <!-- HEADER HEADER WITH EXPAND TOGGLE -->
+      <button type="button" (click)="showSchedule.set(!showSchedule())"
+        class="w-full text-left p-4 flex items-center justify-between hover:bg-emerald-500/10 transition-colors duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+        <div class="flex items-center gap-3 text-white">
+          <div class="w-10 h-10 bg-primary-light rounded-xl flex items-center justify-center">
+            <mat-icon class="text-2xl leading-none">format_list_numbered</mat-icon>
+          </div>
+          <div>
+            <h3 class="font-display text-white font-bold text-slate-800">Complete Amortization Schedule</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Monthly breakdown of outstanding balances, payments, and interest
+              components</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">
+            {{ calculatedResults().schedule.length }} Months Projected
+          </span>
+          <span class="w-8 h-8 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500">
+            <mat-icon class="text-xl leading-none">{{ showSchedule() ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </span>
+        </div>
+      </button>
+
+      <!-- COLLAPSIBLE SCHEDULE CONTENT -->
+      @if (showSchedule()) {
+      <div class="border-t border-slate-100 p-4 space-y-6">
+
+        <!-- SEARCH & EXPORT CONTROLS BAR -->
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-center bg-zinc-50/10 dark:bg-zinc-900 rounded-2xl p-4">
+          <div class="flex flex-wrap gap-4 items-center w-full md:w-auto">
+            <!-- Inline Filter Search -->
+            <div class="relative w-full sm:w-56">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <mat-icon class="text-lg">search</mat-icon>
+              </span>
+              <input type="text" placeholder="Filter month/date..."
+                class="w-full bg-zinc-50/10 dark:bg-zinc-900 text-white border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs font-medium focus:outline-none focus:border-primary"
+                [ngModel]="scheduleSearchQuery()"
+                (ngModelChange)="scheduleSearchQuery.set($event); jumpToFirstPage()" />
+            </div>
+
+            <!-- Jump to Year Filter -->
+            <div class="relative w-full sm:w-44">
+              <select
+                class="w-full bg-zinc-50/10 dark:bg-zinc-900 text-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:border-primary appearance-none"
+                [ngModel]="scheduleYearFilter()" (ngModelChange)="scheduleYearFilter.set($event); jumpToFirstPage()">
+                <option value="all">Filter by Year (All)</option>
+                @for (y of availableYears(); track y) {
+                <option [value]="y">Year {{ y }}</option>
+                }
+              </select>
+              <span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                <mat-icon class="text-sm">keyboard_arrow_down</mat-icon>
+              </span>
+            </div>
+          </div>
+
+          <!-- EXPORT ACTIONS GROUP -->
+          <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
+            <button (click)="copySchedule()"
+              class="px-4 py-2 border border-slate-200 hover:bg-emerald-500/10 rounded-xl text-xs font-semibold text-white flex items-center gap-1.5 cursor-pointer transition-colors">
+              <mat-icon class="text-base leading-none">content_copy</mat-icon> Copy Table
+            </button>
+            <button (click)="exportToCSV()"
+              class="px-4 py-2 border border-slate-200 hover:bg-emerald-500/10 rounded-xl text-xs font-semibold text-white flex items-center gap-1.5 cursor-pointer transition-colors">
+              <mat-icon class="text-base leading-none">download</mat-icon> Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- TABLE VIEW -->
+        <div class="overflow-x-auto rounded-2xl border border-emerald-500">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-emerald-500/10 border-b border-slate-100">
+                <th class="py-3.5 px-4 text-[10px] font-bold text-emerald-600 uppercase tracking-wider text-center w-16">
+                  Month</th>
+                <th class="py-3.5 px-4 text-[10px] font-bold text-emerald-600 uppercase tracking-wider">Payment Date</th>
+                <th class="py-3.5 px-4 text-[10px] font-bold text-emerald-600 uppercase tracking-wider text-right">
+                  Instalment (EMI)</th>
+                <th class="py-3.5 px-4 text-[10px] font-bold text-emerald-600 uppercase tracking-wider text-right">
+                  Principal Component</th>
+                <th class="py-3.5 px-4 text-[10px] font-bold text-emerald-600 uppercase tracking-wider text-right">
+                  Interest Component</th>
+                <th class="py-3.5 px-4 text-[10px] font-bold text-emerald-600 uppercase tracking-wider text-right">Extra
+                  Prepaid</th>
+                <th class="py-3.5 px-4 text-[10px] font-bold text-emerald-600 uppercase tracking-wider text-right">
+                  Remaining Principal</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-xs font-medium text-slate-600">
+              @for (row of paginatedSchedule(); track row.monthIndex) {
+              <tr class="hover:bg-emerald-500/10 transition-colors" [class.bg-emerald-500/10]="row.isMoratorium">
+                <td class="py-3 px-4 font-mono text-white text-center">{{ row.monthIndex }}</td>
+                <td class="py-3 px-4 text-white font-semibold">{{ row.date }}</td>
+                <td class="py-3 px-4 text-right text-white font-bold">
+                  @if (row.isMoratorium) {
+                  <span
+                    class="text-amber-500 font-semibold text-[10px] bg-amber-50 px-2 py-0.5 rounded-full uppercase tracking-wider">Moratorium</span>
+                  } @else {
+                  {{ formatINR(row.emi) }}
+                  }
+                </td>
+                <td class="py-3 px-4 text-right text-emerald-600 font-semibold">{{ formatINR(row.principalPaid) }}</td>
+                <td class="py-3 px-4 text-right text-rose-500">{{ formatINR(row.interestPaid) }}</td>
+                <td class="py-3 px-4 text-right">
+                  @if (row.extraPayment > 0) {
+                  <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg font-bold">{{
+                    formatINR(row.extraPayment) }}</span>
+                  } @else {
+                  <span class="text-white text-center">-</span>
+                  }
+                </td>
+                <td class="py-3 px-4 text-right font-bold text-white">{{ formatINR(row.outstandingBalance) }}</td>
+              </tr>
+              } @empty {
+              <tr>
+                <td colspan="7" class="py-8 text-center text-slate-400 text-sm">
+                  No projections matched your schedule search.
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- TABLE PAGINATION FOOTER -->
+        @if (totalPages() > 1) {
+        <div class="flex items-center justify-between bg-white dark:bg-zinc-900 rounded-2xl px-5 py-3 border border-slate-100">
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            Page {{ currentPage() }} of {{ totalPages() }} (Showing {{ paginatedSchedule().length }} months)
+          </span>
+          <div class="flex items-center gap-1">
+            <button (click)="currentPage.set(1)" [disabled]="currentPage() === 1"
+              class="w-8 h-8 rounded-lg border border-slate-200 bg-white dark:bg-zinc-900 hover:bg-emerald-500/10 flex items-center justify-center text-emerald-500 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors">
+              <mat-icon class="text-sm">first_page</mat-icon>
+            </button>
+            <button (click)="prevPage()" [disabled]="currentPage() === 1"
+              class="w-8 h-8 rounded-lg border border-slate-200 bg-white dark:bg-zinc-900 hover:bg-emerald-500/10 flex items-center justify-center text-emerald-500 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors">
+              <mat-icon class="text-sm">chevron_left</mat-icon>
+            </button>
+            <span class="px-3 text-xs font-mono font-bold text-slate-700">{{ currentPage() }}</span>
+            <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+              class="w-8 h-8 rounded-lg border border-slate-200 bg-white dark:bg-zinc-900 hover:bg-emerald-500/10 flex items-center justify-center text-emerald-500 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors">
+              <mat-icon class="text-sm">chevron_right</mat-icon>
+            </button>
+            <button (click)="currentPage.set(totalPages())" [disabled]="currentPage() === totalPages()"
+              class="w-8 h-8 rounded-lg border border-slate-200 bg-white dark:bg-zinc-900 hover:bg-emerald-500/10 flex items-center justify-center text-emerald-500 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed transition-colors">
+              <mat-icon class="text-sm">last_page</mat-icon>
+            </button>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </section>
+  </main>
+
+  <!-- IN-APP FLOATING PREMIUM TOAST -->
+  <div
+    class="fixed bottom-6 right-6 bg-emerald-500/10 dark:bg-zinc-900 border border-slate-800 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 transition-all duration-300 transform"
+    [class.opacity-100]="toastVisible()" [class.translate-y-0]="toastVisible()"
+    [class.pointer-events-auto]="toastVisible()" [class.opacity-0]="!toastVisible()"
+    [class.translate-y-4]="!toastVisible()" [class.pointer-events-none]="!toastVisible()" style="z-index: 9999;">
+    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+    <span class="text-xs font-bold tracking-tight text-emerald-400">{{ toastMessage() }}</span>
+  </div>
+
+<!-- ========================================================================= -->
+<!-- PRINT ONLY VIEW (CLEAN PRISTINE LAYOUT DISPLAYED EXCLUSIVELY FOR REPORTING) -->
+<!-- ========================================================================= -->
+<div class="hidden print-only max-w-4xl mx-auto p-12 bg-white text-slate-900 font-sans leading-relaxed">
+  <div class="flex justify-between items-center border-b border-slate-300 pb-6 mb-8">
+    <div>
+      <h1 class="text-2xl font-bold font-display tracking-tight text-slate-900">LOAN MASTER WORKSPACE REPORT</h1>
+      <p class="text-xs text-slate-500 mt-1">Detailed repayment calculations, schedules & structural fees</p>
+    </div>
+    <div class="text-right text-xs text-slate-400">
+      <span>Generated on: 2026-07-02</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-8 border-b border-slate-200 pb-8 mb-8">
+    <div>
+      <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">Calculation Input Metrics</h3>
+      <table class="w-full text-xs divide-y divide-slate-100 font-medium">
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Calculator Type:</td>
+          <td class="text-slate-800 font-bold uppercase">{{ activeTab() }}</td>
+        </tr>
+        @if (activeTab() === 'emi') {
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Loan Principal:</td>
+          <td class="text-slate-800 font-bold">{{ formatINR(loanAmount()) }}</td>
+        </tr>
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Interest Rate:</td>
+          <td class="text-slate-800 font-bold">{{ interestRate() }}%</td>
+        </tr>
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Tenure:</td>
+          <td class="text-slate-800 font-bold">{{ loanTenure() }} {{ tenureType() }}</td>
+        </tr>
+        }
+        @if (advMoratorium() > 0) {
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Moratorium Deferral:</td>
+          <td class="text-slate-800 font-bold">{{ advMoratorium() }} Months</td>
+        </tr>
+        }
+      </table>
+    </div>
+
+    <div>
+      <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">Projected Repayment Output</h3>
+      <table class="w-full text-xs divide-y divide-slate-100 font-medium">
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Monthly EMI Instalment:</td>
+          <td class="text-slate-800 font-extrabold text-base">{{ formatINR(calculatedResults().baseEmi) }}</td>
+        </tr>
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Total Interest Payable:</td>
+          <td class="text-slate-800 font-bold">{{ formatINR(calculatedResults().totalInterestPaid) }}</td>
+        </tr>
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Total Cumulative Payment:</td>
+          <td class="text-slate-800 font-bold text-slate-900">{{ formatINR(calculatedResults().totalRepayment) }}</td>
+        </tr>
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Upfront Charges & Fees:</td>
+          <td class="text-slate-800 font-bold">{{ formatINR(calculatedResults().totalUpfrontCharges) }}</td>
+        </tr>
+        <tr class="py-1.5 flex justify-between">
+          <td class="text-slate-500">Repayment Target Completion:</td>
+          <td class="text-emerald-700 font-bold">{{ calculatedResults().completionDate }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="mb-6">
+    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-4">Complete Repayment Schedule
+      Projections</h3>
+    <table class="w-full text-xs text-left border-collapse">
+      <thead>
+        <tr class="bg-slate-100 border-b border-slate-300">
+          <th class="py-2 px-3 text-[9px] font-bold uppercase w-12 text-center">Month</th>
+          <th class="py-2 px-3 text-[9px] font-bold uppercase">Payment Date</th>
+          <th class="py-2 px-3 text-[9px] font-bold uppercase text-right">EMI</th>
+          <th class="py-2 px-3 text-[9px] font-bold uppercase text-right">Principal component</th>
+          <th class="py-2 px-3 text-[9px] font-bold uppercase text-right">Interest component</th>
+          <th class="py-2 px-3 text-[9px] font-bold uppercase text-right">Extra Prepaid</th>
+          <th class="py-2 px-3 text-[9px] font-bold uppercase text-right">Remaining Principal</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200">
+        @for (row of calculatedResults().schedule; track row.monthIndex) {
+        <tr class="text-[10px]">
+          <td class="py-1.5 px-3 text-center font-mono">{{ row.monthIndex }}</td>
+          <td class="py-1.5 px-3 font-semibold">{{ row.date }}</td>
+          <td class="py-1.5 px-3 text-right">
+            @if (row.isMoratorium) { Moratorium }
+            @else { {{ formatINR(row.emi) }} }
+          </td>
+          <td class="py-1.5 px-3 text-right text-emerald-700">{{ formatINR(row.principalPaid) }}</td>
+          <td class="py-1.5 px-3 text-right text-rose-600">{{ formatINR(row.interestPaid) }}</td>
+          <td class="py-1.5 px-3 text-right">{{ row.extraPayment > 0 ? formatINR(row.extraPayment) : '-' }}</td>
+          <td class="py-1.5 px-3 text-right font-bold">{{ formatINR(row.outstandingBalance) }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <footer class="text-center text-[10px] text-slate-400 border-t border-slate-200 pt-6 mt-12">
+    <span>Calculations provided by Loan Master Suite. Highly reliable but subject to bank-specific terms.</span>
+  </footer>
+</div>

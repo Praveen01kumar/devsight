@@ -41,49 +41,64 @@ interface BatchRow {
       <div class="flex flex-wrap items-center justify-between border-b border-zinc-200 dark:border-zinc-800 gap-2 pb-px select-none">
         <div class="flex flex-wrap gap-1">
           <button (click)="setActiveTab('text')"
-            [class.border-emerald-500]="activeTab() === 'text'"
-            [class.text-emerald-600]="activeTab() === 'text'"
-            [class.dark:text-emerald-400]="activeTab() === 'text'"
-            class="px-4 py-2.5 text-xs font-mono font-bold border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition flex items-center gap-1.5 cursor-pointer"
+            [class.bg-emerald-500/10]="activeTab() === 'text'"
+            [class.dark:bg-zinc-900]="activeTab() === 'text'"
+            [class.border-emerald-500/45]="activeTab() === 'text'"
+            [class.border-b-2]="activeTab() === 'text'"
+            [class.text-emerald-400]="activeTab() === 'text'"
+            [class.text-slate-500]="activeTab() !== 'text'"
+            class="px-4 py-2.5 text-xs font-mono font-bold rounded hover:bg-emerald-500/10 hover:dark:bg-emerald-500/10 transition flex items-center gap-1.5 cursor-pointer"
             id="tab-text"
           >
             <mat-icon class="scale-75">edit_note</mat-icon> TEXT WORKSPACE
           </button>
           <button (click)="setActiveTab('file')"
-            [class.border-emerald-500]="activeTab() === 'file'"
-            [class.text-emerald-600]="activeTab() === 'file'"
-            [class.dark:text-emerald-400]="activeTab() === 'file'"
-            class="px-4 py-2.5 text-xs font-mono font-bold border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition flex items-center gap-1.5 cursor-pointer"
+          [class.bg-emerald-500/10]="activeTab() === 'file'"
+            [class.dark:bg-zinc-900]="activeTab() === 'file'"
+            [class.border-emerald-500/45]="activeTab() === 'file'"
+            [class.border-b-2]="activeTab() === 'file'"
+            [class.text-emerald-400]="activeTab() === 'file'"
+            [class.text-slate-500]="activeTab() !== 'file'"
+            class="px-4 py-2.5 text-xs font-mono font-bold rounded hover:bg-emerald-500/10 hover:dark:bg-emerald-500/10 transition flex items-center gap-1.5 cursor-pointer"
             id="tab-file"
           >
             <mat-icon class="scale-75">file_present</mat-icon> FILE WORKBENCH
           </button>
 
           <button (click)="setActiveTab('validator')"
-            [class.border-emerald-500]="activeTab() === 'validator'"
-            [class.text-emerald-600]="activeTab() === 'validator'"
-            [class.dark:text-emerald-400]="activeTab() === 'validator'"
-            class="px-4 py-2.5 text-xs font-mono font-bold border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition flex items-center gap-1.5 cursor-pointer"
+          [class.bg-emerald-500/10]="activeTab() === 'validator'"
+            [class.dark:bg-zinc-900]="activeTab() === 'validator'"
+            [class.border-emerald-500/45]="activeTab() === 'validator'"
+            [class.border-b-2]="activeTab() === 'validator'"
+            [class.text-emerald-400]="activeTab() === 'validator'"
+            [class.text-slate-500]="activeTab() !== 'validator'"
+            class="px-4 py-2.5 text-xs font-mono font-bold rounded hover:bg-emerald-500/10 hover:dark:bg-emerald-500/10 transition flex items-center gap-1.5 cursor-pointer"
             id="tab-validator"
           >
             <mat-icon class="scale-75">health_and_safety</mat-icon> VALIDATOR & REPAIR
           </button>
 
           <button (click)="setActiveTab('templates')"
-            [class.border-emerald-500]="activeTab() === 'templates'"
-            [class.text-emerald-600]="activeTab() === 'templates'"
-            [class.dark:text-emerald-400]="activeTab() === 'templates'"
-            class="px-4 py-2.5 text-xs font-mono font-bold border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition flex items-center gap-1.5 cursor-pointer"
+          [class.bg-emerald-500/10]="activeTab() === 'templates'"
+            [class.dark:bg-zinc-900]="activeTab() === 'templates'"
+            [class.border-emerald-500/45]="activeTab() === 'templates'"
+            [class.border-b-2]="activeTab() === 'templates'"
+            [class.text-emerald-400]="activeTab() === 'templates'"
+            [class.text-slate-500]="activeTab() !== 'templates'"
+            class="px-4 py-2.5 text-xs font-mono font-bold rounded hover:bg-emerald-500/10 hover:dark:bg-emerald-500/10 transition flex items-center gap-1.5 cursor-pointer"
             id="tab-templates"
           >
             <mat-icon class="scale-75">html</mat-icon> DEV SNIPPETS
           </button>
 
           <button (click)="setActiveTab('batch')"
-            [class.border-emerald-500]="activeTab() === 'batch'"
-            [class.text-emerald-600]="activeTab() === 'batch'"
-            [class.dark:text-emerald-400]="activeTab() === 'batch'"
-            class="px-4 py-2.5 text-xs font-mono font-bold border-b-2 border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300 transition flex items-center gap-1.5 cursor-pointer"
+            [class.bg-emerald-500/10]="activeTab() === 'batch'"
+            [class.dark:bg-zinc-900]="activeTab() === 'batch'"
+            [class.border-emerald-500/45]="activeTab() === 'batch'"
+            [class.border-b-2]="activeTab() === 'batch'"
+            [class.text-emerald-400]="activeTab() === 'batch'"
+            [class.text-slate-500]="activeTab() !== 'batch'"
+            class="px-4 py-2.5 text-xs font-mono font-bold rounded hover:bg-emerald-500/10 hover:dark:bg-emerald-500/10 transition flex items-center gap-1.5 cursor-pointer"
             id="tab-batch"
           >
             <mat-icon class="scale-75">dynamic_feed</mat-icon> BATCH BULK ENGINE

@@ -1145,6 +1145,89 @@ export const TOOLS: ToolMetadata[] = [
       </ol>
   `},
   {
+    id: 'loan-calculator',
+    slug: 'loan-calculator',
+    name: 'Loan Calculator Suite',
+    shortDescription: 'Calculate EMI, loan eligibility, affordability, tenure, interest rate, prepayments, foreclosure, balance transfer savings, and compare multiple loan scenarios in one place.',
+    metaTitle: 'Loan Calculator Suite - EMI, Eligibility, Interest & Prepayment Calculator - Devsight',
+    metaDescription: 'Comprehensive offline loan calculator suite featuring EMI calculator, loan eligibility, affordability, loan amount, tenure, interest rate, prepayment, foreclosure, balance transfer, and loan comparison calculators.',
+    categoryId: 'measurement-tools',
+    icon: 'account_balance',
+    tags: ['loan-calculator', 'emi-calculator', 'loan-eligibility', 'loan-affordability', 'loan-amount', 'loan-tenure', 'interest-rate', 'prepayment', 'foreclosure', 'balance-transfer', 'loan-comparison', 'finance', 'mortgage'],
+    relatedTools: ['unit-converter'],
+    faqs: [
+      {
+        question: 'Which loan calculators are included?',
+        answer: 'The suite includes EMI Calculator, Loan Eligibility, Loan Affordability, Loan Amount, Loan Tenure, Interest Rate, Part Prepayment, EMI Reduction, Tenure Reduction, Foreclosure, Balance Transfer, and Loan Comparison calculators.'
+      },
+      {
+        question: 'Are all calculations performed offline?',
+        answer: 'Yes. Every calculation is performed directly in your browser. No loan details or financial information are sent to any server.'
+      },
+      {
+        question: 'Can I compare different loan offers?',
+        answer: 'Yes. The Loan Comparison and Balance Transfer calculators let you compare multiple loan scenarios, helping you evaluate EMI, interest costs, repayment duration, and potential savings.'
+      },
+      {
+        question: 'Does the calculator support prepayments and foreclosure?',
+        answer: 'Yes. You can estimate the impact of one-time prepayments, recurring extra payments, foreclosure charges, reduced EMIs, shorter tenures, and total interest savings.'
+      }
+    ],
+    detailedGuide: `
+    <h2>Comprehensive Loan Calculator Suite</h2>
+
+    <p>
+      Manage every stage of your borrowing journey using a complete collection of
+      financial calculators. Whether you're planning a new loan, comparing lenders,
+      estimating EMI, or evaluating prepayments, all calculations are performed
+      instantly in your browser with complete privacy.
+    </p>
+
+    <h3>Included Calculators</h3>
+
+    <div>
+      <span>EMI Calculator</span>
+      <span>Loan Eligibility Calculator</span>
+      <span>Loan Affordability Calculator</span>
+      <span>Loan Amount Calculator</span>
+      <span>Loan Tenure Calculator</span>
+      <span>Interest Rate Calculator</span>
+      <span>Part Prepayment Calculator</span>
+      <span>EMI Reduction Calculator</span>
+      <span>Tenure Reduction Calculator</span>
+      <span>Foreclosure Calculator</span>
+      <span>Balance Transfer Calculator</span>
+      <span>Loan Comparison Calculator</span>
+    </div>
+
+    <h3>Key Features</h3>
+
+    <ul>
+      <li>Instant EMI calculations.</li>
+      <li>Loan eligibility estimation based on income.</li>
+      <li>Affordability analysis using income and expenses.</li>
+      <li>Loan amount estimation from desired EMI.</li>
+      <li>Automatic tenure and interest calculations.</li>
+      <li>Prepayment and foreclosure impact analysis.</li>
+      <li>Balance transfer savings comparison.</li>
+      <li>Interactive amortization schedule.</li>
+      <li>Principal vs interest visualization.</li>
+      <li>Real-time loan comparison.</li>
+      <li>Works completely offline.</li>
+    </ul>
+
+    <h3>How It Works</h3>
+
+    <ol>
+      <li>Select the calculator you want to use.</li>
+      <li>Enter your loan details.</li>
+      <li>Results update instantly as you type.</li>
+      <li>Review EMI, interest, repayment schedule, and savings.</li>
+      <li>Compare multiple scenarios to make informed financial decisions.</li>
+    </ol>
+  `
+  },
+  {
     id: 'date-difference',
     slug: 'date-difference',
     name: 'Date Difference Calculator & Business Day Counter',
