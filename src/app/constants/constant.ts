@@ -2038,9 +2038,9 @@ export const TOOLS: ToolMetadata[] = [
     detailedGuide: '<h2>Rotate PDF Pages</h2><p>Fix incorrectly scanned or sideways pages with one-click page rotation.</p>'
   },
   {
-    id: 'pdf-page-extractor',
-    slug: 'pdf-page-extractor',
-    name: 'PDF Page Extractor',
+    id: 'pdf-extractor',
+    slug: 'pdf-extractor',
+    name: 'PDF Extractor',
     shortDescription: 'Extract selected PDF pages into a brand-new document.',
     metaTitle: 'Extract PDF Pages',
     metaDescription: 'Create new PDF files by extracting selected pages or page ranges from existing documents.',

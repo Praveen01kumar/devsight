@@ -49,6 +49,8 @@ import { PdfCompressor } from '../../tools/pdf/pdf-compressor/pdf-compressor';
 import { PdfSplit } from '../../tools/pdf/pdf-split/pdf-split';
 import { PdfMerge } from '../../tools/pdf/pdf-merge/pdf-merge';
 import { PdfRotate } from '../../tools/pdf/pdf-rotate/pdf-rotate';
+import { PdfViewer } from '../../tools/pdf/pdf-viewer/pdf-viewer';
+import { PdfExtractor } from '../../tools/pdf/pdf-extractor/pdf-extractor';
 
 @Component({
   selector: 'app-tool-wrapper',
@@ -104,7 +106,9 @@ import { PdfRotate } from '../../tools/pdf/pdf-rotate/pdf-rotate';
     PdfCompressor,
     PdfSplit,
     PdfMerge,
-    PdfRotate
+    PdfRotate,
+    PdfViewer,
+    PdfExtractor
 ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -260,6 +264,10 @@ import { PdfRotate } from '../../tools/pdf/pdf-rotate/pdf-rotate';
                 <app-pdf-merge />
               } @else if (currentTool()?.id === 'pdf-rotate') {
                 <app-pdf-rotate />
+              } @else if (currentTool()?.id === 'pdf-viewer') {
+                <app-pdf-viewer />
+              }@else if (currentTool()?.id === 'pdf-extractor') {
+                <app-pdf-extractor />
               } @else if (currentTool()?.id === 'typescript-workspace') {
                 <app-typescript-workspace />
               } @else if (currentTool()?.id === 'rxjs-visualizer') {

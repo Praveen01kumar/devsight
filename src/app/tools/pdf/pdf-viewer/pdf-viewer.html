@@ -1,0 +1,377 @@
+<div class="flex flex-col transition-colors duration-200 bg-[#fafafa] dark:bg-[#09090b]" (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()" (drop)="onDrop($event)">
+
+  <!-- Custom Drag Overlay -->
+  @if (isDragging()) {
+  <div
+    class="absolute inset-0 bg-primary/10 backdrop-blur-xs border-4 border-dashed border-primary z-50 flex flex-col items-center justify-center pointer-events-none transition-all duration-200">
+    <div class="bg-white p-6 rounded-2xl shadow-sm flex flex-col items-center space-y-3 border border-zinc-200">
+      <mat-icon class="text-5xl text-primary animate-bounce">file_upload</mat-icon>
+      <p class="font-sans font-semibold text-lg text-zinc-850">Drop PDF file here to view</p>
+      <p class="text-sm text-zinc-500 font-sans">Supports standard dynamic viewing</p>
+    </div>
+  </div>
+  }
+
+  <!-- Header / Toolbar -->
+  @if (isDocumentLoaded()) {
+  <header class="h-14 flex items-center justify-between px-4 z-20 shrink-0 border-b transition-colors duration-200 shadow-sm
+    bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 border-zinc-200 dark:border-zinc-800">
+    <!-- Left: Brand / Sidebar toggle -->
+    <div class="flex items-center space-x-3">
+      @if (isDocumentLoaded()) {
+      <button (click)="sidebarOpen.set(!sidebarOpen())"
+        class="bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 p-2 rounded-xl transition-all duration-150 cursor-pointer flex items-center justify-center active:scale-95 cursor-pointer"
+        title="Toggle Sidebar" id="btn-toggle-sidebar">
+        <mat-icon>{{ sidebarOpen() ? 'menu_open' : 'menu' }}</mat-icon>
+      </button>
+      }
+    </div>
+
+    <!-- Center: Page Controls & Zoom Matrix -->
+    @if (isDocumentLoaded()) {
+    <div class="flex items-center space-x-2 md:space-x-4">
+      <!-- Page navigation -->
+      <div class="flex items-center space-x-1">
+        <button (click)="prevPage()" [disabled]="currentPage() <= 1"
+          class="bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-xl disabled:opacity-30 disabled:hover:bg-transparent transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center"
+          id="btn-prev-page">
+          <mat-icon>chevron_left</mat-icon>
+        </button>
+        <div class="flex items-center space-x-1 text-xs text-zinc-600 dark:text-zinc-300">
+          <input type="number" [value]="currentPage()" (change)="goToPage($any($event.target).value)"
+            class="bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 w-10 text-center py-1 rounded-lg border focus:border-primary focus:ring-2 focus:ring-primary/20 outline-hidden font-mono text-xs"
+            min="1" [max]="totalPages()" id="input-page-number">
+          <span class="text-xs text-zinc-400">/</span>
+          <span class="px-1 font-mono text-xs" id="span-total-pages">{{ totalPages() }}</span>
+        </div>
+        <button (click)="nextPage()" [disabled]="currentPage() >= totalPages()"
+          class="bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-xl disabled:opacity-30 disabled:hover:bg-transparent transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center"
+          id="btn-next-page">
+          <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <div class="h-6 w-px bg-zinc-200 dark:bg-zinc-800"></div>
+
+      <!-- Zoom tools -->
+      <div class="flex items-center space-x-1">
+        <button (click)="zoomOut()"
+          class="bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center"
+          title="Zoom Out" id="btn-zoom-out">
+          <mat-icon>zoom_out</mat-icon>
+        </button>
+        <span class="font-mono text-xs w-12 text-center text-zinc-700 dark:text-zinc-300" id="span-zoom-percentage">
+          {{ (zoom() * 100) | number:'1.0-0' }}%
+        </span>
+        <button (click)="zoomIn()"
+          class="bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center"
+          title="Zoom In" id="btn-zoom-in">
+          <mat-icon>zoom_in</mat-icon>
+        </button>
+        <button (click)="zoomToFit()"
+          class="bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center"
+          title="Zoom to Fit" id="btn-zoom-fit">
+          <mat-icon>fit_screen</mat-icon>
+        </button>
+      </div>
+
+      <div class="h-6 w-px hidden md:block bg-zinc-200 dark:bg-zinc-800"></div>
+
+      <!-- Rotation control -->
+      <button (click)="rotateClockwise()"
+        class="bg-zinc-100 dark:bg-white/10 text-zinc-700 dark:text-zinc-300 p-1.5 rounded-xl transition-all duration-150 hidden md:inline-flex cursor-pointer active:scale-95 items-center justify-center"
+        title="Rotate Page" id="btn-rotate">
+        <mat-icon>rotate_right</mat-icon>
+      </button>
+    </div>
+    }
+
+    <!-- Right: File Actions & Theme Matrix -->
+    <div class="flex items-center space-x-2 md:space-x-3">
+      @if (isDocumentLoaded()) {
+      <!-- Search Panel -->
+      <div
+        class="bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 focus-within:border-primary dark:focus-within:border-primary focus-within:ring-2 dark:focus-within:ring-2 focus-within:ring-primary/15 dark:focus-within:ring-primary/15 relative hidden lg:flex items-center rounded-xl overflow-hidden pr-2 transition-all duration-150 border">
+        <span class="pl-2 text-zinc-400">
+          <mat-icon class="text-sm">search</mat-icon>
+        </span>
+        <input type="text" placeholder="Search text..." (input)="onSearchInput($event)"
+          class="text-zinc-800 dark:text-zinc-200 bg-transparent border-0 text-xs px-2 py-1.5 w-32 outline-hidden focus:ring-0 placeholder-zinc-400"
+          id="input-search">
+        @if (searchActive()) {
+        <div class="flex items-center space-x-1 text-[10px] font-mono select-none text-zinc-500 dark:text-zinc-400">
+          <span id="search-result-index" class="font-mono">{{ currentMatchIndex() }}</span>/<span>{{
+            searchResultsCount() }}</span>
+          <div class="flex space-x-0.5 ml-1">
+            <button (click)="prevMatch()" class="hover:text-primary transition-colors cursor-pointer"
+              title="Previous match"><mat-icon class="text-xs">keyboard_arrow_up</mat-icon></button>
+            <button (click)="nextMatch()" class="hover:text-primary transition-colors cursor-pointer"
+              title="Next match"><mat-icon class="text-xs">keyboard_arrow_down</mat-icon></button>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Custom Upload Button (Active in viewing page to choose another pdf!) -->
+      <label
+        class="px-4 py-2 rounded-2xl bg-primary hover:bg-primary-hover text-white transition-all duration-150 cursor-pointer flex items-center space-x-1.5 shadow-sm active:scale-95 select-none"
+        title="Choose another PDF File" id="label-upload">
+        <mat-icon class="text-sm">file_upload</mat-icon>
+        <span class="text-xs font-semibold hidden sm:inline">Choose other PDF</span>
+        <input type="file" accept="application/pdf" (change)="onFileSelected($event)" class="hidden" id="file-input">
+      </label>
+
+      <div class="h-6 w-px bg-zinc-200 dark:bg-zinc-800"></div>
+
+      <!-- Downloads/Print -->
+      <button (click)="downloadFile()"
+        class="text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/10 p-1.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center"
+        title="Download File" id="btn-download">
+        <mat-icon>download</mat-icon>
+      </button>
+      <button (click)="printFile()"
+        class="text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/10 p-1.5 rounded-xl transition-all duration-150 cursor-pointer hidden sm:inline-flex active:scale-95 items-center justify-center"
+        title="Print File" id="btn-print">
+        <mat-icon>print</mat-icon>
+      </button>
+      }
+    </div>
+  </header>
+  }
+  <!-- Workspace Shell -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Left Sidebar (Collapsible, only rendered if document is loaded) -->
+    @if (isDocumentLoaded() && sidebarOpen()) {
+    <aside class="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 w-64 border-r flex flex-col z-10 shrink-0 transition-all duration-300 animate-fade-in" id="app-sidebar">
+      <!-- Sidebar Navigation Tabs -->
+      <div class="flex p-1.5 space-x-1 border-b border-zinc-200 dark:border-zinc-800">
+        <button (click)="sidebarTab.set('thumbnails')" [class.bg-primary]="sidebarTab() === 'thumbnails'"
+          [class.text-white]="sidebarTab() === 'thumbnails'"
+          [class.hover:bg-zinc-100]="sidebarTab() !== 'thumbnails'"
+          [class.hover:bg-white/10]="sidebarTab() !== 'thumbnails'"
+          [class.hover:bg-[#f0e4ca]]="sidebarTab() !== 'thumbnails'"
+          [class.text-zinc-400]="sidebarTab() !== 'thumbnails'"
+          class="flex-1 py-1.5 text-xs rounded-lg transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center space-x-1 font-semibold"
+          id="tab-thumbnails">
+          <mat-icon class="text-sm">grid_view</mat-icon>
+          <span>Thumbnails</span>
+        </button>
+        <button (click)="sidebarTab.set('properties')" [class.bg-primary]="sidebarTab() === 'properties'"
+          [class.text-white]="sidebarTab() === 'properties'"
+          [class.hover:bg-zinc-100]="sidebarTab() !== 'properties'"
+          [class.hover:bg-white/10]="sidebarTab() !== 'properties'"
+          [class.hover:bg-[#f0e4ca]]="sidebarTab() !== 'properties'"
+          [class.text-zinc-400]="sidebarTab() !== 'properties'"
+          class="flex-1 py-1.5 text-xs rounded-lg transition-all duration-150 cursor-pointer active:scale-95 flex items-center justify-center space-x-1 font-semibold"
+          id="tab-properties">
+          <mat-icon class="text-sm">info</mat-icon>
+          <span>Properties</span>
+        </button>
+      </div>
+
+      <!-- Sidebar Content -->
+      <div class="flex-1 overflow-y-auto p-3">
+        <!-- Thumbnail Matrix -->
+        @if (sidebarTab() === 'thumbnails') {
+        <div class="grid grid-cols-2 gap-3" id="thumbnails-grid">
+          @for (url of thumbnailUrls(); track $index) {
+          <button (click)="goToPage($index + 1)" [class.ring-2]="$index + 1 === currentPage()"
+            [class.ring-primary]="$index + 1 === currentPage()" [class.border-primary]="$index + 1 === currentPage()"
+            class="bg-zinc-50 dark:bg-zinc-950 p-2 border rounded-xl overflow-hidden cursor-pointer hover:shadow-xs transition-all duration-150 text-center flex flex-col items-center space-y-1 w-full cursor-pointer"
+            id="thumb-btn-{{ $index }}">
+            <div
+              class="aspect-3/4 w-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-850 rounded-sm overflow-hidden border border-zinc-200/50">
+              @if (url) {
+              <img [src]="url" alt="Page thumbnail" referrerpolicy="no-referrer" class="w-full h-full object-contain">
+              } @else {
+              <mat-icon class="text-zinc-300 animate-pulse text-lg">image</mat-icon>
+              }
+            </div>
+            <span class="text-[10px] font-mono text-zinc-400" id="thumb-lbl-{{ $index }}">Page {{ $index + 1 }}</span>
+          </button>
+          }
+        </div>
+        }
+
+        <!-- Metadata Properties Card -->
+        @if (sidebarTab() === 'properties') {
+        <div class="space-y-4" id="properties-panel">
+          <div class="p-3 border rounded-xl space-y-3 bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800">
+            <div class="flex flex-col space-y-0.5">
+              <span class="text-[10px] text-zinc-400 tracking-wider uppercase">Document Title</span>
+              <span class="text-xs font-semibold text-zinc-800 dark:text-zinc-200"
+                id="prop-title">{{ docTitle() || 'N/A' }}</span>
+            </div>
+            <div class="h-px bg-zinc-100 dark:bg-zinc-800"></div>
+            <div class="flex flex-col space-y-0.5">
+              <span class="text-[10px] text-zinc-400 tracking-wider uppercase">Author</span>
+              <span class="text-xs font-medium text-zinc-700 dark:text-zinc-300"
+                id="prop-author">{{ docAuthor() || 'N/A' }}</span>
+            </div>
+            <div class="h-px bg-zinc-100 dark:bg-zinc-800"></div>
+            <div class="flex flex-col space-y-0.5">
+              <span class="text-[10px] text-zinc-400 tracking-wider uppercase">Total Pages</span>
+              <span class="text-xs font-mono font-semibold text-zinc-850 dark:text-white"
+                id="prop-pages">{{ docPagesCount() || 'N/A' }}</span>
+            </div>
+            <div class="h-px bg-zinc-100 dark:bg-zinc-800"></div>
+            <div class="flex flex-col space-y-0.5">
+              <span class="text-[10px] text-zinc-400 tracking-wider uppercase">File Size</span>
+              <span class="text-xs font-mono font-semibold text-zinc-850 dark:text-white"
+                id="prop-size">{{ docFileSize() || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="p-3 border rounded-xl space-y-2 bg-primary/5 border-primary/10">
+            <div class="flex items-center space-x-1 text-primary">
+              <mat-icon class="text-xs">offline_pin</mat-icon>
+              <span class="text-[10px] font-semibold tracking-wider uppercase">Compliance & Tech</span>
+            </div>
+            <p class="text-[11px] text-zinc-400 leading-normal font-sans">
+              Compiled utilizing fully native sandboxed WebAssembly engines. Complies with security policies.
+            </p>
+            <div class="flex items-center space-x-1.5 text-[10px] text-primary font-medium mt-1">
+              <div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+              <span>Optimized Vectors</span>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </aside>
+    }
+
+    <!-- Main Viewport Canvas Section -->
+    <div class="flex-1 flex flex-col relative min-w-0" id="app-main-viewport">
+      @if (isDocumentLoaded()) {
+      <!-- Scroll container for canvas -->
+      <div #scrollContainer
+        class="bg-[#fafafa] dark:bg-[#09090b] flex-1 overflow-auto p-4 md:p-8 flex items-start justify-center transition-all duration-300 relative" id="viewport-scroll-container">
+
+        <!-- Interactive Canvas Viewport Wrapper (White, rounded-2xl, border-zinc-200, shadow-sm) -->
+        <div class="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 relative rounded-2xl overflow-hidden shadow-sm transition-all border"
+          [style.transform]="'rotate(' + rotation() + 'deg)'" id="canvas-box">
+
+          <!-- Canvas component -->
+          <canvas #pdfCanvas class="block transition-transform duration-200" id="main-pdf-canvas"></canvas>
+
+          <!-- Highlights overlay -->
+          <div class="absolute inset-0 pointer-events-none" id="highlights-overlay">
+            @for (hl of highlights(); track hl.id) {
+            <div [style.left.px]="hl.left" [style.top.px]="hl.top" [style.width.px]="hl.width"
+              [style.height.px]="hl.height" [class.search-highlight-active]="hl.isActive"
+              [style.background-color]="hl.isActive ? 'rgba(0,122,85,0.5)' : 'rgba(0,122,85,0.15)'"
+              [class.ring-2]="hl.isActive" [class.ring-[#007a55]]="hl.isActive"
+              class="absolute rounded-xs transition-all duration-150" id="{{ hl.id }}">
+            </div>
+            }
+          </div>
+
+          <!-- Native selectable transparent text layer -->
+          <div class="text-layer" id="text-layer">
+            @for (item of textItems(); track $index) {
+            <span class="text-layer-item" [style.left.px]="item.left" [style.top.px]="item.top"
+              [style.width.px]="item.width" [style.height.px]="item.height" [style.fontSize.px]="item.fontSize">{{
+              item.text }}</span>
+            }
+          </div>
+
+          <!-- Reading mode overlay filters -->
+          <div class="absolute inset-0 bg-primary/5 mix-blend-multiply pointer-events-none"></div>
+        </div>
+
+        <!-- Custom Loading Indicator overlay -->
+        @if (isLoading()) {
+        <div class="bg-[#fafafa]/80 dark:bg-[#09090b]/80 absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div class="flex flex-col items-center space-y-3">
+            <div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm font-semibold tracking-wide text-primary">Assembling document graphics...</p>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Action Footer -->
+      <footer
+        class="bg-white text-zinc-500 border-t border-zinc-200 dark:bg-zinc-950 dark:text-zinc-400 dark:border-t-dark dark:border-zinc-900 h-10 flex items-center justify-between px-4 text-xs z-10 select-none transition-colors duration-200">
+        <div class="flex items-center space-x-2 font-sans">
+          <mat-icon class="text-sm opacity-60">folder_open</mat-icon>
+          <span class="truncate max-w-xs font-sans" id="footer-filename">{{ fileName() }}</span>
+        </div>
+        <div class="flex items-center space-x-3 font-sans">
+          <span id="footer-pages-indicator" class="font-sans">
+            Page <span class="font-mono font-medium">{{ currentPage() }}</span> of <span
+              class="font-mono font-medium">{{ totalPages() }}</span>
+          </span>
+          <span class="opacity-30">|</span>
+          <span class="hidden sm:inline-block font-sans opacity-85" id="footer-engine-badge">Engine: WASM Canvas
+            v3</span>
+        </div>
+      </footer>
+      } @else {
+      <!-- GORGEOUS LANDING PAGE -->
+      <div
+        class="bg-[#fafafa] dark:bg-[#09090b] flex-1 flex flex-col items-center justify-center p-6 md:p-12 relative transition-all duration-300 overflow-y-auto">
+
+        <div class="max-w-2xl w-full flex flex-col items-center text-center space-y-8 animate-fade-in">
+          <!-- Upload / Drag & Drop Container Card -->
+          <div (click)="fileInputLanding.click()"
+            class="bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 w-full rounded-2xl border-2 border-dashed p-10 md:p-14 flex flex-col items-center justify-center space-y-4 cursor-pointer hover:border-primary/80 hover:bg-primary/[0.01] transition-all duration-200 group shadow-xs">
+            <input type="file" accept="application/pdf" (change)="onFileSelected($event)" class="hidden" #fileInputLanding>
+
+            <!-- Icon representation -->
+            <div
+              class="bg-zinc-50 dark:bg-zinc-800 border-zinc-100 dark:border-zinc-750 w-12 h-12 rounded-full group-hover:scale-110 transition-transform duration-200 flex items-center justify-center text-zinc-400 group-hover:text-primary border">
+              <mat-icon class="text-2xl">cloud_upload</mat-icon>
+            </div>
+
+            <div class="space-y-1">
+              <p class="text-zinc-700 dark:text-zinc-300 font-sans font-semibold text-sm group-hover:text-primary transition-colors">
+                Drag and drop your PDF here, or <span
+                  class="text-primary group-hover:text-primary-hover font-bold">browse</span>
+              </p>
+              <p class="text-xs text-zinc-400 font-sans">
+                Supports PDF files up to 50MB
+              </p>
+            </div>
+          </div>
+
+          <!-- Features / Security badge -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left w-full">
+            <div class="bg-white/50 dark:bg-zinc-900/40 border-zinc-100 dark:border-zinc-800/60 p-4 rounded-xl border flex items-start space-x-3">
+              <mat-icon class="text-primary shrink-0 mt-0.5">verified_user</mat-icon>
+              <div class="space-y-0.5">
+                <p class="font-sans font-semibold text-xs text-zinc-800 dark:text-zinc-200">
+                  100% Client-Side</p>
+                <p class="text-[11px] text-zinc-400 font-sans leading-normal">Your files are processed locally. No data
+                  ever leaves your device.</p>
+              </div>
+            </div>
+
+            <div class="bg-white/50 dark:bg-zinc-900/40 border-zinc-100 dark:border-zinc-800/60 p-4 rounded-xl border flex items-start space-x-3">
+              <mat-icon class="text-primary shrink-0 mt-0.5">high_quality</mat-icon>
+              <div class="space-y-0.5">
+                <p class="font-sans font-semibold text-xs text-zinc-800 dark:text-zinc-200">
+                  High-Fidelity Rendering</p>
+                <p class="text-[11px] text-zinc-400 font-sans leading-normal">Powered by web-assembly canvas processing
+                  for crisp, clear graphics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Loading Indicator overlay specifically for landing uploads -->
+        @if (isLoading()) {
+        <div class="bg-[#fafafa]/80 dark:bg-[#09090b]/80 absolute inset-0 flex flex-col items-center justify-center z-10">
+          <div class="flex flex-col items-center space-y-3">
+            <div class="w-8 h-8 border-3 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-sm font-semibold tracking-wide text-primary">Assembling document graphics...</p>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+</div>
